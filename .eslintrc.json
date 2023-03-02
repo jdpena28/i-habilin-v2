@@ -42,6 +42,7 @@
     "react/prop-types": "off",
     "react/require-default-props": "off",
     "react/react-in-jsx-scope": "off",
+    "import/no-extraneous-dependencies": "off",
     "react/jsx-filename-extension": [
       1,
       {
