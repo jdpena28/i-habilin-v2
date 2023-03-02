@@ -65,3 +65,7 @@ button {
 .label-text {
   @apply font-poppins font-medium tracking-wide placeholder:font-poppins placeholder:font-medium placeholder:tracking-wide;
 }
+
+.helper-text {
+  @apply ml-1 text-xs text-[#636363];
+}

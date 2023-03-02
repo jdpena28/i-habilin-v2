@@ -41,7 +41,7 @@ const poppins = Poppins({
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <main
-      className={`${brocha.variable} ${PPNeueMachina.variable} ${poppins.variable}`}>
+      className={`${brocha.variable} ${PPNeueMachina.variable} ${poppins.variable} bg-tertiary`}>
       <DefaultSeo {...DEFAULT_SEO} />
       <Component {...pageProps} />
     </main>

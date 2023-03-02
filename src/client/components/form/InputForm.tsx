@@ -26,9 +26,7 @@ const InputForm: FC<InputFormProps> = ({
         </span>
         {icon && <span className="absolute right-3">{icon}</span>}
       </label>
-      {helperText && (
-        <p className="ml-1 text-xs text-[#636363]">{helperText}</p>
-      )}
+      {helperText && <p className="helper-text">{helperText}</p>}
     </>
   );
 };
