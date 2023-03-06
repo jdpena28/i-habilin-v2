@@ -4,6 +4,7 @@ import {
   About,
   Features,
   Register,
+  Notification,
 } from "@/client/components/section/";
 import { NextPage } from "next";
 
