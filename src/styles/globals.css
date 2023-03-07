@@ -69,3 +69,7 @@ button {
 .helper-text {
   @apply ml-1 text-xs text-[#636363];
 }
+
+.nav-links {
+  @apply border-b-4 border-transparent p-4 font-brocha text-lg font-bold tracking-wide transition-colors duration-500 hover:border-secondary;
+}

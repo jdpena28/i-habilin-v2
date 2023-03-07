@@ -1,3 +1,4 @@
+import { PublicNav } from "@/client/components/nav";
 import {
   Jumbotron,
   About,
@@ -8,12 +9,15 @@ import { NextPage } from "next";
 
 const Home: NextPage = () => {
   return (
-    <div className="container mx-auto min-h-screen">
-      <Jumbotron />
-      <About />
-      <Features />
-      <Register />
-    </div>
+    <>
+      <PublicNav />
+      <div className="container mx-auto min-h-screen">
+        <Jumbotron />
+        <About />
+        <Features />
+        <Register />
+      </div>
+    </>
   );
 };
 
