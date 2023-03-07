@@ -1,4 +1,4 @@
-import EmailSent1 from "../../../../public/email-sent 1";
+import EmailSent1 from "../../public/email-sent 1";
 
 const Notification = () => {
   return (
