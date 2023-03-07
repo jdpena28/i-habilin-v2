@@ -3,7 +3,7 @@ import React from "react";
 
 const PublicNav = () => {
   return (
-    <nav className="sticky top-0 flex w-full justify-between px-5 pt-5 2xl:px-24">
+    <nav className="sticky top-0 z-50 flex w-full justify-between bg-tertiary px-5 pt-5 drop-shadow-sm 2xl:px-24">
       <div className="decorated-underline">
         <h3>I-Habilin</h3>
         <div />
