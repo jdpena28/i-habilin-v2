@@ -4,7 +4,6 @@ import {
   About,
   Features,
   Register,
-  LoginAdmin,
 } from "@/client/components/section/";
 import { NextPage } from "next";
 
