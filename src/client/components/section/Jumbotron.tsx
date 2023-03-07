@@ -1,4 +1,4 @@
-import GirlOrderingFood from "../../../../public/girl-ordering-food";
+import GirlOrderingFood from "@public/girl-ordering-food";
 
 const Jumbotron = () => {
   return (
