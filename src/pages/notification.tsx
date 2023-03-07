@@ -2,8 +2,8 @@ import EmailSent1 from "../../public/email-sent 1";
 
 const Notification = () => {
   return (
-    <section className=" mx-auto flex h-screen flex-col items-center justify-center">
-      <div>
+    <section className="container mx-auto min-h-screen">
+      <div className="mx-auto flex h-screen flex-col items-center justify-center">
         <EmailSent1 />
       </div>
       <div className="mt-5 flex flex-col justify-center text-center">
@@ -20,7 +20,7 @@ const Notification = () => {
           contact us at help@ihabilin.com
         </p>
       </div>
-      <div>
+      <div className="mx-auto flex flex-col items-center justify-center ">
         <button type="button" className="mt-5 bg-primary">
           <svg
             className="fill-white"
