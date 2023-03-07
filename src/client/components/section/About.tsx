@@ -1,4 +1,4 @@
-import GirlOrderingFood from "../../../../public/girl-ordering-food";
+import BoyMonitoring from "../../../../public/boy-monitoring";
 import InCircle from "../../../../public/incircle";
 import StarHighlight from "../../../../public/Star-highlight";
 
@@ -55,7 +55,7 @@ const About = () => {
         </div>
       </div>
       <div className="pr-0 md:pr-0">
-        <GirlOrderingFood />
+        <BoyMonitoring />
       </div>
     </section>
   );
