@@ -1,30 +1,42 @@
-import BoyMonitoring from "../../../../public/boy-monitoring";
+import GirlOrderingFood from "../../../../public/girl-ordering-food";
+import InCircle from "../../../../public/incircle";
+import StarHighlight from "../../../../public/Star-highlight";
 
 const About = () => {
   return (
     <section className="flex h-screen flex-col-reverse items-center justify-center md:flex-row-reverse ">
       <div className="">
-        <h3 className="flex-col items-center space-y-2 pb-5 pl-0 text-center md:items-start md:pl-12 md:text-left">
+        <h3 className="flex-col items-center space-y-2 pl-0 text-center md:items-start md:pl-12 md:text-left">
           We build bridges
           <br /> between <span className="text-primary">companies </span>
           <br /> <span className="text-primary">and customer.</span>
         </h3>
-        <div className="items-center text-justify">
-          <p className="space m-12  w-4/5 space-y-2 pb-10 font-neuemachina ">
-            <span className=" font-bold">I-Habilin </span>
-            is an application that aims to modernize the current manual process
-            of food ordering using it features
-            <span className=" font-black"> K-means Algorithm. </span>A
-            suggestion algorithm that will make it easy for users to navigate
+        <div className="items-center text-justify ">
+          <p className="space m-10  w-4/5 space-y-0 pb-10 font-neuemachina ">
+            <div className="relative inline-block font-bold">
+              <div className="absolute -top-3 -left-3 h-max w-max ">
+                <InCircle />
+              </div>
+              I-Habilin
+            </div>
+            &nbsp; is an application that aims to modernize the current manual
+            process of food ordering using it features
+            <div className="relative inline-block font-bold">
+              <div className="absolute left-2 -top-3">
+                <StarHighlight />
+              </div>
+              &nbsp; K-means Algorithm. &nbsp;
+            </div>
+            A suggestion algorithm that will make it easy for users to navigate
             their possible food preferences based on the following factors,{" "}
             <span className="bg-gradient-to-r from-orange-600 to-yellow-500 bg-clip-text font-extrabold text-transparent">
               demographics.{" "}
             </span>
             <blockquote>
-              <p className="mt-6 italic  text-gray-900 dark:text-white">
+              <p className="mt-10 italic">
                 <svg
                   aria-hidden="true"
-                  className="h-10 w-10 text-orange-400"
+                  className="h-10 w-10 text-primary"
                   viewBox="0 0 24 27"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg">
@@ -43,7 +55,7 @@ const About = () => {
         </div>
       </div>
       <div className="pr-0 md:pr-0">
-        <BoyMonitoring />
+        <GirlOrderingFood />
       </div>
     </section>
   );
