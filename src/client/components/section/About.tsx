@@ -4,14 +4,14 @@ import StarHighlight from "../../../../public/Star-highlight";
 
 const About = () => {
   return (
-    <section className="flex h-screen flex-col-reverse items-center justify-center md:flex-row-reverse ">
+    <section className="flex h-screen w-full flex-col-reverse items-center justify-center md:flex-row-reverse ">
       <div className="items-center text-justify">
         <h3 className="-ml-2 space-y-2 pl-0 text-center md:items-start md:pl-12 md:text-left">
           We build bridges
           <br /> between <span className="text-primary">companies </span>
           <br /> <span className="text-primary">and customer.</span>
         </h3>
-        <p className="space m-10  w-4/5 space-y-0 pb-10 font-neuemachina ">
+        <p className="m-10 w-4/5 pb-10 font-neuemachina ">
           <div className="relative inline-block font-bold">
             <div className="absolute -top-3 -left-3 h-max w-max ">
               <InCircle />
@@ -28,7 +28,7 @@ const About = () => {
           </div>
           A suggestion algorithm that will make it easy for users to navigate
           their possible food preferences based on the following factors,{" "}
-          <span className="bg-gradient-to-r from-orange-600 to-yellow-500 bg-clip-text font-extrabold text-transparent">
+          <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text font-extrabold text-transparent">
             demographics.{" "}
           </span>
           <blockquote>
@@ -51,7 +51,7 @@ const About = () => {
           </blockquote>
         </p>
       </div>
-      <div className="h-auto w-auto">
+      <div className="w-full">
         <BoyMonitoring />
       </div>
     </section>
