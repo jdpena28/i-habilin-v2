@@ -20,7 +20,7 @@ const Register = () => {
           </button>
         </Link>
       </div>
-      <div className="relative mx-10 pr-14">
+      <div className="relative mx-10 w-full pr-14">
         <RegisterOrdering />
         <div className="absolute -top-[4.3rem] right-0">
           <StatisticalDashboard />

@@ -1,6 +1,6 @@
 const ReceiptOrdering = () => {
   return (
-    <svg className="relative z-10 lg:w-full" width="449" height="300" viewBox="0 0 449 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg className="relative z-10 w-full h-auto"  viewBox="0 0 449 300" fill="none" xmlns="http://www.w3.org/2000/svg">
       <g clipPath="url(#clip0_384_1556)">
         <g clipPath="url(#clip1_384_1556)">
           <path d="M151.76 268.459H41.0964C34.2226 268.459 28.6505 262.897 28.6505 256.035V47.6637C28.6505 40.8017 34.2226 35.2393 41.0964 35.2393H151.76C158.633 35.2393 164.206 40.8017 164.206 47.6637V256.035C164.206 262.897 158.634 268.459 151.76 268.459Z" fill="#25242E" />

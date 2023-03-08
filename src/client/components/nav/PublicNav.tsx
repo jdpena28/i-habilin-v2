@@ -8,7 +8,7 @@ const PublicNav = () => {
         <h3>I-Habilin</h3>
         <div />
       </div>
-      <div>
+      <div className="hidden md:block">
         <Link className="nav-links" href="/">
           Home
         </Link>
