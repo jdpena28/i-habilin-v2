@@ -2,7 +2,9 @@ import GirlOrderingFood from "@public/girl-ordering-food";
 
 const Jumbotron = () => {
   return (
-    <section className="flex flex-col-reverse items-center justify-center md:h-screen  md:flex-row md:justify-between">
+    <section
+      id="home"
+      className="flex flex-col-reverse items-center justify-center md:h-screen  md:flex-row md:justify-between">
       <div className="space-y-5">
         <div className="decorated-underline">
           <h1>I-Habilin</h1>

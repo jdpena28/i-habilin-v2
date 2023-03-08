@@ -9,16 +9,16 @@ const PublicNav = () => {
         <div />
       </div>
       <div className="hidden md:block">
-        <Link className="nav-links" href="/">
+        <Link className="nav-links" href="/#home">
           Home
         </Link>
-        <Link className="nav-links" href="/">
+        <Link className="nav-links" href="/#about">
           About
         </Link>
-        <Link className="nav-links" href="/">
+        <Link className="nav-links" href="/#feature">
           Feature
         </Link>
-        <Link className="nav-links" href="/">
+        <Link className="nav-links" href="/#register">
           Register
         </Link>
       </div>
