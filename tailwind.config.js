@@ -21,6 +21,9 @@ module.exports = {
         neuemachina: ["var(--font-ppneuemachina)", "sans-serif"],
         brocha: ["var(--font-brocha)", "sans-serif"],
       },
+      backgroundImage: {
+        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
+      },
     },
   },
   plugins: [require("@tailwindcss/forms")],
