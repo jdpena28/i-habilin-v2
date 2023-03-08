@@ -1,4 +1,4 @@
-import { PublicNav } from "@/client/components/nav";
+import { HomeLayout } from "@/client/components/layout";
 import {
   Jumbotron,
   About,
@@ -9,15 +9,12 @@ import { NextPage } from "next";
 
 const Home: NextPage = () => {
   return (
-    <>
-      <PublicNav />
-      <div className="container mx-auto min-h-screen">
-        <Jumbotron />
-        <About />
-        <Features />
-        <Register />
-      </div>
-    </>
+    <HomeLayout>
+      <Jumbotron />
+      <About />
+      <Features />
+      <Register />
+    </HomeLayout>
   );
 };
 
