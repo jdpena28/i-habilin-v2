@@ -2,7 +2,9 @@ import GirlOrderingFood from "@public/girl-ordering-food";
 
 const Jumbotron = () => {
   return (
-    <section className="flex h-screen flex-col items-center justify-between md:flex-row">
+    <section
+      id="home"
+      className="flex flex-col-reverse items-center justify-center md:h-screen  md:flex-row md:justify-between">
       <div className="space-y-5">
         <div className="decorated-underline">
           <h1>I-Habilin</h1>
@@ -17,7 +19,7 @@ const Jumbotron = () => {
           See Features
         </button>
       </div>
-      <div>
+      <div className="w-4/6">
         <GirlOrderingFood />
       </div>
     </section>

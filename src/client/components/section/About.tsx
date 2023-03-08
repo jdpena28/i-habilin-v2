@@ -4,7 +4,9 @@ import StarHighlight from "../../../../public/Star-highlight";
 
 const About = () => {
   return (
-    <section className="flex h-screen w-full flex-col-reverse items-center justify-center md:flex-row-reverse ">
+    <section
+      id="about"
+      className="flex min-h-screen w-full flex-col-reverse items-center justify-center md:flex-row-reverse">
       <div className="items-center text-justify">
         <h3 className="-ml-2 space-y-2 pl-0 text-center md:items-start md:pl-12 md:text-left">
           We build bridges
