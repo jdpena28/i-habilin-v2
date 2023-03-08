@@ -1,9 +1,10 @@
-import InputForm from "@/client/components/form/InputForm";
+import { InputForm } from "@/client/components/form";
+import { HomeLayout } from "@/client/components/layout";
 
 const BeAStallOwner = () => {
   return (
-    <section className="container mx-auto min-h-screen px-4 md:px-12">
-      <div className="decorated-underline md:w-1/2">
+    <HomeLayout>
+      <div className="decorated-underline mt-5 md:w-1/2">
         <h5 className="font-bold">Be a Stall Owner</h5>
         <div />
         <p className="text-md mt-4 mb-12">
@@ -485,7 +486,7 @@ const BeAStallOwner = () => {
           Submit
         </button>
       </form>
-    </section>
+    </HomeLayout>
   );
 };
 

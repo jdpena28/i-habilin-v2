@@ -1,3 +1,4 @@
+import { HomeLayout } from "@/client/components/layout";
 import {
   Jumbotron,
   About,
@@ -8,12 +9,12 @@ import { NextPage } from "next";
 
 const Home: NextPage = () => {
   return (
-    <div className="container mx-auto min-h-screen">
+    <HomeLayout>
       <Jumbotron />
       <About />
       <Features />
       <Register />
-    </div>
+    </HomeLayout>
   );
 };
 
