@@ -77,3 +77,7 @@ button {
 .footer-links {
   @apply border-b-4 border-transparent font-brocha text-lg font-bold tracking-wide;
 }
+
+.feature-public-card {
+  @apply h-full max-h-[490px] min-h-[490px] flex-[.35] space-y-3 rounded-md bg-white p-4;
+}
