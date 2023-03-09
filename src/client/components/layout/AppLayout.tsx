@@ -5,7 +5,7 @@ const AppLayout = ({ children }: { children: ReactNode }) => {
   return (
     <div className="flex h-full min-h-screen w-full gap-x-10">
       <AppNav />
-      {children}
+      <div className="w-full pr-10">{children}</div>
     </div>
   );
 };
