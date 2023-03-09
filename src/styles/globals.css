@@ -93,3 +93,7 @@ button {
 .avatar {
   @apply w-14 rounded-sm bg-gray-100 text-center font-poppins text-sm leading-[40px];
 }
+
+.feature-public-card {
+  @apply h-full max-h-[490px] min-h-[490px] flex-[.35] space-y-3 rounded-md bg-white p-4;
+}
