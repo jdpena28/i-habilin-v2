@@ -74,6 +74,26 @@ button {
   @apply border-b-4 border-transparent p-4 font-brocha text-lg font-bold tracking-wide transition-colors duration-500 hover:border-secondary;
 }
 
+.active-link {
+  @apply rounded-tl-2xl rounded-bl-2xl  bg-white drop-shadow-lg;
+}
+
+.active-link > svg {
+  @apply fill-primary;
+}
+
+.active-link > p {
+  @apply text-primary;
+}
+
 .footer-links {
   @apply border-b-4 border-transparent font-brocha text-lg font-bold tracking-wide;
+}
+
+.avatar {
+  @apply w-14 rounded-sm bg-gray-100 text-center font-poppins text-sm leading-[40px];
+}
+
+.feature-public-card {
+  @apply h-full max-h-[490px] min-h-[490px] flex-[.35] space-y-3 rounded-md bg-white p-4;
 }

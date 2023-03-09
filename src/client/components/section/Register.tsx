@@ -1,6 +1,6 @@
 import Link from "next/link";
-import RegisterOrdering from "../../../../public/receipt-ordering";
-import StatisticalDashboard from "../../../../public/statistical-dashboard";
+import RegisterOrdering from "../../../../public/public/receipt-ordering";
+import StatisticalDashboard from "../../../../public/public/statistical-dashboard";
 
 const Register = () => {
   return (
