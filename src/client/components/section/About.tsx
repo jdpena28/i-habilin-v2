@@ -1,6 +1,6 @@
-import BoyMonitoring from "../../../../public/boy-monitoring";
+import BoyMonitoring from "../../../../public/public/boy-monitoring";
 import InCircle from "../../../../public/incircle";
-import StarHighlight from "../../../../public/Star-highlight";
+import StarHighlight from "../../../../public/public/Star-highlight";
 
 const About = () => {
   return (
