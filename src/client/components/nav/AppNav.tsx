@@ -7,7 +7,7 @@ import { APPLICATION_MODULES } from "@/client/constant/application";
 
 const AppNav = () => {
   return (
-    <nav className="h-screen w-[10%] bg-primary">
+    <nav className="relative h-screen w-[10%] bg-primary">
       <div className="decorated-underline mb-10 p-5 text-white">
         <p className="heading text-3xl">I-Habilin</p>
         <div />
@@ -16,6 +16,13 @@ const AppNav = () => {
         {APPLICATION_MODULES.map((module: AppModules) => {
           return <NavLinks {...module} key={module.name} />;
         })}
+      </div>
+      <div className="absolute bottom-0 flex items-center justify-around gap-x-3 bg-highlight p-1">
+        <div className="avatar">JH</div>
+        <p className="text-xs text-tertiary">
+          John Henrich Dela Pena <br />
+          Super Admin
+        </p>
       </div>
     </nav>
   );

@@ -89,3 +89,7 @@ button {
 .footer-links {
   @apply border-b-4 border-transparent font-brocha text-lg font-bold tracking-wide;
 }
+
+.avatar {
+  @apply w-14 rounded-sm bg-gray-100 text-center font-poppins text-sm leading-[40px];
+}
