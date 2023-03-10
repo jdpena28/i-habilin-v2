@@ -8,3 +8,8 @@ interface InputFormProps {
   icon?: ReactHTMLElement;
   helperText?: string;
 }
+
+interface ApplicationHeaderProps {
+  title: string;
+  goBack?: boolean;
+}

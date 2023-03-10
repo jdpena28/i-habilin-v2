@@ -1,37 +1,10 @@
 import { AppLayout } from "@/client/components/layout";
-import { BsArrowLeft, BsSearch } from "react-icons/bs";
+import { ApplicationHeader } from "@/client/components/header";
 
 const registrants = () => {
   return (
     <AppLayout>
-      <header className="sticky top-0 mb-5 w-full border-b-2 border-gray-200 py-5">
-        <div className="flex w-full justify-between">
-          <div className="flex items-center justify-center gap-x-5">
-            <BsArrowLeft className="h-7 w-7" />
-            <div className="decorated-underline">
-              <h5>Registrants</h5>
-              <div />
-            </div>
-          </div>
-          {/* Search Icon */}
-          <div className="flex items-center gap-x-1 rounded-md bg-white p-2">
-            <BsSearch className="h-5 w-5" />
-            <input
-              className="border-none font-poppins outline-none focus:border-transparent focus:outline-none focus:ring-0"
-              type="text"
-              placeholder="Search"
-            />
-          </div>
-        </div>
-        <div className="flex w-full font-brocha">
-          <div className="border-b-2 border-secondary p-2 text-secondary">
-            All
-          </div>
-          <div className="border-b-2 border-transparent p-2">Approved</div>
-          <div className="border-b-2 border-transparent p-2">Pending</div>
-          <div className="border-b-2 border-transparent p-2">Expired</div>
-        </div>
-      </header>
+      <ApplicationHeader title="Registrants" />
       <section id="registrants" className="bg-white">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y-2 divide-gray-200 text-sm">
