@@ -1,3 +1,6 @@
+import Image from "next/image";
+import { BsFillGearFill } from "react-icons/bs";
+
 import { AppLayout } from "@/client/components/layout";
 import { ApplicationHeader } from "@/client/components/header";
 
@@ -7,89 +10,54 @@ const registrants = () => {
       <ApplicationHeader title="Registrants" />
       <section id="registrants" className="bg-white">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y-2 divide-gray-200 text-sm">
+          <table>
             <thead>
               <tr>
-                <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
-                  Name
-                </th>
-                <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
-                  Date of Birth
-                </th>
-                <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
-                  Role
-                </th>
-                <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
-                  Salary
-                </th>
-                <th className="px-4 py-2">Action</th>
+                <th>Stall Name</th>
+                <th>Email</th>
+                <th>Status</th>
+                <th>Date Applied</th>
+                <th>Action</th>
               </tr>
             </thead>
 
-            <tbody className="divide-y divide-gray-200">
+            <tbody>
               <tr>
-                <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
-                  John Doe
+                <td className="flex items-center gap-x-3">
+                  <div className="relative h-9 w-9 overflow-hidden rounded-full">
+                    <Image src="/jollibee-logo.jpg" alt="Jollibee" fill />
+                  </div>
+                  <div>
+                    <p className="font-medium">Jollibee</p>
+                    <p className="text-xs">ihabilin.com/jollibee</p>
+                  </div>
                 </td>
-                <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                  24/05/1995
+                <td>jollibeecorp@gmail.com</td>
+                <td>
+                  <div className="badge-lime">Active</div>
                 </td>
-                <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                  Web Developer
-                </td>
-                <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                  $120,000
-                </td>
-                <td className="whitespace-nowrap px-4 py-2">
-                  <a
-                    href="/application/registrants/view"
-                    className="inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700">
-                    View
-                  </a>
+                <td>November 30, 2022</td>
+                <td>
+                  <BsFillGearFill className="h-5 w-5 cursor-pointer" />
                 </td>
               </tr>
-
               <tr>
-                <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
-                  Jane Doe
+                <td className="flex items-center gap-x-3">
+                  <div className="relative h-9 w-9 overflow-hidden rounded-full">
+                    <Image src="/jollibee-logo.jpg" alt="Jollibee" fill />
+                  </div>
+                  <div>
+                    <p className="font-medium">Jollibee</p>
+                    <p className="text-xs">ihabilin.com/jollibee</p>
+                  </div>
                 </td>
-                <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                  04/11/1980
+                <td>jollibeecorp@gmail.com</td>
+                <td>
+                  <div className="badge-red">Expired</div>
                 </td>
-                <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                  Web Designer
-                </td>
-                <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                  $100,000
-                </td>
-                <td className="whitespace-nowrap px-4 py-2">
-                  <a
-                    href="/application/registrants/view"
-                    className="inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700">
-                    View
-                  </a>
-                </td>
-              </tr>
-
-              <tr>
-                <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
-                  Gary Barlow
-                </td>
-                <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                  24/05/1995
-                </td>
-                <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                  Singer
-                </td>
-                <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                  $20,000
-                </td>
-                <td className="whitespace-nowrap px-4 py-2">
-                  <a
-                    href="/application/registrants/view"
-                    className="inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700">
-                    View
-                  </a>
+                <td>November 30, 2022</td>
+                <td>
+                  <BsFillGearFill className="h-5 w-5 cursor-pointer" />
                 </td>
               </tr>
             </tbody>

@@ -97,3 +97,35 @@ button {
 .feature-public-card {
   @apply h-full max-h-[490px] min-h-[490px] flex-[.35] space-y-3 rounded-md bg-white p-4;
 }
+
+table {
+  @apply min-w-full divide-y-2 divide-[#9D9D9D] border-2 border-gray-300 font-poppins text-sm;
+}
+
+thead {
+  @apply border-2 border-gray-300 bg-gray-200 text-left;
+}
+
+tbody {
+  @apply divide-y divide-gray-200;
+}
+
+td {
+  @apply whitespace-nowrap px-2 py-4 text-gray-900;
+}
+
+th {
+  @apply heading p-2;
+}
+
+tr {
+  @apply hover:bg-gray-100;
+}
+
+/* badges */
+.badge-lime {
+  @apply w-full max-w-[100px] rounded-md  bg-lime-400 px-2 py-1 text-center font-poppins text-xs font-medium text-lime-800;
+}
+.badge-red {
+  @apply w-full max-w-[100px] rounded-md  bg-rose-400 px-2 py-1 text-center font-poppins text-xs font-medium text-rose-800;
+}
