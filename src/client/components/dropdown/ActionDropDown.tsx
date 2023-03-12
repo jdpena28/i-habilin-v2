@@ -9,8 +9,8 @@ import {
 
 const ActionDropdown = () => {
   return (
-    <div className="w-32">
-      <Menu as="div" className="inline-block text-left">
+    <div className="relative w-32">
+      <Menu as="div" className="relative inline-block text-left">
         <div>
           <Menu.Button className="inline-flex w-full">
             <BsFillGearFill className="h-5 w-5 fill-gray-900" />
@@ -24,7 +24,7 @@ const ActionDropdown = () => {
           leave="transition ease-in duration-75"
           leaveFrom="transform opacity-100 scale-100"
           leaveTo="transform opacity-0 scale-95">
-          <Menu.Items className="absolute z-30 divide-y-2 divide-white bg-primary focus:outline-none">
+          <Menu.Items className="absolute  z-30 divide-y-2 divide-white bg-primary focus:outline-none">
             <div className="font-tertiary z-30 divide-y divide-gray-100 font-normal">
               <Menu.Item>
                 {({ active }) => (
