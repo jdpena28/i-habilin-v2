@@ -7,7 +7,7 @@ import { ActionDropdown } from "@/client/components/dropdown";
 const registrants = () => {
   return (
     <AppLayout>
-      <ApplicationHeader title="Registrants" />
+      <ApplicationHeader title="Registrants" search tabs filter />
       <section id="registrants" className="bg-white">
         <div className="overflow-x-auto">
           <table>

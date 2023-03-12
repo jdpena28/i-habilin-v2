@@ -4,7 +4,13 @@ import { useRouter } from "next/router";
 import { BsArrowLeft, BsSearch } from "react-icons/bs";
 import { IoFilter } from "react-icons/io5";
 
-const ApplicationHeader: FC<ApplicationHeaderProps> = ({ title, goBack }) => {
+const ApplicationHeader: FC<ApplicationHeaderProps> = ({
+  title,
+  goBack,
+  search,
+  tabs,
+  filter,
+}) => {
   const { back } = useRouter();
   return (
     <header className="sticky top-0 mb-5 w-full space-y-3 border-b-2 border-gray-200 py-5">
@@ -23,35 +29,41 @@ const ApplicationHeader: FC<ApplicationHeaderProps> = ({ title, goBack }) => {
           </div>
         </div>
         {/* Search Icon */}
-        <div className="flex items-center gap-x-1 rounded-md bg-white p-2">
-          <BsSearch className="h-5 w-5" />
-          <input
-            className="border-none font-poppins outline-none focus:border-transparent focus:outline-none focus:ring-0"
-            type="text"
-            placeholder="Search"
-          />
-        </div>
+        {search && (
+          <div className="flex items-center gap-x-1 rounded-md bg-white p-2">
+            <BsSearch className="h-5 w-5" />
+            <input
+              className="border-none font-poppins outline-none focus:border-transparent focus:outline-none focus:ring-0"
+              type="text"
+              placeholder="Search"
+            />
+          </div>
+        )}
       </div>
       <div className="flex  w-full justify-between">
-        <div className="flex w-full font-brocha">
-          <div className="border-b-2 border-secondary p-2 text-secondary">
-            All
+        {tabs && (
+          <div className="flex w-full font-brocha">
+            <div className="border-b-2 border-secondary p-2 text-secondary">
+              All
+            </div>
+            <div className="border-b-2 border-transparent p-2">Approved</div>
+            <div className="border-b-2 border-transparent p-2">Pending</div>
+            <div className="border-b-2 border-transparent p-2">Expired</div>
           </div>
-          <div className="border-b-2 border-transparent p-2">Approved</div>
-          <div className="border-b-2 border-transparent p-2">Pending</div>
-          <div className="border-b-2 border-transparent p-2">Expired</div>
-        </div>
-        <div className="flex items-center gap-x-1 rounded-md bg-white p-2">
-          <IoFilter className="h-5 w-5" />
-          <select
-            className="border-none font-poppins outline-none focus:border-transparent focus:outline-none focus:ring-0"
-            name="filter"
-            id="filter">
-            <option value="" selected>
-              Filter
-            </option>
-          </select>
-        </div>
+        )}
+        {filter && (
+          <div className="flex items-center gap-x-1 rounded-md bg-white p-2">
+            <IoFilter className="h-5 w-5" />
+            <select
+              className="border-none font-poppins outline-none focus:border-transparent focus:outline-none focus:ring-0"
+              name="filter"
+              id="filter">
+              <option value="" selected>
+                Filter
+              </option>
+            </select>
+          </div>
+        )}
       </div>
     </header>
   );

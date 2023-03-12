@@ -8,7 +8,7 @@ const About = () => {
       id="about"
       className="flex min-h-screen w-full flex-col-reverse items-center justify-center md:flex-row-reverse">
       <div className="items-center text-justify">
-        <h3 className="-ml-2 space-y-2 pl-0 text-center md:items-start md:pl-12 md:text-left">
+        <h3 className="-ml-2 space-y-3 pl-0 text-center md:items-start md:pl-12 md:text-left">
           We build bridges
           <br /> between <span className="text-primary">companies </span>
           <br /> <span className="text-primary">and customer.</span>

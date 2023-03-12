@@ -12,4 +12,7 @@ interface InputFormProps {
 interface ApplicationHeaderProps {
   title: string;
   goBack?: boolean;
+  search?: boolean;
+  tabs?: boolean;
+  filter?: boolean;
 }
