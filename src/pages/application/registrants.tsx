@@ -1,8 +1,8 @@
 import Image from "next/image";
-import { BsFillGearFill } from "react-icons/bs";
 
 import { AppLayout } from "@/client/components/layout";
 import { ApplicationHeader } from "@/client/components/header";
+import { ActionDropdown } from "@/client/components/dropdown";
 
 const registrants = () => {
   return (
@@ -38,7 +38,7 @@ const registrants = () => {
                 </td>
                 <td>November 30, 2022</td>
                 <td>
-                  <BsFillGearFill className="h-5 w-5 cursor-pointer" />
+                  <ActionDropdown />
                 </td>
               </tr>
               <tr>
@@ -57,7 +57,7 @@ const registrants = () => {
                 </td>
                 <td>November 30, 2022</td>
                 <td>
-                  <BsFillGearFill className="h-5 w-5 cursor-pointer" />
+                  <ActionDropdown />
                 </td>
               </tr>
             </tbody>
