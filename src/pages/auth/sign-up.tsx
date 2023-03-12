@@ -1,4 +1,4 @@
-import BackgroundImage from "@public/background-image";
+import BackgroundImage from "@public/public/background-image";
 import InputForm from "@/client/components/form/InputForm";
 
 const admin = () => {
