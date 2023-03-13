@@ -5,7 +5,24 @@ interface InputFormProps {
   name: string;
   type: HTMLInputTypeAttribute;
   labelText: string;
+  required?: boolean;
   icon?: ReactHTMLElement;
+  helperText?: string;
+
+  error: any;
+  register: any;
+  sideEffect?: () => void;
+}
+
+interface SelectFormProps {
+  data: any | undefined;
+  filterBy: string | number;
+  selectedBy: string;
+  setValue: any;
+  watch: any;
+  register: any;
+  error: any;
+  id: string;
   helperText?: string;
 }
 

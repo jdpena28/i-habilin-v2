@@ -1,4 +1,5 @@
 import { FC } from "react";
+import { get } from "lodash";
 import type { InputFormProps } from "@/client/types/props";
 
 const InputForm: FC<InputFormProps> = ({
@@ -8,7 +9,11 @@ const InputForm: FC<InputFormProps> = ({
   labelText,
   icon,
   helperText,
+  register,
+  error,
+  sideEffect,
 }) => {
+  const errorMessage: string = get(error, id)?.message;
   return (
     <>
       <label
@@ -20,6 +25,10 @@ const InputForm: FC<InputFormProps> = ({
           name={name}
           placeholder={labelText}
           className="label-text peer h-8 w-full border-none bg-transparent p-0 placeholder-transparent focus:border-transparent focus:outline-none focus:ring-0 sm:text-sm"
+          {...register(id, {
+            valueAsNumber: type === "number",
+            onChange: sideEffect,
+          })}
         />
         <span className="label-text absolute left-3 top-3 -translate-y-1/2 text-xs text-gray-700 transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-3 peer-focus:text-xs">
           {labelText}
@@ -27,6 +36,11 @@ const InputForm: FC<InputFormProps> = ({
         {icon && <span className="absolute right-3">{icon}</span>}
       </label>
       {helperText && <p className="helper-text">{helperText}</p>}
+      {errorMessage && (
+        <p className="helper-text mt-1 font-medium !text-red-400">
+          {errorMessage}
+        </p>
+      )}
     </>
   );
 };
