@@ -43,6 +43,8 @@
     "react/require-default-props": "off",
     "react/react-in-jsx-scope": "off",
     "import/no-extraneous-dependencies": "off",
+    "no-param-reassign": "off",
+    "no-return-await": "off",
     "react/jsx-filename-extension": [
       1,
       {
