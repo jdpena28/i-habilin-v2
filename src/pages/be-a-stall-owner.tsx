@@ -1,5 +1,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { trpc } from "@/server/utils/trpc";
 import {
   CreateRegistrantSchema,
   createRegistrantSchema,
@@ -22,6 +23,45 @@ const BeAStallOwner = () => {
   const onSubmit = () => {
     alert("Submitted");
   };
+
+  const { data: registrantProvData, isFetching: registrantProvIsLoading } =
+    trpc.address.getProvinces.useQuery();
+  const { data: registrantCityData, isFetching: registrantCityIsLoading } =
+    trpc.address.getCities.useQuery({
+      prov_code: watch("registrant.address.provCode"),
+    });
+  const { data: registrantBrgyData, isFetching: registrantBrgyIsLoading } =
+    trpc.address.getBrgy.useQuery({
+      city_code: watch("registrant.address.cityCode"),
+    });
+
+  const { data: ownerProvData, isFetching: ownerProvIsLoading } =
+    trpc.address.getProvinces.useQuery();
+  const { data: ownerCityData, isFetching: ownerCityIsLoading } =
+    trpc.address.getCities.useQuery({
+      prov_code: watch("owner.address.provCode"),
+    });
+  const { data: ownerBrgyData, isFetching: ownerBrgyIsLoading } =
+    trpc.address.getBrgy.useQuery({
+      city_code: watch("owner.address.cityCode"),
+    });
+
+  const {
+    data: representativeProvData,
+    isFetching: representativeProvIsLoading,
+  } = trpc.address.getProvinces.useQuery();
+  const {
+    data: representativeCityData,
+    isFetching: representativeCityIsLoading,
+  } = trpc.address.getCities.useQuery({
+    prov_code: watch("representative.address.provCode"),
+  });
+  const {
+    data: representativeBrgyData,
+    isFetching: representativeBrgyIsLoading,
+  } = trpc.address.getBrgy.useQuery({
+    city_code: watch("representative.address.cityCode"),
+  });
 
   return (
     <HomeLayout>
@@ -50,7 +90,7 @@ const BeAStallOwner = () => {
         <div className="w-full flex-col space-y-3 lg:w-1/2">
           <div>
             <InputForm
-              id="registrant.stallName"
+              id="registrant.name"
               type="text"
               labelText="Stall Name"
               name="stallname"
@@ -63,7 +103,7 @@ const BeAStallOwner = () => {
               id="registrant.address.addressLine1"
               type="text"
               labelText="House no. / Block / Subdivision / Lot No. / Street"
-              name="stalladdress"
+              name="registrant.address.addressLine1"
               error={errors}
               register={register}
             />
@@ -74,66 +114,41 @@ const BeAStallOwner = () => {
                 register={register}
                 error={errors}
                 id="registrant.address.provCode"
-                data={[
-                  {
-                    id: 1,
-                    text: "Metro Manila",
-                  },
-                  {
-                    id: 2,
-                    text: "Cavite",
-                  },
-                ]}
-                filterBy="text"
+                placeholder="Province"
+                data={registrantProvData}
+                filterBy="prov_name"
+                selectedBy="prov_code"
+                setValue={setValue}
+                watch={watch}
+                isLoading={registrantProvIsLoading}
+              />
+            </div>
+            <div className="md:w-1/3">
+              <SelectForm
+                register={register}
+                error={errors}
+                id="registrant.address.cityCode"
+                placeholder="City"
+                data={registrantCityData}
+                filterBy="city_name"
+                selectedBy="city_code"
+                setValue={setValue}
+                watch={watch}
+                isLoading={registrantCityIsLoading}
+              />
+            </div>
+            <div className="md:w-1/3">
+              <SelectForm
+                register={register}
+                error={errors}
+                id="registrant.address.brgyId"
+                placeholder="Barangay"
+                data={registrantBrgyData}
+                filterBy="brgy_loc"
                 selectedBy="id"
                 setValue={setValue}
                 watch={watch}
-              />
-            </div>
-            <div className="md:w-1/3">
-              <InputForm
-                id="registrant.address.cityCode"
-                type="text"
-                labelText="City"
-                name="city"
-                icon={
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    className="h-4 w-4">
-                    <path
-                      fillRule="evenodd"
-                      d="M5.404 14.596A6.5 6.5 0 1116.5 10a1.25 1.25 0 01-2.5 0 4 4 0 10-.571 2.06A2.75 2.75 0 0018 10a8 8 0 10-2.343 5.657.75.75 0 00-1.06-1.06 6.5 6.5 0 01-9.193 0zM10 7.5a2.5 2.5 0 100 5 2.5 2.5 0 000-5z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                }
-                error={errors}
-                register={register}
-              />
-            </div>
-            <div className="md:w-1/3">
-              <InputForm
-                id="registrant.address.brgyId"
-                type="text"
-                labelText="Barangay"
-                name="barangay"
-                icon={
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    className="h-4 w-4">
-                    <path
-                      fillRule="evenodd"
-                      d="M5.404 14.596A6.5 6.5 0 1116.5 10a1.25 1.25 0 01-2.5 0 4 4 0 10-.571 2.06A2.75 2.75 0 0018 10a8 8 0 10-2.343 5.657.75.75 0 00-1.06-1.06 6.5 6.5 0 01-9.193 0zM10 7.5a2.5 2.5 0 100 5 2.5 2.5 0 000-5z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                }
-                error={errors}
-                register={register}
+                isLoading={registrantBrgyIsLoading}
               />
             </div>
           </div>
@@ -143,7 +158,7 @@ const BeAStallOwner = () => {
                 id="registrant.contactNo"
                 type="text"
                 labelText="Contact No."
-                name="contactno"
+                name="registrant.contactNo"
                 error={errors}
                 register={register}
               />
@@ -317,72 +332,45 @@ const BeAStallOwner = () => {
           </div>
           <div className="flex w-full space-x-3 ">
             <div className="md:w-1/3">
-              <InputForm
+              <SelectForm
+                register={register}
+                error={errors}
                 id="owner.address.provCode"
-                type="text"
-                labelText="Province"
-                name="owner.address.provCode"
-                icon={
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    className="h-4 w-4">
-                    <path
-                      fillRule="evenodd"
-                      d="M5.404 14.596A6.5 6.5 0 1116.5 10a1.25 1.25 0 01-2.5 0 4 4 0 10-.571 2.06A2.75 2.75 0 0018 10a8 8 0 10-2.343 5.657.75.75 0 00-1.06-1.06 6.5 6.5 0 01-9.193 0zM10 7.5a2.5 2.5 0 100 5 2.5 2.5 0 000-5z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                }
-                error={errors}
-                register={register}
+                placeholder="Province"
+                data={ownerProvData}
+                filterBy="prov_name"
+                selectedBy="prov_code"
+                setValue={setValue}
+                watch={watch}
+                isLoading={ownerProvIsLoading}
               />
             </div>
             <div className="md:w-1/3">
-              <InputForm
+              <SelectForm
+                register={register}
+                error={errors}
                 id="owner.address.cityCode"
-                type="text"
-                labelText="City"
-                name="owner.address.cityCode"
-                icon={
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    className="h-4 w-4">
-                    <path
-                      fillRule="evenodd"
-                      d="M5.404 14.596A6.5 6.5 0 1116.5 10a1.25 1.25 0 01-2.5 0 4 4 0 10-.571 2.06A2.75 2.75 0 0018 10a8 8 0 10-2.343 5.657.75.75 0 00-1.06-1.06 6.5 6.5 0 01-9.193 0zM10 7.5a2.5 2.5 0 100 5 2.5 2.5 0 000-5z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                }
-                error={errors}
-                register={register}
+                placeholder="City"
+                data={ownerCityData}
+                filterBy="city_name"
+                selectedBy="city_code"
+                setValue={setValue}
+                watch={watch}
+                isLoading={ownerCityIsLoading}
               />
             </div>
             <div className="md:w-1/3">
-              <InputForm
-                id="owner.address.brgyId"
-                type="text"
-                labelText="Barangay"
-                name="owner.address.brgyId"
-                icon={
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    className="h-4 w-4">
-                    <path
-                      fillRule="evenodd"
-                      d="M5.404 14.596A6.5 6.5 0 1116.5 10a1.25 1.25 0 01-2.5 0 4 4 0 10-.571 2.06A2.75 2.75 0 0018 10a8 8 0 10-2.343 5.657.75.75 0 00-1.06-1.06 6.5 6.5 0 01-9.193 0zM10 7.5a2.5 2.5 0 100 5 2.5 2.5 0 000-5z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                }
-                error={errors}
+              <SelectForm
                 register={register}
+                error={errors}
+                id="owner.address.brgyId"
+                placeholder="Barangay"
+                data={ownerBrgyData}
+                filterBy="brgy_loc"
+                selectedBy="id"
+                setValue={setValue}
+                watch={watch}
+                isLoading={ownerBrgyIsLoading}
               />
             </div>
           </div>
@@ -465,72 +453,45 @@ const BeAStallOwner = () => {
           </div>
           <div className="flex w-full space-x-3 ">
             <div className="md:w-1/3">
-              <InputForm
+              <SelectForm
+                register={register}
+                error={errors}
                 id="representative.address.provCode"
-                type="text"
-                labelText="Province"
-                name="representative.address.provCode"
-                icon={
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    className="h-4 w-4">
-                    <path
-                      fillRule="evenodd"
-                      d="M5.404 14.596A6.5 6.5 0 1116.5 10a1.25 1.25 0 01-2.5 0 4 4 0 10-.571 2.06A2.75 2.75 0 0018 10a8 8 0 10-2.343 5.657.75.75 0 00-1.06-1.06 6.5 6.5 0 01-9.193 0zM10 7.5a2.5 2.5 0 100 5 2.5 2.5 0 000-5z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                }
-                error={errors}
-                register={register}
+                placeholder="Province"
+                data={representativeProvData}
+                filterBy="prov_name"
+                selectedBy="prov_code"
+                setValue={setValue}
+                watch={watch}
+                isLoading={representativeProvIsLoading}
               />
             </div>
             <div className="md:w-1/3">
-              <InputForm
+              <SelectForm
+                register={register}
+                error={errors}
                 id="representative.address.cityCode"
-                type="text"
-                labelText="City"
-                name="representative.address.cityCode"
-                icon={
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    className="h-4 w-4">
-                    <path
-                      fillRule="evenodd"
-                      d="M5.404 14.596A6.5 6.5 0 1116.5 10a1.25 1.25 0 01-2.5 0 4 4 0 10-.571 2.06A2.75 2.75 0 0018 10a8 8 0 10-2.343 5.657.75.75 0 00-1.06-1.06 6.5 6.5 0 01-9.193 0zM10 7.5a2.5 2.5 0 100 5 2.5 2.5 0 000-5z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                }
-                error={errors}
-                register={register}
+                placeholder="City"
+                data={representativeCityData}
+                filterBy="city_name"
+                selectedBy="city_code"
+                setValue={setValue}
+                watch={watch}
+                isLoading={representativeCityIsLoading}
               />
             </div>
             <div className="md:w-1/3">
-              <InputForm
-                id="representative.address.brgyId"
-                type="text"
-                labelText="Barangay"
-                name="representative.address.brgyId"
-                icon={
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    className="h-4 w-4">
-                    <path
-                      fillRule="evenodd"
-                      d="M5.404 14.596A6.5 6.5 0 1116.5 10a1.25 1.25 0 01-2.5 0 4 4 0 10-.571 2.06A2.75 2.75 0 0018 10a8 8 0 10-2.343 5.657.75.75 0 00-1.06-1.06 6.5 6.5 0 01-9.193 0zM10 7.5a2.5 2.5 0 100 5 2.5 2.5 0 000-5z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                }
-                error={errors}
+              <SelectForm
                 register={register}
+                error={errors}
+                id="representative.address.brgyId"
+                placeholder="Barangay"
+                data={representativeBrgyData}
+                filterBy="brgy_loc"
+                selectedBy="id"
+                setValue={setValue}
+                watch={watch}
+                isLoading={representativeBrgyIsLoading}
               />
             </div>
           </div>

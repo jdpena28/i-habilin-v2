@@ -3,7 +3,7 @@ import { address, media, person } from ".."
 
 export const createRegistrantSchema = z.object({
     registrant: z.object({
-        stallName: z.string().trim().min(1, "Name is required"),
+        name: z.string().trim().min(1, "Name is required"),
         contactNo: z.string().min(1, "Contact number is required").regex(/^(09|\+639)\d{9}$/, "Invalid contact number"),
         email: z.string().trim().email(),
         address: address,

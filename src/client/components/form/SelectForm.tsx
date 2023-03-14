@@ -12,11 +12,13 @@ const SelectForm: FC<SelectFormProps> = ({
   register,
   error,
   data,
+  placeholder = "Select an option",
   helperText,
   filterBy,
   selectedBy,
   setValue,
   watch,
+  isLoading,
 }) => {
   const defaultData = [
     {
@@ -27,9 +29,17 @@ const SelectForm: FC<SelectFormProps> = ({
   const errorMessage: string = get(error, id)?.message;
 
   const findActiveValue = () => {
-    return data?.length > 0
-      ? data?.find((i: any) => i[selectedBy] === watch(id))
-      : defaultData[0];
+    const activeValue = data?.find((i: any) => i[selectedBy] === watch(id));
+    const placeholderValue = {
+      [selectedBy]: 0,
+      [filterBy]: placeholder,
+    };
+    if (activeValue) return activeValue;
+    if (!activeValue) {
+      setValue(id, "");
+      return placeholderValue;
+    }
+    return defaultData[0];
   };
 
   return (
@@ -37,11 +47,13 @@ const SelectForm: FC<SelectFormProps> = ({
       <Listbox
         {...register(id)}
         value={
-          watch(id)
+          isLoading
+            ? defaultData[0][selectedBy]
+            : data?.length > 0
+            ? placeholder
+            : watch(id)
             ? findActiveValue()[filterBy]
-            : data?.length
-            ? data[0][filterBy]
-            : defaultData[0][filterBy]
+            : defaultData[0][selectedBy]
         }
         onChange={(e: any) => {
           setValue(id, e[selectedBy]);
@@ -49,11 +61,7 @@ const SelectForm: FC<SelectFormProps> = ({
         <div className="relative mt-1 rounded-md ring-1 ring-primary/80">
           <Listbox.Button className="relative w-full cursor-default rounded-lg bg-tertiary py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
             <span className="block w-full truncate text-black">
-              {watch(id)
-                ? findActiveValue()[filterBy]
-                : data?.length
-                ? data[0][filterBy]
-                : defaultData[0][filterBy]}
+              {watch(id) ? findActiveValue()[filterBy] : placeholder}
             </span>
             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
               <HiChevronDown
@@ -70,25 +78,26 @@ const SelectForm: FC<SelectFormProps> = ({
             <Listbox.Options
               className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md bg-tertiary py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
               {...register(id)}>
-              {data?.length === 0 && (
-                <Listbox.Option
-                  key={defaultData[0].id}
-                  className={({ active }) =>
-                    `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                      active ? "bg-secondary/80" : "text-gray-900"
-                    }`
-                  }
-                  value={defaultData[0][selectedBy]}>
-                  {({ selected }) => (
-                    <span
-                      className={`block truncate ${
-                        selected ? "font-bold" : "font-normal"
-                      }`}>
-                      {defaultData[0][filterBy]}
-                    </span>
-                  )}
-                </Listbox.Option>
-              )}
+              {data?.length === 0 ||
+                (isLoading && (
+                  <Listbox.Option
+                    key={defaultData[0].id}
+                    className={({ active }) =>
+                      `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                        active ? "bg-secondary/80" : "text-gray-900"
+                      }`
+                    }
+                    value={defaultData[0][selectedBy]}>
+                    {({ selected }) => (
+                      <span
+                        className={`block truncate ${
+                          selected ? "font-bold" : "font-normal"
+                        }`}>
+                        {defaultData[0][filterBy]}
+                      </span>
+                    )}
+                  </Listbox.Option>
+                ))}
               {data?.length > 0 &&
                 data?.map((i: any) => (
                   <Listbox.Option
@@ -99,15 +108,17 @@ const SelectForm: FC<SelectFormProps> = ({
                       }`
                     }
                     value={i}>
-                    {({ selected }) => (
+                    {() => (
                       <>
                         <span
                           className={`block truncate ${
-                            selected ? "font-bold" : "font-normal"
+                            watch(id) === i[selectedBy]
+                              ? "font-bold"
+                              : "font-normal"
                           }`}>
                           {i[filterBy]}
                         </span>
-                        {selected ? (
+                        {watch(id) === i[selectedBy] ? (
                           <span className="absolute inset-y-0 left-0 flex items-center pl-3">
                             <HiCheck className="h-5 w-5" aria-hidden="true" />
                           </span>

@@ -18,12 +18,14 @@ interface SelectFormProps {
   data: any | undefined;
   filterBy: string | number;
   selectedBy: string;
+  placeholder: string;
   setValue: any;
   watch: any;
   register: any;
   error: any;
   id: string;
   helperText?: string;
+  isLoading?: boolean;
 }
 
 interface ApplicationHeaderProps {
