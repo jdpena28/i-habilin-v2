@@ -6,7 +6,7 @@ import {
   createRegistrantSchema,
 } from "@/server/schema/public";
 
-import { InputForm, SelectForm } from "@/client/components/form";
+import { FileUploader, InputForm, SelectForm } from "@/client/components/form";
 import { HomeLayout } from "@/client/components/layout";
 
 const BeAStallOwner = () => {
@@ -14,6 +14,7 @@ const BeAStallOwner = () => {
     register,
     handleSubmit,
     setValue,
+    getValues,
     formState: { errors },
     watch,
   } = useForm<CreateRegistrantSchema>({
@@ -177,25 +178,18 @@ const BeAStallOwner = () => {
           </div>
           <div className="w-full">
             <div className="md:w-[49%]">
-              <InputForm
-                id="registrant.logo"
-                type="text"
-                labelText="Logo"
-                name="email"
-                icon={
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    className="h-4 w-4">
-                    <path
-                      fillRule="evenodd"
-                      d="M5.404 14.596A6.5 6.5 0 1116.5 10a1.25 1.25 0 01-2.5 0 4 4 0 10-.571 2.06A2.75 2.75 0 0018 10a8 8 0 10-2.343 5.657.75.75 0 00-1.06-1.06 6.5 6.5 0 01-9.193 0zM10 7.5a2.5 2.5 0 100 5 2.5 2.5 0 000-5z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                }
+              <FileUploader
+                setValue={setValue}
                 error={errors}
+                crop="1:1"
+                label="Logo"
+                id="registrant.logo"
+                defaultValue={{
+                  cdnUrl: "",
+                  name: "",
+                }}
+                getValues={getValues}
+                watch={watch}
                 register={register}
               />
             </div>
@@ -213,67 +207,46 @@ const BeAStallOwner = () => {
         </div>
 
         <div className="w-full space-y-3 lg:w-[33%] lg:pt-12">
-          <InputForm
-            id="dtiPermit.media"
-            type="text"
-            labelText="DTI Permit"
-            name="email"
-            icon={
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                className="h-4 w-4">
-                <path
-                  fillRule="evenodd"
-                  d="M5.404 14.596A6.5 6.5 0 1116.5 10a1.25 1.25 0 01-2.5 0 4 4 0 10-.571 2.06A2.75 2.75 0 0018 10a8 8 0 10-2.343 5.657.75.75 0 00-1.06-1.06 6.5 6.5 0 01-9.193 0zM10 7.5a2.5 2.5 0 100 5 2.5 2.5 0 000-5z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            }
+          <FileUploader
+            crop={["16:9", "9:16"]}
+            setValue={setValue}
             error={errors}
+            label="DTI Permit*"
+            id="dtiPermit"
+            defaultValue={{
+              cdnUrl: "",
+              name: "",
+            }}
+            getValues={getValues}
+            watch={watch}
             register={register}
           />
-          <InputForm
-            id="sanitaryPermit.media"
-            type="text"
-            labelText="Sanitary Permit"
-            name="email"
-            icon={
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                className="h-4 w-4">
-                <path
-                  fillRule="evenodd"
-                  d="M5.404 14.596A6.5 6.5 0 1116.5 10a1.25 1.25 0 01-2.5 0 4 4 0 10-.571 2.06A2.75 2.75 0 0018 10a8 8 0 10-2.343 5.657.75.75 0 00-1.06-1.06 6.5 6.5 0 01-9.193 0zM10 7.5a2.5 2.5 0 100 5 2.5 2.5 0 000-5z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            }
+          <FileUploader
+            crop={["16:9", "9:16"]}
+            setValue={setValue}
             error={errors}
+            label="Sanitary Permit*"
+            id="sanitaryPermit"
+            defaultValue={{
+              cdnUrl: "",
+              name: "",
+            }}
+            getValues={getValues}
+            watch={watch}
             register={register}
           />
-          <InputForm
-            id="businessPermit.media"
-            type="text"
-            labelText="Business Permit"
-            name="email"
-            icon={
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                className="h-4 w-4">
-                <path
-                  fillRule="evenodd"
-                  d="M5.404 14.596A6.5 6.5 0 1116.5 10a1.25 1.25 0 01-2.5 0 4 4 0 10-.571 2.06A2.75 2.75 0 0018 10a8 8 0 10-2.343 5.657.75.75 0 00-1.06-1.06 6.5 6.5 0 01-9.193 0zM10 7.5a2.5 2.5 0 100 5 2.5 2.5 0 000-5z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            }
+          <FileUploader
+            crop={["16:9", "9:16"]}
+            setValue={setValue}
             error={errors}
+            label="Business Permit*"
+            id="businessPermit"
+            defaultValue={{
+              cdnUrl: "",
+              name: "",
+            }}
+            getValues={getValues}
+            watch={watch}
             register={register}
           />
         </div>
@@ -518,13 +491,13 @@ const BeAStallOwner = () => {
             </div>
           </div>
         </div>
-        <pre>{JSON.stringify(watch(), null, 1)}</pre>
         <button
           type="submit"
           className="focus:tertiary my-10 ml-auto flex  w-32 bg-secondary text-highlight hover:bg-primary focus:ring">
           Submit
         </button>
       </form>
+      <pre>{JSON.stringify(watch(), null, 1)}</pre>
     </HomeLayout>
   );
 };

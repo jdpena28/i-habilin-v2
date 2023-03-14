@@ -129,3 +129,23 @@ tr {
 .badge-red {
   @apply w-full max-w-[100px] rounded-md  bg-rose-400 px-2 py-1 text-center font-poppins text-xs font-medium text-rose-800;
 }
+
+/* Upload Care */
+/* UPLOADCARE BTN */
+.uploadcare--widget__button {
+  @apply border-black bg-primary text-white;
+}
+.uploadcare--widget__button:hover,
+.uploadcare--widget__button:focus,
+.uploadcare--widget__button:active {
+  @apply border-black bg-primary text-white;
+}
+.uploadcare--button_primary {
+  @apply cursor-pointer
+	border-black
+	bg-primary
+	text-base;
+}
+.uploadcare--dialog__close {
+  @apply cursor-pointer;
+}
