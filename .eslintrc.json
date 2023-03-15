@@ -45,6 +45,8 @@
     "import/no-extraneous-dependencies": "off",
     "no-param-reassign": "off",
     "no-return-await": "off",
+    "no-nested-ternary": "off",
+    "react/button-has-type": "off",
     "react/jsx-filename-extension": [
       1,
       {
