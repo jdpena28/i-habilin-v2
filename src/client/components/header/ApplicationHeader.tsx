@@ -10,6 +10,8 @@ const ApplicationHeader: FC<ApplicationHeaderProps> = ({
   search,
   tabs,
   filter,
+  onClickButton,
+  buttonText,
 }) => {
   const { back } = useRouter();
   return (
@@ -28,17 +30,27 @@ const ApplicationHeader: FC<ApplicationHeaderProps> = ({
             <div />
           </div>
         </div>
-        {/* Search Icon */}
-        {search && (
-          <div className="flex items-center gap-x-1 rounded-md bg-white p-2">
-            <BsSearch className="h-5 w-5" />
-            <input
-              className="border-none font-poppins outline-none focus:border-transparent focus:outline-none focus:ring-0"
-              type="text"
-              placeholder="Search"
-            />
-          </div>
-        )}
+        <div>
+          {buttonText && (
+            <button
+              className="bg-secondary p-2 text-black"
+              type="button"
+              onClick={onClickButton}>
+              {buttonText}
+            </button>
+          )}
+          {/* Search Icon */}
+          {search && (
+            <div className="flex items-center gap-x-1 rounded-md bg-white p-2">
+              <BsSearch className="h-5 w-5" />
+              <input
+                className="border-none font-poppins outline-none focus:border-transparent focus:outline-none focus:ring-0"
+                type="text"
+                placeholder="Search"
+              />
+            </div>
+          )}
+        </div>
       </div>
       <div className="flex  w-full justify-between">
         {tabs && (

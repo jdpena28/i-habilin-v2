@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, FC } from "react";
 import { Menu, Transition } from "@headlessui/react";
 import {
   BsFillTrash3Fill,
@@ -6,8 +6,14 @@ import {
   BsFillEyeFill,
   BsFillGearFill,
 } from "react-icons/bs";
+import { useRouter } from "next/router";
 
-const ActionDropdown = () => {
+interface ActionDropdownProps {
+  viewOnClick: string;
+}
+
+const ActionDropdown: FC<ActionDropdownProps> = ({ viewOnClick }) => {
+  const { push } = useRouter();
   return (
     <div className="relative w-32">
       <Menu as="div" className="relative inline-block text-left">
@@ -32,7 +38,10 @@ const ActionDropdown = () => {
                     className={`${
                       active ? "" : "bg-primary"
                     } w-full cursor-pointer gap-x-1 rounded-none p-1.5 hover:bg-orange-600`}
-                    type="button">
+                    type="button"
+                    onClick={() => {
+                      push(viewOnClick);
+                    }}>
                     <BsFillEyeFill className="h-4 w-4" />
                     Details
                   </button>
