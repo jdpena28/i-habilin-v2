@@ -1,16 +1,13 @@
 /* eslint-disable camelcase */
 import { type inferAsyncReturnType } from "@trpc/server";
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
-import { getServerSession } from "next-auth";
+import { type Session, getServerSession } from "next-auth";
 import { type GetServerSidePropsContext } from "next";
 import { prisma } from "./prisma";
-import {
-  authOptions,
-  extendDefaultSession,
-} from "../pages/api/auth/[...nextauth]";
+import { authOptions } from "../pages/api/auth/[...nextauth]";
 
 type CreateContextOptions = {
-  session: extendDefaultSession | null;
+  session: Session | null;
 };
 
 export const getServerAuthSession = async (ctx: {

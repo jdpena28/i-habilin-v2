@@ -119,12 +119,15 @@ th {
 }
 
 tr {
-  @apply hover:bg-gray-100;
+  @apply max-h-max hover:bg-gray-100;
 }
 
 /* badges */
 .badge-lime {
   @apply w-full max-w-[100px] rounded-md  bg-lime-400 px-2 py-1 text-center font-poppins text-xs font-medium text-lime-800;
+}
+.badge-yellow {
+  @apply w-full max-w-[100px] rounded-md  bg-yellow-400 px-2 py-1 text-center font-poppins text-xs font-medium text-yellow-800;
 }
 .badge-red {
   @apply w-full max-w-[100px] rounded-md  bg-rose-400 px-2 py-1 text-center font-poppins text-xs font-medium text-rose-800;
@@ -148,4 +151,9 @@ tr {
 }
 .uploadcare--dialog__close {
   @apply cursor-pointer;
+}
+
+/* Grid Loader Theme */
+.grid-loader > span {
+  @apply !bg-secondary;
 }

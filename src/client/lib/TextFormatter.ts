@@ -1,3 +1,5 @@
+import { format } from "date-fns";
+
 const FormatCurrency = (
   value: number,
   currency?: string,
@@ -26,4 +28,8 @@ const FormatCurrency = (
   }).format(value);
 };
 
-export { FormatCurrency };
+const formatDate = (date: Date) => {
+  return format(date, "MMMM dd, yyyy hh:mm a");
+};
+
+export { FormatCurrency, formatDate };

@@ -32,7 +32,6 @@ model Account {
 model Registrants {
   id        String @id @default(cuid())
   name      String
-  stallNo   Int
   slug      String? @unique @db.VarChar(100)
   contactNo String @db.VarChar(20)
   email     String
@@ -71,7 +70,7 @@ model Person {
   lastName   String
   birthdate  DateTime? @db.Date
   email      String?
-  contact_no String?
+  contactNo String?
 
   addressId String? @unique
   address   Address? @relation(fields: [addressId], references: [id], onDelete: Cascade)
@@ -84,6 +83,7 @@ model Person {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  
 }
 
 model Address {

@@ -5,11 +5,14 @@ import {
   CreateRegistrantSchema,
   createRegistrantSchema,
 } from "@/server/schema/public";
+import { toast } from "react-hot-toast";
+import { useRouter } from "next/router";
 
 import { FileUploader, InputForm, SelectForm } from "@/client/components/form";
 import { HomeLayout } from "@/client/components/layout";
 
 const BeAStallOwner = () => {
+  const { push } = useRouter();
   const {
     register,
     handleSubmit,
@@ -21,30 +24,26 @@ const BeAStallOwner = () => {
     resolver: zodResolver(createRegistrantSchema),
   });
 
-  const onSubmit = () => {
-    alert("Submitted");
-  };
-
   const { data: registrantProvData, isFetching: registrantProvIsLoading } =
     trpc.address.getProvinces.useQuery();
   const { data: registrantCityData, isFetching: registrantCityIsLoading } =
     trpc.address.getCities.useQuery({
-      prov_code: watch("registrant.address.provCode"),
+      prov_code: watch("registrant.address.prov_code"),
     });
   const { data: registrantBrgyData, isFetching: registrantBrgyIsLoading } =
     trpc.address.getBrgy.useQuery({
-      city_code: watch("registrant.address.cityCode"),
+      city_code: watch("registrant.address.city_code"),
     });
 
   const { data: ownerProvData, isFetching: ownerProvIsLoading } =
     trpc.address.getProvinces.useQuery();
   const { data: ownerCityData, isFetching: ownerCityIsLoading } =
     trpc.address.getCities.useQuery({
-      prov_code: watch("owner.address.provCode"),
+      prov_code: watch("owner.address.prov_code"),
     });
   const { data: ownerBrgyData, isFetching: ownerBrgyIsLoading } =
     trpc.address.getBrgy.useQuery({
-      city_code: watch("owner.address.cityCode"),
+      city_code: watch("owner.address.city_code"),
     });
 
   const {
@@ -55,14 +54,30 @@ const BeAStallOwner = () => {
     data: representativeCityData,
     isFetching: representativeCityIsLoading,
   } = trpc.address.getCities.useQuery({
-    prov_code: watch("representative.address.provCode"),
+    prov_code: watch("representative.address.prov_code"),
   });
   const {
     data: representativeBrgyData,
     isFetching: representativeBrgyIsLoading,
   } = trpc.address.getBrgy.useQuery({
-    city_code: watch("representative.address.cityCode"),
+    city_code: watch("representative.address.city_code"),
   });
+
+  const { mutate: createRegistrant } = trpc.public.createRegistrant.useMutation(
+    {
+      onSuccess: () => {
+        toast.success("Success");
+        push("/notification");
+      },
+      onError: (error) => {
+        toast.error(error.message);
+      },
+    }
+  );
+
+  const onSubmit = async (value: CreateRegistrantSchema) => {
+    createRegistrant(value);
+  };
 
   return (
     <HomeLayout>
@@ -101,10 +116,10 @@ const BeAStallOwner = () => {
           </div>
           <div>
             <InputForm
-              id="registrant.address.addressLine1"
+              id="registrant.address.addressLine"
               type="text"
               labelText="House no. / Block / Subdivision / Lot No. / Street"
-              name="registrant.address.addressLine1"
+              name="registrant.address.addressLine"
               error={errors}
               register={register}
             />
@@ -114,7 +129,7 @@ const BeAStallOwner = () => {
               <SelectForm
                 register={register}
                 error={errors}
-                id="registrant.address.provCode"
+                id="registrant.address.prov_code"
                 placeholder="Province"
                 data={registrantProvData}
                 filterBy="prov_name"
@@ -128,7 +143,7 @@ const BeAStallOwner = () => {
               <SelectForm
                 register={register}
                 error={errors}
-                id="registrant.address.cityCode"
+                id="registrant.address.city_code"
                 placeholder="City"
                 data={registrantCityData}
                 filterBy="city_name"
@@ -295,10 +310,10 @@ const BeAStallOwner = () => {
           </div>
           <div>
             <InputForm
-              id="owner.address.addressLine1"
+              id="owner.address.addressLine"
               type="text"
               labelText="House no. / Block / Subdivision / Lot No. / Street"
-              name="owner.address.addressLine1"
+              name="owner.address.addressLine"
               error={errors}
               register={register}
             />
@@ -308,7 +323,7 @@ const BeAStallOwner = () => {
               <SelectForm
                 register={register}
                 error={errors}
-                id="owner.address.provCode"
+                id="owner.address.prov_code"
                 placeholder="Province"
                 data={ownerProvData}
                 filterBy="prov_name"
@@ -322,7 +337,7 @@ const BeAStallOwner = () => {
               <SelectForm
                 register={register}
                 error={errors}
-                id="owner.address.cityCode"
+                id="owner.address.city_code"
                 placeholder="City"
                 data={ownerCityData}
                 filterBy="city_name"
@@ -416,10 +431,10 @@ const BeAStallOwner = () => {
           </div>
           <div>
             <InputForm
-              id="representative.address.addressLine1"
+              id="representative.address.addressLine"
               type="text"
               labelText="House no. / Block / Subdivision / Lot No. / Street"
-              name="representative.address.addressLine1"
+              name="representative.address.addressLine"
               error={errors}
               register={register}
             />
@@ -429,7 +444,7 @@ const BeAStallOwner = () => {
               <SelectForm
                 register={register}
                 error={errors}
-                id="representative.address.provCode"
+                id="representative.address.prov_code"
                 placeholder="Province"
                 data={representativeProvData}
                 filterBy="prov_name"
@@ -443,7 +458,7 @@ const BeAStallOwner = () => {
               <SelectForm
                 register={register}
                 error={errors}
-                id="representative.address.cityCode"
+                id="representative.address.city_code"
                 placeholder="City"
                 data={representativeCityData}
                 filterBy="city_name"
@@ -497,7 +512,6 @@ const BeAStallOwner = () => {
           Submit
         </button>
       </form>
-      <pre>{JSON.stringify(watch(), null, 1)}</pre>
     </HomeLayout>
   );
 };

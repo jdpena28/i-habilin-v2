@@ -1,9 +1,9 @@
 import { z } from "zod";
 
 const address = z.object({
-  addressLine1: z.string(),
-  provCode: z.string().min(1, "Province is required"),
-  cityCode: z.string().min(1, "City is required"),
+  addressLine: z.string(),
+  prov_code: z.string().min(1, "Province is required"),
+  city_code: z.string().min(1, "City is required"),
   brgyId: z.number().optional(),
 });
 

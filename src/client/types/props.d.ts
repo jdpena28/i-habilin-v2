@@ -34,4 +34,6 @@ interface ApplicationHeaderProps {
   search?: boolean;
   tabs?: boolean;
   filter?: boolean;
+  buttonText?: string;
+  onClickButton?: () => void;
 }
