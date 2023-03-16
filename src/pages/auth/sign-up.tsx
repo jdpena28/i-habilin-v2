@@ -1,7 +1,50 @@
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { trpc } from "@/server/utils/trpc";
+import {
+  CreateAccountSchema,
+  createAccountSchema,
+} from "@/server/schema/public";
+import { toast, Toaster } from "react-hot-toast";
+
 import BackgroundImage from "@public/public/background-image";
 import InputForm from "@/client/components/form/InputForm";
+import { SelectForm } from "@/client/components/form";
 
-const admin = () => {
+const Signup = () => {
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+    watch,
+  } = useForm<CreateAccountSchema>({
+    resolver: zodResolver(createAccountSchema),
+  });
+
+  const { data: provData, isFetching: provIsFetching } =
+    trpc.address.getProvinces.useQuery();
+  const { data: cityData, isFetching: cityIsFetching } =
+    trpc.address.getCities.useQuery({
+      prov_code: watch("person.address.prov_code"),
+    });
+  const { data: brgyData, isFetching: brgyIsFetching } =
+    trpc.address.getBrgy.useQuery({
+      city_code: watch("person.address.city_code"),
+    });
+  const { mutate } = trpc.public.createAccount.useMutation({
+    onSuccess: () => {
+      toast.success("Account created successfully");
+    },
+    onError: (err) => {
+      toast.error(err.message);
+    },
+  });
+
+  const onSubmit = (values: CreateAccountSchema) => {
+    mutate(values);
+  };
+
   return (
     <section className="container mx-auto flex min-h-screen items-center">
       <div className="mx-auto rounded-lg bg-white shadow-xl">
@@ -25,142 +68,140 @@ const admin = () => {
               </p>
             </div>
 
-            <form>
+            <form onSubmit={handleSubmit(onSubmit)}>
               <div className="flex-col space-y-2 md:w-full lg:pt-6">
                 <div className="flex w-full space-x-2">
                   <div className="md:w-1/3">
                     <InputForm
-                      id="stalladdress"
+                      id="person.firstName"
                       type="text"
-                      labelText="First Name"
-                      name="stalladdress"
+                      labelText="First Name*"
+                      name="person.firstName"
+                      error={errors}
+                      register={register}
                     />
                   </div>
                   <div className="md:w-1/3">
                     <InputForm
-                      id="stalladdress"
+                      id="person.middleName"
                       type="text"
                       labelText="Middle Name"
-                      name="stalladdress"
+                      name="person.firstName"
+                      error={errors}
+                      register={register}
                     />
                   </div>
                   <div className="md:w-1/3">
                     <InputForm
-                      id="stalladdress"
+                      id="person.lastName"
                       type="text"
-                      labelText="Last Name"
-                      name="stalladdress"
+                      labelText="Last Name*"
+                      name="person.lastName"
+                      error={errors}
+                      register={register}
                     />
                   </div>
                 </div>
                 <div>
                   <InputForm
-                    id="stalladdress"
+                    id="person.address.addressLine"
                     type="text"
                     labelText="House no. / Block / Subdivision / Lot No. / Street"
-                    name="stalladdress"
+                    name="person.address.addressLine"
+                    error={errors}
+                    register={register}
                   />
                 </div>
                 <div className="flex w-full space-x-2">
                   <div className="md:w-1/3">
-                    <InputForm
-                      id="email"
-                      type="text"
-                      labelText="Province"
-                      name="email"
-                      icon={
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                          className="h-4 w-4">
-                          <path
-                            fillRule="evenodd"
-                            d="M5.404 14.596A6.5 6.5 0 1116.5 10a1.25 1.25 0 01-2.5 0 4 4 0 10-.571 2.06A2.75 2.75 0 0018 10a8 8 0 10-2.343 5.657.75.75 0 00-1.06-1.06 6.5 6.5 0 01-9.193 0zM10 7.5a2.5 2.5 0 100 5 2.5 2.5 0 000-5z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      }
+                    <SelectForm
+                      register={register}
+                      error={errors}
+                      id="person.address.prov_code"
+                      placeholder="Province*"
+                      data={provData}
+                      filterBy="prov_name"
+                      selectedBy="prov_code"
+                      setValue={setValue}
+                      watch={watch}
+                      isLoading={provIsFetching}
                     />
                   </div>
                   <div className="md:w-1/3">
-                    <InputForm
-                      id="email"
-                      type="text"
-                      labelText="City"
-                      name="email"
-                      icon={
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                          className="h-4 w-4">
-                          <path
-                            fillRule="evenodd"
-                            d="M5.404 14.596A6.5 6.5 0 1116.5 10a1.25 1.25 0 01-2.5 0 4 4 0 10-.571 2.06A2.75 2.75 0 0018 10a8 8 0 10-2.343 5.657.75.75 0 00-1.06-1.06 6.5 6.5 0 01-9.193 0zM10 7.5a2.5 2.5 0 100 5 2.5 2.5 0 000-5z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      }
+                    <SelectForm
+                      register={register}
+                      error={errors}
+                      id="person.address.city_code"
+                      placeholder="City*"
+                      data={cityData}
+                      filterBy="city_name"
+                      selectedBy="city_code"
+                      setValue={setValue}
+                      watch={watch}
+                      isLoading={cityIsFetching}
                     />
                   </div>
                   <div className="md:w-1/3">
-                    <InputForm
-                      id="email"
-                      type="text"
-                      labelText="Barangay"
-                      name="email"
-                      icon={
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                          className="h-4 w-4">
-                          <path
-                            fillRule="evenodd"
-                            d="M5.404 14.596A6.5 6.5 0 1116.5 10a1.25 1.25 0 01-2.5 0 4 4 0 10-.571 2.06A2.75 2.75 0 0018 10a8 8 0 10-2.343 5.657.75.75 0 00-1.06-1.06 6.5 6.5 0 01-9.193 0zM10 7.5a2.5 2.5 0 100 5 2.5 2.5 0 000-5z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      }
+                    <SelectForm
+                      register={register}
+                      error={errors}
+                      id="person.address.brgyId"
+                      placeholder="Barangay"
+                      data={brgyData}
+                      filterBy="brgy_loc"
+                      selectedBy="id"
+                      setValue={setValue}
+                      watch={watch}
+                      isLoading={brgyIsFetching}
                     />
                   </div>
                 </div>
                 <div>
                   <InputForm
-                    id="stalladdress"
+                    id="person.contactNo"
                     type="text"
-                    labelText="Contact Number"
-                    name="stalladdress"
+                    labelText="Contact Number*"
+                    name="person.contactNo"
+                    error={errors}
+                    register={register}
                   />
                 </div>
                 <div>
                   <InputForm
-                    id="stalladdress"
-                    type="text"
-                    labelText="Email"
-                    name="stalladdress"
+                    id="person.email"
+                    sideEffect={() => {
+                      setValue("email", watch("person.email"));
+                    }}
+                    type="email"
+                    labelText="Email*"
+                    name="person.email"
+                    error={errors}
+                    register={register}
                   />
                 </div>
                 <div>
                   <InputForm
-                    id="stalladdress"
-                    type="text"
-                    labelText="Password"
-                    name="stalladdress"
+                    id="password"
+                    type="password"
+                    labelText="Password*"
+                    name="password"
+                    error={errors}
+                    register={register}
                   />
                 </div>
                 <div>
                   <InputForm
-                    id="stalladdress"
-                    type="text"
-                    labelText="Confirm Password"
-                    name="stalladdress"
+                    id="confirmPassword"
+                    type="password"
+                    labelText="Confirm Password*"
+                    name="confirmPassword"
+                    error={errors}
+                    register={register}
                   />
                 </div>
               </div>
               <button
-                type="button"
+                type="submit"
                 className="focus:tertiary mt-6 w-full bg-secondary text-highlight hover:bg-primary focus:ring">
                 Create account
               </button>
@@ -168,8 +209,9 @@ const admin = () => {
           </div>
         </div>
       </div>
+      <Toaster />
     </section>
   );
 };
 
-export default admin;
+export default Signup;
