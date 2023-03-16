@@ -74,6 +74,86 @@ button {
   @apply border-b-4 border-transparent p-4 font-brocha text-lg font-bold tracking-wide transition-colors duration-500 hover:border-secondary;
 }
 
+.active-link {
+  @apply rounded-tl-2xl rounded-bl-2xl  bg-white drop-shadow-lg;
+}
+
+.active-link > svg {
+  @apply fill-primary;
+}
+
+.active-link > p {
+  @apply text-primary;
+}
+
 .footer-links {
   @apply border-b-4 border-transparent font-brocha text-lg font-bold tracking-wide;
+}
+
+.avatar {
+  @apply w-14 rounded-sm bg-gray-100 text-center font-poppins text-sm leading-[40px];
+}
+
+.feature-public-card {
+  @apply h-full max-h-[490px] min-h-[490px] flex-[.35] space-y-3 rounded-md bg-white p-4;
+}
+
+table {
+  @apply min-w-full divide-y-2 divide-[#9D9D9D] border-2 border-gray-300 font-poppins text-sm;
+}
+
+thead {
+  @apply border-2 border-gray-300 bg-gray-200 text-left;
+}
+
+tbody {
+  @apply divide-y divide-gray-200;
+}
+
+td {
+  @apply whitespace-nowrap px-2 py-4 text-gray-900;
+}
+
+th {
+  @apply heading p-2;
+}
+
+tr {
+  @apply max-h-max hover:bg-gray-100;
+}
+
+/* badges */
+.badge-lime {
+  @apply w-full max-w-[100px] rounded-md  bg-lime-400 px-2 py-1 text-center font-poppins text-xs font-medium text-lime-800;
+}
+.badge-yellow {
+  @apply w-full max-w-[100px] rounded-md  bg-yellow-400 px-2 py-1 text-center font-poppins text-xs font-medium text-yellow-800;
+}
+.badge-red {
+  @apply w-full max-w-[100px] rounded-md  bg-rose-400 px-2 py-1 text-center font-poppins text-xs font-medium text-rose-800;
+}
+
+/* Upload Care */
+/* UPLOADCARE BTN */
+.uploadcare--widget__button {
+  @apply border-black bg-primary text-white;
+}
+.uploadcare--widget__button:hover,
+.uploadcare--widget__button:focus,
+.uploadcare--widget__button:active {
+  @apply border-black bg-primary text-white;
+}
+.uploadcare--button_primary {
+  @apply cursor-pointer
+	border-black
+	bg-primary
+	text-base;
+}
+.uploadcare--dialog__close {
+  @apply cursor-pointer;
+}
+
+/* Grid Loader Theme */
+.grid-loader > span {
+  @apply !bg-secondary;
 }

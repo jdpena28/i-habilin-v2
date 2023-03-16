@@ -1,5 +1,9 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
+import { type Session } from "next-auth";
+import { SessionProvider } from "next-auth/react";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { trpc } from "@/server/utils/trpc";
 import localFont from "next/font/local";
 import { Poppins } from "next/font/google";
 import { DefaultSeo } from "next-seo";
@@ -38,12 +42,17 @@ const poppins = Poppins({
   style: ["normal", "italic"],
 });
 
-export default function App({ Component, pageProps }: AppProps) {
+function App({ Component, pageProps }: AppProps<{ session: Session | null }>) {
   return (
-    <main
-      className={`${brocha.variable} ${PPNeueMachina.variable} ${poppins.variable} bg-tertiary`}>
-      <DefaultSeo {...DEFAULT_SEO} />
-      <Component {...pageProps} />
-    </main>
+    <SessionProvider session={pageProps.session}>
+      <main
+        className={`${brocha.variable} ${PPNeueMachina.variable} ${poppins.variable} bg-tertiary`}>
+        <DefaultSeo {...DEFAULT_SEO} />
+        <Component {...pageProps} />
+        <ReactQueryDevtools initialIsOpen={false} />
+      </main>
+    </SessionProvider>
   );
 }
+
+export default trpc.withTRPC(App);

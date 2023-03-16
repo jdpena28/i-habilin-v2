@@ -1,0 +1,208 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextIndex", "fullTextSearch"]
+}
+
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model Account {
+  id            String    @id @default(cuid())
+  email         String
+  password      String    @db.Text
+  emailVerified DateTime?
+  expires_at    Int?
+  token_type    String?
+  scope         String?
+  id_token      String?   @db.Text
+  session_state String?
+
+  personId String? @unique
+  person   Person? @relation(fields: [personId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([email])
+}
+
+model Registrants {
+  id        String @id @default(cuid())
+  name      String
+  slug      String? @unique @db.VarChar(100)
+  contactNo String @db.VarChar(20)
+  email     String
+  status   String  @default("Pending") @db.VarChar(20)
+
+
+  personId String
+  owner    Person @relation(fields: [personId], references: [id], onDelete: Cascade)
+
+  representative   Person @relation("Representative", fields: [representativeId], references: [id], onDelete: Cascade)
+  representativeId String @unique
+
+  addressId String @unique
+  address   Address @relation(fields: [addressId], references: [id], onDelete: Cascade)
+
+  dtiPermit   Media  @relation("dtiPermit", fields: [dtiPermitId], references: [id], onDelete: Cascade)
+  dtiPermitId String @unique
+
+  sanitaryPermit   Media  @relation("sanitaryPermit", fields: [sanitaryPermitId], references: [id], onDelete: Cascade)
+  sanitaryPermitId String @unique
+
+  bussinessPermit   Media  @relation("bussinessPermit", fields: [bussinessPermitId], references: [id], onDelete: Cascade)
+  bussinessPermitId String @unique
+
+  logo   Media  @relation("logo", fields: [logoId], references: [id], onDelete: Cascade)
+  logoId String 
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Person {
+  id         String    @id @default(cuid())
+  firstName  String
+  middleName String?
+  lastName   String
+  birthdate  DateTime? @db.Date
+  email      String?
+  contactNo String?
+
+  addressId String? @unique
+  address   Address? @relation(fields: [addressId], references: [id], onDelete: Cascade)
+
+  owner Registrants[]
+
+  representative Registrants[] @relation("Representative")
+
+  Account Account?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+}
+
+model Address {
+  id          String @id @default(cuid())
+  addressLine String @db.VarChar(300)
+
+  city_code String @unique
+  city      City   @relation(fields: [city_code], references: [city_code])
+
+  prov_code String @unique
+  province  Province @relation(fields: [prov_code], references: [prov_code])
+
+  brgyId Int? @unique
+  Brgy   Brgy? @relation(fields: [brgyId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Person      Person[]
+  Registrants Registrants[]
+
+  @@index([city_code])
+  @@index([prov_code])
+  @@index([brgyId])
+}
+
+model Province {
+  id             Int       @id @default(autoincrement())
+  region_id      Int
+  prov_code      String    @unique @db.VarChar(17)
+  prov_name      String    @db.VarChar(35)
+  prov_name_slug String    @db.VarChar(100)
+  region_code    String    @db.VarChar(17)
+  start_validity DateTime? @db.Date
+  end_validity   DateTime? @db.Date
+  updated_by     String    @db.VarChar(20)
+  last_updated   DateTime? @db.Date
+  modified       DateTime  @updatedAt
+  created        DateTime  @default(now())
+
+  // ONE TO MANY RELATION
+  cities  City[]
+  brgy    Brgy[]
+  Address Address[]
+
+
+
+  @@index([prov_name])
+}
+
+model City {
+  id             Int       @id @default(autoincrement())
+  city_code      String    @unique @db.VarChar(17)
+  city_name      String    @db.VarChar(35)
+  city_name_slug String    @default("") @db.VarChar(100)
+  // prov_code      String    @db.VarChar(150)
+  start_validity DateTime? @db.Date
+  end_validity   DateTime? @db.Date
+  updated_by     String    @db.VarChar(20)
+  last_updated   DateTime? @db.Date
+  modified       DateTime  @updatedAt
+  created        DateTime  @default(now())
+
+  // RELATION ID TO OTHER TABLE
+  prov_code String
+  province  Province @relation(fields: [prov_code], references: [prov_code])
+
+  // ONE TO ONE RELATION
+  brgy    Brgy[]
+  Address Address[]
+
+  @@index([prov_code])
+}
+
+model Brgy {
+  id             Int       @id @default(autoincrement())
+  zip_code       String    @db.VarChar(17)
+  brgy_loc       String    @db.VarChar(50)
+  lot            String?   @db.VarChar(17)
+  leg_district   String?   @db.VarChar(35)
+  location_id    String    @db.VarChar(17)
+  route_id       String    @db.VarChar(35)
+  route_num      String?   @db.VarChar(17)
+  loc_zone       String?   @db.VarChar(17)
+  hal_flag       Int       @db.TinyInt()
+  loc_rate       String?   @db.VarChar(17)
+  linehaul       String?   @db.VarChar(17)
+  start_validity DateTime? @db.Date
+  end_validity   DateTime? @db.Date
+  updated_by     String    @db.VarChar(20)
+  last_updated   DateTime? @db.Date
+  modified       DateTime  @updatedAt
+  created        DateTime  @default(now())
+
+  // RELATION ID TO OTHER TABLE
+  prov_code String
+  province  Province  @relation(fields: [prov_code], references: [prov_code])
+  city_code String
+  city      City      @relation(fields: [city_code], references: [city_code])
+  Address   Address[]
+
+  @@index([prov_code, city_code])
+  @@index([city_code])
+}
+
+model Media {
+  id          String  @id @default(cuid())
+  uuid        String  @unique
+  name        String
+  size        Int
+  isImage     Boolean
+  cdnUrl      String
+  originalUrl String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  logo        Registrants[] @relation("logo")
+  dtiPermit   Registrants[] @relation("dtiPermit")
+  sanitaryPermit Registrants[] @relation("sanitaryPermit")
+  BusinessPermit Registrants[]  @relation("bussinessPermit")
+}

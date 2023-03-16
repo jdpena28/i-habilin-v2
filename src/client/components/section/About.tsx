@@ -1,6 +1,6 @@
-import BoyMonitoring from "../../../../public/boy-monitoring";
+import BoyMonitoring from "../../../../public/public/boy-monitoring";
 import InCircle from "../../../../public/incircle";
-import StarHighlight from "../../../../public/Star-highlight";
+import StarHighlight from "../../../../public/public/Star-highlight";
 
 const About = () => {
   return (
@@ -8,12 +8,12 @@ const About = () => {
       id="about"
       className="flex min-h-screen w-full flex-col-reverse items-center justify-center md:flex-row-reverse">
       <div className="items-center text-justify">
-        <h3 className="-ml-2 space-y-2 pl-0 text-center md:items-start md:pl-12 md:text-left">
+        <h3 className="-ml-2 space-y-3 pl-0 text-center md:items-start md:pl-12 md:text-left">
           We build bridges
           <br /> between <span className="text-primary">companies </span>
           <br /> <span className="text-primary">and customer.</span>
         </h3>
-        <p className="m-10 w-4/5 pb-10 font-neuemachina ">
+        <div className="m-10 w-4/5 pb-10 font-neuemachina ">
           <div className="relative inline-block font-bold">
             <div className="absolute -top-3 -left-3 h-max w-max ">
               <InCircle />
@@ -51,7 +51,7 @@ const About = () => {
               more engaging and convenient for both clients and entrepreneurs.
             </p>
           </blockquote>
-        </p>
+        </div>
       </div>
       <div className="w-full">
         <BoyMonitoring />
