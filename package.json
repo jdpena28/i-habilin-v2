@@ -26,6 +26,8 @@
     "@types/react": "18.0.28",
     "@types/react-dom": "18.0.11",
     "@uploadcare/react-widget": "^2.4.2",
+    "bcrypt": "^5.1.0",
+    "bcryptjs": "^2.4.3",
     "date-fns": "^2.29.3",
     "eslint-config-next": "13.2.2",
     "lodash": "^4.17.21",
@@ -43,6 +45,7 @@
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.3",
+    "@types/bcryptjs": "^2.4.2",
     "@types/lodash": "^4.14.191",
     "@typescript-eslint/eslint-plugin": "^5.54.0",
     "@typescript-eslint/parser": "^5.54.0",
