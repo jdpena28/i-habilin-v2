@@ -33,7 +33,28 @@ export const createAccountSchema = z.object({
       });
     }
   });
+
 export type CreateAccountSchema = z.infer<typeof createAccountSchema>
+
+export const getSuperAdminPassword = z.object({
+    password: z.string().min(1, "Password is required"),
+})
+export type GetSuperAdminPassword = z.infer<typeof getSuperAdminPassword>
+
+export const createSuperAdminPassword = z.object({
+    password: z.string().min(6, "Password must be at least 6 characters"),
+    confirmPassword: z.string().min(1, "Confirm password is required"),
+}).superRefine(({ confirmPassword, password }, ctx) => {
+    if (confirmPassword !== password) {
+      ctx.addIssue({
+        code: "custom",
+        message: "The passwords did not match",
+        path: ["confirmPassword"]
+      });
+    }
+})
+
+export type CreateSuperAdminPassword = z.infer<typeof createSuperAdminPassword>
 
 export const getAccountSchema = z.object({
     email: z.string().trim().min(1, "Email is required").email(),
