@@ -35,3 +35,9 @@ export const createAccountSchema = z.object({
   });
 export type CreateAccountSchema = z.infer<typeof createAccountSchema>
 
+export const getAccountSchema = z.object({
+    email: z.string().trim().min(1, "Email is required").email(),
+    password: z.string().min(1, "Password is required"),
+})
+export type GetAccountSchema = z.infer<typeof getAccountSchema>
+
