@@ -1,5 +1,5 @@
-import { encrypt } from "@/client/lib/bcrypt";
-import { createAccountSchema, createRegistrantSchema } from "@/server/schema/public";
+import { decrypt, encrypt } from "@/client/lib/bcrypt";
+import { createAccountSchema, createRegistrantSchema, getSuperAdminPassword } from "@/server/schema/public";
 import { router, procedure } from "@/server/trpc";
 import { omit } from "lodash";
 
@@ -81,5 +81,17 @@ export const registerRouter = router({
                 }
             }
         })
+    }),
+    getPassword: procedure.input(getSuperAdminPassword).mutation(async ({ ctx, input }) => {
+        const adminPassword = await ctx.prisma.App_Meta.findUnique({
+            where: {
+                key: "ADMIN_PASSWORD"
+            },
+        })
+        const isSame = await decrypt(input.password, adminPassword.value)
+        if (isSame === false) {
+            throw new Error("Password is incorrect")
+        }
+         return true
     })
 })
