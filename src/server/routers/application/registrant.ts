@@ -1,9 +1,9 @@
-import { router, procedure } from "@/server/trpc";
+import { router, protectedProcedure } from "@/server/trpc";
 import { getRegistrantSchema } from "@/server/schema/application/registrant";
 import { INCLUDED_ADDRESS } from "@/client/constant";
 
 export const registrantRouter = router({
-  getRegistrant: procedure
+  getRegistrant: protectedProcedure
     .input(getRegistrantSchema)
     .query(async ({ ctx, input }) => {
       const includedQuery = {

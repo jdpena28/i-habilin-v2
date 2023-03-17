@@ -1,6 +1,8 @@
 import NextAuth, { type NextAuthOptions, DefaultSession } from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import type { JWT } from "next-auth/jwt";
+import { decrypt } from "@/client/lib/bcrypt";
 import { prisma } from "../../../server/prisma";
 
 export type extendDefaultSession = DefaultSession & {
@@ -44,7 +46,35 @@ export const authOptions: NextAuthOptions = {
     },
   },
   adapter: PrismaAdapter(prisma),
-  providers: [],
+  providers: [
+    CredentialsProvider({
+      id: "credentials",
+      name: "Credentials",
+      credentials: {
+        email: {
+          label: "Email",
+          type: "text",
+          placeholder: "johndoe@gmail.com",
+        },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        const user = await prisma.account.findUnique({
+          where: { email: credentials?.email },
+        });
+        if (!user) {
+          throw new Error("No account found");
+        }
+        const password = credentials?.password ? credentials?.password : "";
+        const userPassword = user.password ? user.password : "";
+        const isValid = await decrypt(password, userPassword);
+        if (isValid === false) {
+          throw new Error("Invalid password");
+        }
+        return user;
+      },
+    }),
+  ],
 };
 
 export default NextAuth(authOptions);

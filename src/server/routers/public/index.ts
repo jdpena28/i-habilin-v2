@@ -1,4 +1,5 @@
-import { createRegistrantSchema } from "@/server/schema/public";
+import { encrypt } from "@/client/lib/bcrypt";
+import { createAccountSchema, createRegistrantSchema } from "@/server/schema/public";
 import { router, procedure } from "@/server/trpc";
 import { omit } from "lodash";
 
@@ -55,4 +56,30 @@ export const registerRouter = router({
             }
         })
     }),
+    createAccount: procedure.input(createAccountSchema).mutation(async ({ ctx, input }) => {
+        const isEmailTaken = await ctx.prisma.account.findUnique({
+            where: {
+                email: input.email
+            }
+        })
+        if (isEmailTaken) {
+            throw new Error("Email is already taken")
+        }
+        return await ctx.prisma.account.create({
+            data: {
+                ...omit(input, ["person",'confirmPassword']),
+                password: await encrypt(input.password),
+                person: {
+                    create: {
+                        ...omit(input.person, ["address"]),
+                        address: {
+                            create: {
+                                ...input.person.address,
+                            }
+                        }
+                    },
+                }
+            }
+        })
+    })
 })

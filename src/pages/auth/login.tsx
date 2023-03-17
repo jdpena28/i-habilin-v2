@@ -1,8 +1,40 @@
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { GetAccountSchema, getAccountSchema } from "@/server/schema/public";
+import { useRouter } from "next/router";
+import { signIn } from "next-auth/react";
+
 import { InputForm } from "@/client/components/form";
 import { HomeLayout } from "@/client/components/layout";
 import Link from "next/link";
 
-const login = () => {
+const Login = () => {
+  const { push, query } = useRouter();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<GetAccountSchema>({
+    resolver: zodResolver(getAccountSchema),
+  });
+
+  const onSubmit = async (value: GetAccountSchema) => {
+    const auth = await signIn("credentials", {
+      email: value.email,
+      password: value.password,
+      redirect: false,
+    });
+    if (auth?.error) {
+      push({
+        pathname: `/auth/login`,
+        query: { error: auth.error },
+      });
+    }
+    if (auth?.ok) {
+      push(`/application/dashboard`);
+    }
+  };
+
   return (
     <HomeLayout>
       <section
@@ -25,32 +57,26 @@ const login = () => {
           <p className="helper-text text-2xl">
             We&apos;ll never share your email with anyone else.
           </p>
-          <form className="space-y-5">
+          <form className="space-y-3" onSubmit={handleSubmit(onSubmit)}>
             <InputForm
               id="email"
-              type="text"
-              labelText="Email"
+              type="email"
+              labelText="Email*"
               name="email"
-              icon={
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  className="h-4 w-4">
-                  <path
-                    fillRule="evenodd"
-                    d="M5.404 14.596A6.5 6.5 0 1116.5 10a1.25 1.25 0 01-2.5 0 4 4 0 10-.571 2.06A2.75 2.75 0 0018 10a8 8 0 10-2.343 5.657.75.75 0 00-1.06-1.06 6.5 6.5 0 01-9.193 0zM10 7.5a2.5 2.5 0 100 5 2.5 2.5 0 000-5z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              }
+              register={register}
+              error={errors}
             />
             <InputForm
               id="password"
               type="password"
-              labelText="Password"
+              labelText="Password*"
               name="Password"
+              register={register}
+              error={errors}
             />
+            <p className="helper-text text-right font-medium !text-red-400">
+              {query.error}
+            </p>
             <Link className="text-right underline underline-offset-2" href="/">
               <p className="mt-5">Forgot Password?</p>
             </Link>
@@ -64,4 +90,4 @@ const login = () => {
   );
 };
 
-export default login;
+export default Login;

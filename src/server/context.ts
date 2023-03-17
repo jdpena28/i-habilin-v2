@@ -6,9 +6,9 @@ import { type GetServerSidePropsContext } from "next";
 import { prisma } from "./prisma";
 import { authOptions } from "../pages/api/auth/[...nextauth]";
 
-type CreateContextOptions = {
+interface CreateInnerContextOptions extends Partial<CreateNextContextOptions> {
   session: Session | null;
-};
+}
 
 export const getServerAuthSession = async (ctx: {
   req: GetServerSidePropsContext["req"];
@@ -17,7 +17,7 @@ export const getServerAuthSession = async (ctx: {
   return await getServerSession(ctx.req, ctx.res, authOptions);
 };
 
-export const createContextInner = async (opts: CreateContextOptions) => {
+export const createContextInner = async (opts: CreateInnerContextOptions) => {
   return {
     prisma,
     session: opts.session,
