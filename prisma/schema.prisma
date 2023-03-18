@@ -206,3 +206,12 @@ model Media {
   sanitaryPermit Registrants[] @relation("sanitaryPermit")
   BusinessPermit Registrants[]  @relation("bussinessPermit")
 }
+
+model App_Meta {
+  id         String  @id @default(cuid())
+  key        String  @unique 
+  value      String  @db.MediumText()
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

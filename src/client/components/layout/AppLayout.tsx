@@ -3,6 +3,8 @@ import { ReactNode } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { GridLoader } from "react-spinners";
+import { Toaster } from "react-hot-toast";
+
 import { AppNav } from "../nav";
 
 const AppLayout = ({
@@ -38,6 +40,7 @@ const AppLayout = ({
           children
         )}
       </div>
+      <Toaster />
     </div>
   );
 };
