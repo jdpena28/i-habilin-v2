@@ -108,7 +108,7 @@ const BeAStallOwner = () => {
             <InputForm
               id="registrant.name"
               type="text"
-              labelText="Stall Name"
+              labelText="Stall Name*"
               name="stallname"
               error={errors}
               register={register}
@@ -130,7 +130,7 @@ const BeAStallOwner = () => {
                 register={register}
                 error={errors}
                 id="registrant.address.prov_code"
-                placeholder="Province"
+                placeholder="Province*"
                 data={registrantProvData}
                 filterBy="prov_name"
                 selectedBy="prov_code"
@@ -144,7 +144,7 @@ const BeAStallOwner = () => {
                 register={register}
                 error={errors}
                 id="registrant.address.city_code"
-                placeholder="City"
+                placeholder="City*"
                 data={registrantCityData}
                 filterBy="city_name"
                 selectedBy="city_code"
@@ -173,7 +173,7 @@ const BeAStallOwner = () => {
               <InputForm
                 id="registrant.contactNo"
                 type="text"
-                labelText="Contact No."
+                labelText="Contact No.*"
                 name="registrant.contactNo"
                 error={errors}
                 register={register}
@@ -183,7 +183,7 @@ const BeAStallOwner = () => {
               <InputForm
                 id="registrant.email"
                 type="text"
-                labelText="Email"
+                labelText="Email*"
                 name="registrant.email"
                 helperText="You will be notified via this email."
                 error={errors}
@@ -197,7 +197,7 @@ const BeAStallOwner = () => {
                 setValue={setValue}
                 error={errors}
                 crop="1:1"
-                label="Logo"
+                label="Logo*"
                 id="registrant.logo"
                 defaultValue={{
                   cdnUrl: "",
@@ -281,7 +281,7 @@ const BeAStallOwner = () => {
               <InputForm
                 id="owner.firstName"
                 type="text"
-                labelText="First Name"
+                labelText="First Name*"
                 name="owner.firstName"
                 error={errors}
                 register={register}
@@ -301,7 +301,7 @@ const BeAStallOwner = () => {
               <InputForm
                 id="owner.lastName"
                 type="text"
-                labelText="Last Name"
+                labelText="Last Name*"
                 name="owner.lastName"
                 error={errors}
                 register={register}
@@ -324,7 +324,7 @@ const BeAStallOwner = () => {
                 register={register}
                 error={errors}
                 id="owner.address.prov_code"
-                placeholder="Province"
+                placeholder="Province*"
                 data={ownerProvData}
                 filterBy="prov_name"
                 selectedBy="prov_code"
@@ -338,7 +338,7 @@ const BeAStallOwner = () => {
                 register={register}
                 error={errors}
                 id="owner.address.city_code"
-                placeholder="City"
+                placeholder="City*"
                 data={ownerCityData}
                 filterBy="city_name"
                 selectedBy="city_code"
@@ -367,7 +367,7 @@ const BeAStallOwner = () => {
               <InputForm
                 id="owner.contactNo"
                 type="text"
-                labelText="Contact No."
+                labelText="Contact No.*"
                 name="owner.contactNo"
                 error={errors}
                 register={register}
@@ -377,7 +377,7 @@ const BeAStallOwner = () => {
               <InputForm
                 id="owner.email"
                 type="text"
-                labelText="Email"
+                labelText="Email*"
                 name="owner.email"
                 error={errors}
                 register={register}
@@ -402,7 +402,7 @@ const BeAStallOwner = () => {
               <InputForm
                 id="representative.firstName"
                 type="text"
-                labelText="First Name"
+                labelText="First Name*"
                 name="representative.firstName"
                 error={errors}
                 register={register}
@@ -422,7 +422,7 @@ const BeAStallOwner = () => {
               <InputForm
                 id="representative.lastName"
                 type="text"
-                labelText="Last Name"
+                labelText="Last Name*"
                 name="representative.lastName"
                 error={errors}
                 register={register}
@@ -445,7 +445,7 @@ const BeAStallOwner = () => {
                 register={register}
                 error={errors}
                 id="representative.address.prov_code"
-                placeholder="Province"
+                placeholder="Province*"
                 data={representativeProvData}
                 filterBy="prov_name"
                 selectedBy="prov_code"
@@ -459,7 +459,7 @@ const BeAStallOwner = () => {
                 register={register}
                 error={errors}
                 id="representative.address.city_code"
-                placeholder="City"
+                placeholder="City*"
                 data={representativeCityData}
                 filterBy="city_name"
                 selectedBy="city_code"
@@ -488,7 +488,7 @@ const BeAStallOwner = () => {
               <InputForm
                 id="representative.contactNo"
                 type="text"
-                labelText="Contact No."
+                labelText="Contact No.*"
                 name="representative.contactNo"
                 error={errors}
                 register={register}
@@ -498,7 +498,7 @@ const BeAStallOwner = () => {
               <InputForm
                 id="representative.email"
                 type="text"
-                labelText="Email"
+                labelText="Email*"
                 name="representative.email"
                 error={errors}
                 register={register}
