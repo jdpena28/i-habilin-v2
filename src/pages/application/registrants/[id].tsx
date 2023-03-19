@@ -4,7 +4,7 @@ import { trpc } from "@/server/utils/trpc";
 import { isEmpty } from "lodash";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { yupResolver } from "@hookform/resolvers/yup";
 import {
   EditRegistrantSchema,
   editRegistrantSchema,
@@ -24,7 +24,7 @@ const Registrants = () => {
     formState: { errors },
     watch,
   } = useForm<EditRegistrantSchema>({
-    resolver: zodResolver(editRegistrantSchema),
+    resolver: yupResolver(editRegistrantSchema),
   });
   const onSubmit = () => {
     console.log("Submitted");

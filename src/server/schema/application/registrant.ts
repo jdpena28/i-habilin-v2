@@ -1,14 +1,15 @@
-import { z } from "zod";
+import * as yup from "yup";
 
-export const getRegistrantSchema = z
-  .object({
-    id: z.string().optional(),
-    slug: z.string().optional(),
-  })
-  .optional();
-
-export const editRegistrantSchema = z.object({
-  status: z.string().min(1, "Status is required"),
+export const getRegistrantSchema = yup.object({
+  id: yup.string().optional(),
+  slug: yup.string().optional(),
 });
 
-export type EditRegistrantSchema = z.infer<typeof editRegistrantSchema>;
+export const editRegistrantSchema = yup.object({
+  status: yup
+    .string()
+    .required("The status is required")
+    .oneOf(["Active", "Pending", "Expired"], "Invalid Option"),
+});
+
+export type EditRegistrantSchema = yup.InferType<typeof editRegistrantSchema>;
