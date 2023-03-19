@@ -61,6 +61,7 @@ const registrants = () => {
                       <td>
                         <ActionDropdown
                           viewOnClick={`/application/registrants/${i.id}`}
+                          options={["View", "Delete"]}
                         />
                       </td>
                     </tr>
