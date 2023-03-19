@@ -259,9 +259,6 @@ const Registrants = () => {
             )}
             <div className="sticky bottom-0 h-5 w-full rounded-bl-3xl bg-secondary" />
           </div>
-          <pre className="text-lg font-bold">
-            TITE{JSON.stringify(typeof datas, null, 1)}
-          </pre>
         </section>
       )}
       <ModalTemplate
