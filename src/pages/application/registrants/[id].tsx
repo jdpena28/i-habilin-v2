@@ -6,14 +6,16 @@ import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
-  EditRegistrantSchema,
-  editRegistrantSchema,
+  UpdateRegistrantSchema,
+  updateRegistrantSchema,
 } from "@/server/schema/application/registrant";
+import { formatDate } from "@/client/lib/TextFormatter";
 
 import { AppLayout } from "@/client/components/layout";
 import { ApplicationHeader } from "@/client/components/header";
 import ModalTemplate from "@/client/components/modal/ModalTemplate";
-import { InputForm, SelectForm } from "@/client/components/form";
+import { SelectForm } from "@/client/components/form";
+import { toast } from "react-hot-toast";
 
 const Registrants = () => {
   const { query } = useRouter();
@@ -23,11 +25,11 @@ const Registrants = () => {
     setValue,
     formState: { errors },
     watch,
-  } = useForm<EditRegistrantSchema>({
-    resolver: yupResolver(editRegistrantSchema),
+  } = useForm<UpdateRegistrantSchema>({
+    resolver: yupResolver(updateRegistrantSchema),
   });
-  const onSubmit = () => {
-    console.log("Submitted");
+  const onSubmit = (value: UpdateRegistrantSchema) => {
+    mutate(value);
   };
   const sidebarModules = [
     "Stall Info",
@@ -36,10 +38,21 @@ const Registrants = () => {
   ];
   const [activeModule, setActiveModule] = useState<string>(sidebarModules[0]);
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
-  const { data, isLoading } =
+  const { data, isLoading, refetch } =
     trpc.application.registrant.getRegistrant.useQuery({
       id: query.id as string,
     });
+
+  const { mutate } = trpc.application.registrant.updateRegistrant.useMutation({
+    onSuccess: () => {
+      toast.success("Successfully updated registrant");
+      refetch();
+      setIsOpenModal(false);
+    },
+    onError: (err) => {
+      toast.error(err.message);
+    },
+  });
 
   return (
     <AppLayout isLoading={isLoading}>
@@ -48,6 +61,8 @@ const Registrants = () => {
         goBack
         buttonText="Edit Application"
         onClickButton={() => {
+          setValue("status", data?.status);
+          setValue("id", data?.id);
           setIsOpenModal(true);
         }}
       />
@@ -110,6 +125,26 @@ const Registrants = () => {
                     {data?.status}
                   </div>
                 </div>
+                <div>
+                  <p className="subheading inline-block w-full max-w-xs">
+                    Date Applied:{" "}
+                  </p>
+                  <p className="inline-block font-poppins">
+                    {formatDate(data?.createdAt)}
+                  </p>
+                </div>
+                {data?.status !== "Pending" && (
+                  <div>
+                    <p className="subheading inline-block w-full max-w-xs">
+                      Approved:{" "}
+                    </p>
+                    <p className="inline-block font-poppins">
+                      {data?.approvedDate
+                        ? formatDate(data?.approvedDate)
+                        : "N/A"}
+                    </p>
+                  </div>
+                )}
                 <div>
                   <p className="subheading inline-block w-full max-w-xs">
                     Email:{" "}
@@ -265,14 +300,14 @@ const Registrants = () => {
         title="Edit Application"
         isOpenModal={isOpenModal}
         setIsOpenModal={setIsOpenModal}
-        bodyClassName="max-w-2xl h-[30vh]">
+        bodyClassName="max-w-2xl min-h-[30vh]">
         <form onSubmit={handleSubmit(onSubmit)}>
           <SelectForm
             register={register}
             error={errors}
             id="status"
-            placeholder="Status"
             aboveLabel="Status"
+            placeholder="Select Status"
             data={[
               {
                 id: 0,
@@ -291,15 +326,6 @@ const Registrants = () => {
             selectedBy="text"
             setValue={setValue}
             watch={watch}
-          />
-          <InputForm
-            id="date"
-            name="date"
-            type="date"
-            labelText="Date"
-            aboveLabel="Date"
-            error={errors}
-            register={register}
           />
           <div className="mt-4 flex justify-end gap-x-2">
             <button
