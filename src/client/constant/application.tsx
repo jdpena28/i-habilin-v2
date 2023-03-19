@@ -1,3 +1,4 @@
+import { signOut } from "next-auth/react";
 import { AppModules } from "../types/types";
 
 export const APPLICATION_MODULES: AppModules[] = [
@@ -81,7 +82,7 @@ export const APPLICATION_MODULES: AppModules[] = [
       </svg>
     ),
     action: () => {
-      console.log("logout");
+      signOut();
     },
   },
 ];
