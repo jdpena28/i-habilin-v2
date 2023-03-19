@@ -13,7 +13,7 @@ import {
 import { AppLayout } from "@/client/components/layout";
 import { ApplicationHeader } from "@/client/components/header";
 import ModalTemplate from "@/client/components/modal/ModalTemplate";
-import { SelectForm } from "@/client/components/form";
+import { InputForm, SelectForm } from "@/client/components/form";
 
 const Registrants = () => {
   const { query } = useRouter();
@@ -272,6 +272,7 @@ const Registrants = () => {
             error={errors}
             id="status"
             placeholder="Status"
+            aboveLabel="Status"
             data={[
               {
                 id: 0,
@@ -290,6 +291,15 @@ const Registrants = () => {
             selectedBy="text"
             setValue={setValue}
             watch={watch}
+          />
+          <InputForm
+            id="date"
+            name="date"
+            type="date"
+            labelText="Date"
+            aboveLabel="Date"
+            error={errors}
+            register={register}
           />
           <div className="mt-4 flex justify-end gap-x-2">
             <button

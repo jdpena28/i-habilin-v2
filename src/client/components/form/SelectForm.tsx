@@ -13,6 +13,7 @@ const SelectForm: FC<SelectFormProps> = ({
   error,
   data,
   placeholder = "Select an option",
+  aboveLabel,
   helperText,
   filterBy,
   selectedBy,
@@ -44,6 +45,7 @@ const SelectForm: FC<SelectFormProps> = ({
 
   return (
     <div className="">
+      <p className="label-text mb-1">{aboveLabel}</p>
       <Listbox
         {...register(id)}
         value={

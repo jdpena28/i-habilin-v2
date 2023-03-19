@@ -7,6 +7,7 @@ const InputForm: FC<InputFormProps> = ({
   name,
   type = "text",
   labelText,
+  aboveLabel,
   icon,
   helperText,
   register,
@@ -16,6 +17,7 @@ const InputForm: FC<InputFormProps> = ({
   const errorMessage: string = get(error, id)?.message;
   return (
     <>
+      <p className="label-text mb-1">{aboveLabel}</p>
       <label
         htmlFor={id}
         className="label-text relative block overflow-hidden rounded-md border border-primary/50 px-3 pt-3 shadow-sm focus-within:border-primary/100 focus-within:ring-1 focus-within:ring-primary/100">
