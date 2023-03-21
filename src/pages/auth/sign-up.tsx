@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { trpc } from "@/server/utils/trpc";
 import {
   CreateAccountSchema,
@@ -25,7 +25,7 @@ const Signup = () => {
     formState: { errors },
     watch,
   } = useForm<CreateAccountSchema>({
-    resolver: zodResolver(createAccountSchema),
+    resolver: yupResolver(createAccountSchema),
   });
 
   const {
@@ -33,7 +33,7 @@ const Signup = () => {
     handleSubmit: registerHandleSubmit,
     formState: { errors: errorsSuperAdmin },
   } = useForm<GetSuperAdminPassword>({
-    resolver: zodResolver(getSuperAdminPassword),
+    resolver: yupResolver(getSuperAdminPassword),
   });
 
   const [isAuthenticateViaPassword, setIsAuthenticatedViaPassword] =

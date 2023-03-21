@@ -36,6 +36,7 @@ model Registrants {
   contactNo String @db.VarChar(20)
   email     String
   status   String  @default("Pending") @db.VarChar(20)
+  approvedDate DateTime?
 
 
   personId String

@@ -1,10 +1,11 @@
 import { format } from "date-fns";
 
 const FormatCurrency = (
-  value: number,
+  value: number | undefined,
   currency?: string,
   isShorcut?: boolean
 ) => {
+  if (!value) return "0.00";
   if (value > 1000000 && isShorcut) {
     const formattedValue = value / 1000000;
     return `${new Intl.NumberFormat("en-US", {

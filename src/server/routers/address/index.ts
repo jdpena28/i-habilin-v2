@@ -1,11 +1,11 @@
-import { z } from "zod";
+import * as yup from "yup";
 import { router, procedure } from "@/server/trpc";
 
-const getCitiesSchema = z.object({
-  prov_code: z.string().min(1, "The prov_code is required"),
+const getCitiesSchema = yup.object({
+  prov_code: yup.string().required("The prov_code is required"),
 });
-const getBrgySchema = z.object({
-  city_code: z.string().min(1, "The city_code is required"),
+const getBrgySchema = yup.object({
+  city_code: yup.string().required("The city_code is required"),
 });
 
 export const addressRouter = router({

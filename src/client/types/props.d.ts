@@ -5,6 +5,7 @@ interface InputFormProps {
   name: string;
   type: HTMLInputTypeAttribute;
   labelText: string;
+  aboveLabel?: string;
   required?: boolean;
   icon?: ReactHTMLElement;
   helperText?: string;
@@ -19,6 +20,7 @@ interface SelectFormProps {
   filterBy: string | number;
   selectedBy: string;
   placeholder: string;
+  aboveLabel?: string;
   setValue: any;
   watch: any;
   register: any;
