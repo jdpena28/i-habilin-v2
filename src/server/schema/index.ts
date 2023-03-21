@@ -1,25 +1,22 @@
 import * as yup from "yup";
 
-const address = yup.object().shape({
+const address = yup.object({
   addressLine: yup.string().optional(),
   prov_code: yup.string().required("Province is required"),
   city_code: yup.string().required("City is required"),
   brgyId: yup.number().optional(),
 });
 
-const media = yup
-  .object()
-  .shape({
-    name: yup.string().required("Logo Name is required"),
-    uuid: yup.string().required("Media is required"),
-    size: yup.number().required("Logo Size is required"),
-    isImage: yup.boolean(),
-    cdnUrl: yup.string().required("Logo CDN URL is required"),
-    originalUrl: yup.string().required("Logo Original URL is required"),
-  })
-  .default(undefined);
+const media = yup.object({
+  name: yup.string().required("Logo Name is required"),
+  uuid: yup.string().required("Media is required"),
+  size: yup.number().required("Logo Size is required"),
+  isImage: yup.boolean().required("Logo isImage is required"),
+  cdnUrl: yup.string().required("Logo CDN URL is required"),
+  originalUrl: yup.string().required("Logo Original URL is required"),
+});
 
-const person = yup.object().shape({
+const person = yup.object({
   firstName: yup.string().trim().required("First Name is required"),
   middleName: yup.string().trim().optional(),
   lastName: yup.string().trim().required("Last Name is required"),
