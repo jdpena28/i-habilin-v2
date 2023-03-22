@@ -14,7 +14,7 @@ import { formatDate } from "@/client/lib/TextFormatter";
 import { AppLayout } from "@/client/components/layout";
 import { ApplicationHeader } from "@/client/components/header";
 import ModalTemplate from "@/client/components/modal/ModalTemplate";
-import { SelectForm } from "@/client/components/form";
+import { InputForm, SelectForm } from "@/client/components/form";
 import { toast } from "react-hot-toast";
 
 const Registrants = () => {
@@ -63,6 +63,7 @@ const Registrants = () => {
         onClickButton={() => {
           setValue("status", data?.status);
           setValue("id", data?.id);
+          setValue("slug", data?.slug);
           setIsOpenModal(true);
         }}
       />
@@ -124,6 +125,14 @@ const Registrants = () => {
                     }`}>
                     {data?.status}
                   </div>
+                </div>
+                <div>
+                  <p className="subheading inline-block w-full max-w-xs">
+                    Slug:{" "}
+                  </p>
+                  <p className="inline-block font-poppins">
+                    ihabilin.com/{data?.slug}
+                  </p>
                 </div>
                 <div>
                   <p className="subheading inline-block w-full max-w-xs">
@@ -301,7 +310,7 @@ const Registrants = () => {
         isOpenModal={isOpenModal}
         setIsOpenModal={setIsOpenModal}
         bodyClassName="max-w-2xl min-h-[30vh]">
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form className="space-y-3" onSubmit={handleSubmit(onSubmit)}>
           <SelectForm
             register={register}
             error={errors}
@@ -326,6 +335,15 @@ const Registrants = () => {
             selectedBy="text"
             setValue={setValue}
             watch={watch}
+          />
+          <InputForm
+            id="slug"
+            name="slug"
+            type="text"
+            labelText="Slug"
+            error={errors}
+            register={register}
+            aboveLabel="Slug"
           />
           <div className="mt-4 flex justify-end gap-x-2">
             <button

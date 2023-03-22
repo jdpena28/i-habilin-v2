@@ -13,6 +13,7 @@ export const updateRegistrantSchema = yup.object({
     .required("The status is required")
     .oneOf(["Active", "Pending", "Expired"], "Invalid Option"),
   id: yup.string().required("The ID is required"),
+  slug: yup.string().trim().required("The slug is required"),
 });
 
 export type UpdateRegistrantSchema = yup.InferType<
