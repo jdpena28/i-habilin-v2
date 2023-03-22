@@ -10,9 +10,14 @@ import { useRouter } from "next/router";
 
 interface ActionDropdownProps {
   viewOnClick: string;
+  options: optionType[];
 }
+type optionType = "View" | "Edit" | "Delete";
 
-const ActionDropdown: FC<ActionDropdownProps> = ({ viewOnClick }) => {
+const ActionDropdown: FC<ActionDropdownProps> = ({
+  viewOnClick,
+  options = ["View", "Edit", "Delete"],
+}) => {
   const { push } = useRouter();
   return (
     <div className="relative w-32">
@@ -32,45 +37,51 @@ const ActionDropdown: FC<ActionDropdownProps> = ({ viewOnClick }) => {
           leaveTo="transform opacity-0 scale-95">
           <Menu.Items className="absolute  z-30 divide-y-2 divide-white bg-primary focus:outline-none">
             <div className="font-tertiary z-30 divide-y divide-gray-100 font-normal">
-              <Menu.Item>
-                {({ active }) => (
-                  <button
-                    className={`${
-                      active ? "" : "bg-primary"
-                    } w-full cursor-pointer gap-x-1 rounded-none p-1.5 hover:bg-orange-600`}
-                    type="button"
-                    onClick={() => {
-                      push(viewOnClick);
-                    }}>
-                    <BsFillEyeFill className="h-4 w-4" />
-                    Details
-                  </button>
-                )}
-              </Menu.Item>
-              <Menu.Item>
-                {({ active }) => (
-                  <button
-                    className={`${
-                      active ? "" : "bg-primary"
-                    } w-full cursor-pointer gap-x-1 rounded-none p-1.5 hover:bg-orange-600`}
-                    type="button">
-                    <BsFillPencilFill className="h-4 w-4" />
-                    Edit&emsp;&nbsp;
-                  </button>
-                )}
-              </Menu.Item>
-              <Menu.Item>
-                {({ active }) => (
-                  <button
-                    className={`${
-                      active ? "" : "bg-primary"
-                    } w-full cursor-pointer gap-x-1 rounded-none p-1.5 hover:bg-orange-600`}
-                    type="button">
-                    <BsFillTrash3Fill className="h-4 w-4" />
-                    Delete
-                  </button>
-                )}
-              </Menu.Item>
+              {options.includes("View") && (
+                <Menu.Item>
+                  {({ active }) => (
+                    <button
+                      className={`${
+                        active ? "" : "bg-primary"
+                      } w-full cursor-pointer gap-x-1 rounded-none p-1.5 hover:bg-orange-600`}
+                      type="button"
+                      onClick={() => {
+                        push(viewOnClick);
+                      }}>
+                      <BsFillEyeFill className="h-4 w-4" />
+                      Details
+                    </button>
+                  )}
+                </Menu.Item>
+              )}
+              {options.includes("Edit") && (
+                <Menu.Item>
+                  {({ active }) => (
+                    <button
+                      className={`${
+                        active ? "" : "bg-primary"
+                      } w-full cursor-pointer gap-x-1 rounded-none p-1.5 hover:bg-orange-600`}
+                      type="button">
+                      <BsFillPencilFill className="h-4 w-4" />
+                      Edit&emsp;&nbsp;
+                    </button>
+                  )}
+                </Menu.Item>
+              )}
+              {options.includes("Delete") && (
+                <Menu.Item>
+                  {({ active }) => (
+                    <button
+                      className={`${
+                        active ? "" : "bg-primary"
+                      } w-full cursor-pointer gap-x-1 rounded-none p-1.5 hover:bg-orange-600`}
+                      type="button">
+                      <BsFillTrash3Fill className="h-4 w-4" />
+                      Delete
+                    </button>
+                  )}
+                </Menu.Item>
+              )}
             </div>
           </Menu.Items>
         </Transition>

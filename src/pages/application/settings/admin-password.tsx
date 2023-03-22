@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { trpc } from "@/server/utils/trpc";
 import toast from "react-hot-toast";
 import {
@@ -18,7 +18,7 @@ const AdminPassword = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<CreateSuperAdminPassword>({
-    resolver: zodResolver(createSuperAdminPassword),
+    resolver: yupResolver(createSuperAdminPassword),
   });
 
   const { mutate } =

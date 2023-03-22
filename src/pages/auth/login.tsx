@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { GetAccountSchema, getAccountSchema } from "@/server/schema/public";
 import { useRouter } from "next/router";
 import { signIn } from "next-auth/react";
@@ -15,7 +15,7 @@ const Login = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<GetAccountSchema>({
-    resolver: zodResolver(getAccountSchema),
+    resolver: yupResolver(getAccountSchema),
   });
 
   const onSubmit = async (value: GetAccountSchema) => {
