@@ -79,6 +79,14 @@ export const registrantRouter = router({
   updateRegistrant: protectedProcedure
     .input(updateRegistrantSchema)
     .mutation(async ({ ctx, input }) => {
+      const isExist = await ctx.prisma.registrants.count({
+        where: {
+          slug: input.slug,
+        },
+      });
+      if (isExist) {
+        throw new Error("Slug is already taken");
+      }
       return await ctx.prisma.registrants.update({
         where: {
           id: input.id,
@@ -86,6 +94,7 @@ export const registrantRouter = router({
         data: {
           status: input.status,
           approvedDate: input.status === "Active" ? new Date() : null,
+          slug: input.slug,
         },
       });
     }),
