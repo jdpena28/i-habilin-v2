@@ -5,53 +5,54 @@ import {
 } from "@/server/schema/application/registrant";
 import { INCLUDED_ADDRESS } from "@/client/constant";
 
+const includedQuery = {
+  owner: INCLUDED_ADDRESS,
+  representative: INCLUDED_ADDRESS,
+  dtiPermit: true,
+  bussinessPermit: true,
+  sanitaryPermit: true,
+  logo: true,
+  address: {
+    include: {
+      Brgy: {
+        select: {
+          brgy_loc: true,
+          id: true,
+        },
+      },
+      city: {
+        select: {
+          city_name: true,
+          city_code: true,
+        },
+      },
+      province: {
+        select: {
+          prov_name: true,
+          prov_code: true,
+        },
+      },
+    },
+  },
+};
+
 export const registrantRouter = router({
   getRegistrant: protectedProcedure
     .input(getRegistrantSchema)
     .query(async ({ ctx, input }) => {
-      const includedQuery = {
-        owner: INCLUDED_ADDRESS,
-        representative: INCLUDED_ADDRESS,
-        dtiPermit: true,
-        bussinessPermit: true,
-        sanitaryPermit: true,
-        logo: true,
-        address: {
-          include: {
-            Brgy: {
-              select: {
-                brgy_loc: true,
-                id: true,
-              },
-            },
-            city: {
-              select: {
-                city_name: true,
-                city_code: true,
-              },
-            },
-            province: {
-              select: {
-                prov_name: true,
-                prov_code: true,
-              },
-            },
-          },
+      return await ctx.prisma.registrants.findUnique({
+        where: {
+          id: input.id,
+          slug: input.slug,
         },
-      };
-      if (input?.id || input?.slug) {
-        return await ctx.prisma.registrants.findUnique({
-          where: {
-            id: input.id,
-            slug: input.slug,
-          },
-          include: includedQuery,
-        });
-      }
-      return await ctx.prisma.registrants.findMany({
         include: includedQuery,
       });
     }),
+  getAllRegistrant: protectedProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.registrants.findMany({
+      include: includedQuery,
+    });
+  }),
   getRegistrantCount: protectedProcedure.query(async ({ ctx }) => {
     const total = await ctx.prisma.registrants.count();
     const active = await ctx.prisma.registrants.count({

@@ -32,7 +32,7 @@ model Account {
 model Registrants {
   id        String @id @default(cuid())
   name      String
-  slug      String? @unique @db.VarChar(100)
+  slug      String @unique @db.VarChar(100)
   contactNo String @db.VarChar(20)
   email     String
   status   String  @default("Pending") @db.VarChar(20)
