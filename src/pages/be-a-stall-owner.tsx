@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { trpc } from "@/server/utils/trpc";
 import {
   CreateRegistrantSchema,
@@ -21,7 +21,7 @@ const BeAStallOwner = () => {
     formState: { errors },
     watch,
   } = useForm<CreateRegistrantSchema>({
-    resolver: zodResolver(createRegistrantSchema),
+    resolver: yupResolver(createRegistrantSchema),
   });
 
   const { data: registrantProvData, isFetching: registrantProvIsLoading } =
@@ -508,6 +508,9 @@ const BeAStallOwner = () => {
         </div>
         <button
           type="submit"
+          onClick={() => {
+            console.log(errors);
+          }}
           className="focus:tertiary my-10 ml-auto flex  w-32 bg-secondary text-highlight hover:bg-primary focus:ring">
           Submit
         </button>

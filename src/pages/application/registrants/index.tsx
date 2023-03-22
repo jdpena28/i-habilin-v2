@@ -1,11 +1,12 @@
 import Image from "next/image";
 import { trpc } from "@/server/utils/trpc";
+import Link from "next/link";
+import { isEmpty } from "lodash";
 
 import { AppLayout } from "@/client/components/layout";
 import { ApplicationHeader } from "@/client/components/header";
 import { ActionDropdown } from "@/client/components/dropdown";
 import { Spinner } from "@/client/components/loader";
-import { isEmpty } from "lodash";
 import { formatDate } from "@/client/lib/TextFormatter";
 
 const registrants = () => {
@@ -32,18 +33,20 @@ const registrants = () => {
                 data?.map((i: any) => {
                   return (
                     <tr key={i.id}>
-                      <td className="mt-1 flex items-center gap-x-3 ">
-                        <div className="relative h-9 w-9 overflow-hidden rounded-full">
-                          <Image src={i.logo.cdnUrl} alt={i.name} fill />
-                        </div>
-                        <div>
-                          <p className="font-medium">{i.name}</p>
-                          <p className="text-xs">
-                            ihabilin.com/
-                            {i.name.replace(" ", "-").toLowerCase()}
-                          </p>
-                        </div>
-                      </td>
+                      <Link href={`registrants/${i.id}`}>
+                        <td className="mt-1 flex items-center gap-x-3 ">
+                          <div className="relative h-9 w-9 overflow-hidden rounded-full">
+                            <Image src={i.logo.cdnUrl} alt={i.name} fill />
+                          </div>
+                          <div>
+                            <p className="font-medium">{i.name}</p>
+                            <p className="text-xs">
+                              ihabilin.com/
+                              {i.slug}
+                            </p>
+                          </div>
+                        </td>
+                      </Link>
                       <td>{i.email}</td>
                       <td>
                         <div
@@ -61,6 +64,7 @@ const registrants = () => {
                       <td>
                         <ActionDropdown
                           viewOnClick={`/application/registrants/${i.id}`}
+                          options={["View", "Delete"]}
                         />
                       </td>
                     </tr>

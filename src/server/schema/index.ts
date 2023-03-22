@@ -1,29 +1,30 @@
-import { z } from "zod";
+import * as yup from "yup";
 
-const address = z.object({
-  addressLine: z.string(),
-  prov_code: z.string().min(1, "Province is required"),
-  city_code: z.string().min(1, "City is required"),
-  brgyId: z.number().optional(),
+const address = yup.object({
+  addressLine: yup.string().optional(),
+  prov_code: yup.string().required("Province is required"),
+  city_code: yup.string().required("City is required"),
+  brgyId: yup.number().optional(),
 });
 
-const media = z.object({
-  name: z.string().min(1, "Logo Name is required"),
-  uuid: z.string().min(1, "Media is required"),
-  size: z.number().min(1, "Logo Size is required"),
-  isImage: z.boolean(),
-  cdnUrl: z.string().min(1, "Logo CDN URL is required"),
-  originalUrl: z.string().min(1, "Logo Original URL is required"),
+const media = yup.object({
+  name: yup.string().required("Logo Name is required"),
+  uuid: yup.string().required("Media is required"),
+  size: yup.number().required("Logo Size is required"),
+  isImage: yup.boolean().required("Logo isImage is required"),
+  cdnUrl: yup.string().required("Logo CDN URL is required"),
+  originalUrl: yup.string().required("Logo Original URL is required"),
 });
-const person = z.object({
-  firstName: z.string().trim().min(1, "First Name is required"),
-  middleName: z.string().trim().optional(),
-  lastName: z.string().trim().min(1, "Last Name is required"),
-  contactNo: z
+
+const person = yup.object({
+  firstName: yup.string().trim().required("First Name is required"),
+  middleName: yup.string().trim().optional(),
+  lastName: yup.string().trim().required("Last Name is required"),
+  contactNo: yup
     .string()
-    .min(1, "Contact number is required")
-    .regex(/^(09|\+639)\d{9}$/, "Invalid contact number"),
-  email: z.string().trim().min(1, "Email is required").email(),
+    .required("Contact number is required")
+    .matches(/^(09|\+639)\d{9}$/, "Invalid contact number"),
+  email: yup.string().trim().required("Email is required").email(),
   address,
 });
 

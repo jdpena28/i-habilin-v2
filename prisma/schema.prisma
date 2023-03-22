@@ -36,6 +36,7 @@ model Registrants {
   contactNo String @db.VarChar(20)
   email     String
   status   String  @default("Pending") @db.VarChar(20)
+  approvedDate DateTime?
 
 
   personId String
@@ -88,15 +89,15 @@ model Person {
 
 model Address {
   id          String @id @default(cuid())
-  addressLine String @db.VarChar(300)
+  addressLine String? @db.VarChar(300)
 
-  city_code String @unique
+  city_code String 
   city      City   @relation(fields: [city_code], references: [city_code])
 
-  prov_code String @unique
+  prov_code String 
   province  Province @relation(fields: [prov_code], references: [prov_code])
 
-  brgyId Int? @unique
+  brgyId Int? 
   Brgy   Brgy? @relation(fields: [brgyId], references: [id])
 
   createdAt DateTime @default(now())

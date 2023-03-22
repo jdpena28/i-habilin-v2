@@ -1,5 +1,8 @@
 import { router, protectedProcedure } from "@/server/trpc";
-import { getRegistrantSchema } from "@/server/schema/application/registrant";
+import {
+  getRegistrantSchema,
+  updateRegistrantSchema,
+} from "@/server/schema/application/registrant";
 import { INCLUDED_ADDRESS } from "@/client/constant";
 
 export const registrantRouter = router({
@@ -37,20 +40,62 @@ export const registrantRouter = router({
         },
       };
       if (input?.id || input?.slug) {
-        const registrant = await ctx.prisma.registrants.findUnique({
+        return await ctx.prisma.registrants.findUnique({
           where: {
             id: input.id,
             slug: input.slug,
           },
           include: includedQuery,
         });
-        if (!registrant) {
-          throw new Error("Registrant not found");
-        }
-        return registrant;
       }
       return await ctx.prisma.registrants.findMany({
         include: includedQuery,
+      });
+    }),
+  getRegistrantCount: protectedProcedure.query(async ({ ctx }) => {
+    const total = await ctx.prisma.registrants.count();
+    const active = await ctx.prisma.registrants.count({
+      where: {
+        status: "Active",
+      },
+    });
+    const pending = await ctx.prisma.registrants.count({
+      where: {
+        status: "Pending",
+      },
+    });
+    const expired = await ctx.prisma.registrants.count({
+      where: {
+        status: "Expired",
+      },
+    });
+    return {
+      total,
+      active,
+      pending,
+      expired,
+    };
+  }),
+  updateRegistrant: protectedProcedure
+    .input(updateRegistrantSchema)
+    .mutation(async ({ ctx, input }) => {
+      const isExist = await ctx.prisma.registrants.count({
+        where: {
+          slug: input.slug,
+        },
+      });
+      if (isExist) {
+        throw new Error("Slug is already taken");
+      }
+      return await ctx.prisma.registrants.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          status: input.status,
+          approvedDate: input.status === "Active" ? new Date() : null,
+          slug: input.slug,
+        },
       });
     }),
 });

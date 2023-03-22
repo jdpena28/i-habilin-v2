@@ -1,13 +1,14 @@
-import { z } from "zod"
+import * as yup from "yup"
 import { address, media, person } from ".."
 
-export const createRegistrantSchema = z.object({
-    registrant: z.object({
-        name: z.string().trim().min(1, "Name is required"),
-        contactNo: z.string().min(1, "Contact number is required").regex(/^(09|\+639)\d{9}$/, "Invalid contact number"),
-        email: z.string().trim().min(1, "Email is required").email(),
+export const createRegistrantSchema = yup.object({
+    registrant: yup.object({
+        name: yup.string().trim().required("Name is required"),
+        slug: yup.string().trim().optional(),
+        contactNo: yup.string().required("Contact number is required").matches(/^(09|\+639)\d{9}$/, "Invalid contact number"),
+        email: yup.string().trim().required("Email is required").email(),
         address: address,
-        logo: media,
+        logo: media.required("Logo is required"),
     }),
     dtiPermit: media,
     sanitaryPermit: media,
@@ -16,49 +17,38 @@ export const createRegistrantSchema = z.object({
     representative: person,
 })
 
-export type CreateRegistrantSchema = z.infer<typeof createRegistrantSchema>
+export type CreateRegistrantSchema = yup.InferType<typeof createRegistrantSchema>
 
 
-export const createAccountSchema = z.object({
-    email: z.string().trim().min(1, "Email is required").email(),
-    password: z.string().min(6, "Password must be at least 6 characters"),
-    confirmPassword: z.string().min(1, "Confirm password is required"),
+export const createAccountSchema = yup.object({
+    email: yup.string().trim().required("Email is required").email(),
+    password: yup.string().required("Password is required").min(6, "Password must be at least 6 characters"),
+    confirmPassword: yup.string().required("Confirm password is required").test("passwords-match", "The passwords did not match", function (value) {
+        return this.parent.password === value;
+    }),
     person: person,
-}).superRefine(({ confirmPassword, password }, ctx) => {
-    if (confirmPassword !== password) {
-      ctx.addIssue({
-        code: "custom",
-        message: "The passwords did not match",
-        path: ["confirmPassword"]
-      });
-    }
-  });
-
-export type CreateAccountSchema = z.infer<typeof createAccountSchema>
-
-export const getSuperAdminPassword = z.object({
-    password: z.string().min(1, "Password is required"),
-})
-export type GetSuperAdminPassword = z.infer<typeof getSuperAdminPassword>
-
-export const createSuperAdminPassword = z.object({
-    password: z.string().min(6, "Password must be at least 6 characters"),
-    confirmPassword: z.string().min(1, "Confirm password is required"),
-}).superRefine(({ confirmPassword, password }, ctx) => {
-    if (confirmPassword !== password) {
-      ctx.addIssue({
-        code: "custom",
-        message: "The passwords did not match",
-        path: ["confirmPassword"]
-      });
-    }
 })
 
-export type CreateSuperAdminPassword = z.infer<typeof createSuperAdminPassword>
+export type CreateAccountSchema = yup.InferType<typeof createAccountSchema>
 
-export const getAccountSchema = z.object({
-    email: z.string().trim().min(1, "Email is required").email(),
-    password: z.string().min(1, "Password is required"),
+export const getSuperAdminPassword = yup.object({
+    password: yup.string().required("Password is required").trim(),
 })
-export type GetAccountSchema = z.infer<typeof getAccountSchema>
+export type GetSuperAdminPassword = yup.InferType<typeof getSuperAdminPassword>
+
+export const createSuperAdminPassword = yup.object({
+  password: yup.string().required("Password is required").min(6, "Password must be at least 6 characters"),
+  confirmPassword: yup.string().required("Confirm Password is required").test("passwords-match", "The passwords did not match", function (value) {
+    return this.parent.password === value;
+  })
+})
+
+export type CreateSuperAdminPassword = yup.InferType<typeof createSuperAdminPassword>
+
+export const getAccountSchema = yup.object({
+    email: yup.string().trim().required("Email is required").email(),
+    password: yup.string().required("Password is required"),
+})
+
+export type GetAccountSchema = yup.InferType<typeof getAccountSchema>
 
