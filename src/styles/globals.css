@@ -157,3 +157,15 @@ tr {
 .grid-loader > span {
   @apply !bg-secondary;
 }
+#bg_order {
+  background-image: url("../../public/OrderBg.png");
+  background-repeat: no-repeat;
+  background-size: 600px 370px;
+  height: 100%;
+}
+
+@media only screen and (min-width: 600px) {
+  #bg_order {
+    background-size: 1980px 400px;
+  }
+}
