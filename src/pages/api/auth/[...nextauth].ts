@@ -19,9 +19,10 @@ export const authOptions: NextAuthOptions = {
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user }: { token: JWT; user?: any }) {
       if (user) {
         token.id = user.id;
+        token.name = `${user.person.firstName} ${user.person.lastName}`;
       }
       return token;
     },
@@ -34,6 +35,10 @@ export const authOptions: NextAuthOptions = {
     }) {
       if (token) {
         session.id = token.id;
+        // eslint-disable-next-line no-unused-expressions
+        session.user
+          ? (session.user.name = token.name)
+          : (session.user = { name: token.name });
       }
       return session;
     },
@@ -61,6 +66,9 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         const user = await prisma.account.findUnique({
           where: { email: credentials?.email },
+          include: {
+            person: true,
+          },
         });
         if (!user) {
           throw new Error("No account found");
