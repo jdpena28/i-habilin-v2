@@ -80,12 +80,12 @@ export const registrantRouter = router({
   updateRegistrant: protectedProcedure
     .input(updateRegistrantSchema)
     .mutation(async ({ ctx, input }) => {
-      const isExist = await ctx.prisma.registrants.count({
+      const isExist = await ctx.prisma.registrants.findUnique({
         where: {
           slug: input.slug,
         },
       });
-      if (isExist) {
+      if (isExist && input.slug !== isExist.slug) {
         throw new Error("Slug is already taken");
       }
       return await ctx.prisma.registrants.update({

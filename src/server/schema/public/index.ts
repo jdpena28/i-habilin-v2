@@ -4,7 +4,7 @@ import { address, media, person } from ".."
 export const createRegistrantSchema = yup.object({
     registrant: yup.object({
         name: yup.string().trim().required("Name is required"),
-        slug: yup.string().trim().optional(),
+        slug: yup.string().trim().default(""),
         contactNo: yup.string().required("Contact number is required").matches(/^(09|\+639)\d{9}$/, "Invalid contact number"),
         email: yup.string().trim().required("Email is required").email(),
         address: address,
