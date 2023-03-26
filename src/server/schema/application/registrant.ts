@@ -1,11 +1,9 @@
 import * as yup from "yup";
 
-export const getRegistrantSchema = yup
-  .object({
-    id: yup.string().optional(),
-    slug: yup.string().optional(),
-  })
-  .optional();
+export const getRegistrantSchema = yup.object({
+  id: yup.string().optional(),
+  slug: yup.string().optional(),
+});
 
 export const updateRegistrantSchema = yup.object({
   status: yup

@@ -4,8 +4,10 @@ import { useRouter } from "next/router";
 
 import { AppModules } from "@/client/types/types";
 import { APPLICATION_MODULES } from "@/client/constant/application";
+import { useSession } from "next-auth/react";
 
 const AppNav = () => {
+  const { data } = useSession();
   return (
     <nav className="sticky left-0 h-screen w-[15%] bg-primary">
       <div className="decorated-underline mb-10 p-2 text-white lg:p-5">
@@ -18,9 +20,12 @@ const AppNav = () => {
         })}
       </div>
       <div className="absolute bottom-0 flex w-full flex-col items-center justify-around gap-x-3 bg-highlight p-1 lg:flex-row">
-        <div className="avatar">JH</div>
+        <div className="avatar">
+          {data?.user?.name?.split(" ")[0].charAt(0)}
+          {data?.user?.name?.split(" ")[1].charAt(0)}
+        </div>
         <p className="text-xs text-tertiary">
-          John Henrich Dela Pena <br />
+          {data?.user?.name} <br />
           Super Admin
         </p>
       </div>
