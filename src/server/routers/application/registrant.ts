@@ -5,6 +5,7 @@ import {
 } from "@/server/schema/application/registrant";
 import { INCLUDED_ADDRESS } from "@/client/constant";
 import { sendEmail } from "@/server/lib/SendInBlue";
+import { encrypt } from "@/client/lib/bcrypt";
 
 const includedQuery = {
   owner: INCLUDED_ADDRESS,
@@ -90,6 +91,23 @@ export const registrantRouter = router({
         throw new Error("Slug is already taken");
       }
       if (input.status !== "Pending") {
+        const password = Math.random().toString(36).slice(-8);
+        if (input.status === "Active") {
+          const isAccountExist = await ctx.prisma.account.count({
+            where: {
+              registrantId: input.id,
+            },
+          });
+          if (isAccountExist === 0) {
+            await ctx.prisma.account.create({
+              data: {
+                email: input.email,
+                password: await encrypt(password),
+                registrantId: input.id,
+              },
+            });
+          }
+        }
         sendEmail.sendTransacEmail({
           to: [{ email: `${input.email}`, name: `${input.name}}` }],
           subject: `Your application has been ${input.status}`,
@@ -101,7 +119,7 @@ export const registrantRouter = router({
             registrant: {
               url: `${process.env.NEXT_PUBLIC_VERCEL_URL}/registrant/${input.slug}`,
               email: `${input.email}`,
-              password: `test123`,
+              password: `${password}`,
             },
           },
         });

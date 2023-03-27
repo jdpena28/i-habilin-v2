@@ -29,6 +29,10 @@ const Registrants = () => {
     resolver: yupResolver(updateRegistrantSchema),
   });
   const onSubmit = (value: UpdateRegistrantSchema) => {
+    if (value.status === data?.status && value.slug === data?.slug) {
+      toast.error("There is no changes");
+      return;
+    }
     mutate(value);
   };
   const sidebarModules = [
