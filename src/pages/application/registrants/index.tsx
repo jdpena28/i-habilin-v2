@@ -42,7 +42,7 @@ const registrants = () => {
                             <p className="font-medium">{i.name}</p>
                             <p className="text-xs">
                               ihabilin.com/
-                              {i.name.replace(" ", "-").toLowerCase()}
+                              {i.slug}
                             </p>
                           </div>
                         </td>

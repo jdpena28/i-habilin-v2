@@ -1,10 +1,21 @@
 import { decrypt, encrypt } from "@/client/lib/bcrypt";
+import { slugify } from "@/server/lib/slugify";
 import { createAccountSchema, createRegistrantSchema, getSuperAdminPassword } from "@/server/schema/public";
 import { router, procedure } from "@/server/trpc";
 import { omit } from "lodash";
 
 export const registerRouter = router({
     createRegistrant: procedure.input(createRegistrantSchema).mutation(async ({ ctx, input }) => {
+        const isSlugExist = await ctx.prisma.registrants.count({
+            where: {
+                slug: slugify(input.registrant.name)
+            },
+        })
+        if (isSlugExist > 0) {
+            input.registrant.slug = `${slugify(input.registrant.name)}-${isSlugExist}`
+        } else {
+            input.registrant.slug = slugify(input.registrant.name)
+        }
         return await ctx.prisma.registrants.create({
             data: {
                 ...omit(input.registrant, ["logo", "address"]),
@@ -57,6 +68,7 @@ export const registerRouter = router({
         })
     }),
     createAccount: procedure.input(createAccountSchema).mutation(async ({ ctx, input }) => {
+        console.log(JSON.stringify(input,null,1)) 
         const isEmailTaken = await ctx.prisma.account.findUnique({
             where: {
                 email: input.email
@@ -65,10 +77,10 @@ export const registerRouter = router({
         if (isEmailTaken) {
             throw new Error("Email is already taken")
         }
-        return await ctx.prisma.account.create({
+        input.password = await encrypt(input.password)
+        const account = await ctx.prisma.account.create({
             data: {
                 ...omit(input, ["person",'confirmPassword']),
-                password: await encrypt(input.password),
                 person: {
                     create: {
                         ...omit(input.person, ["address"]),
@@ -79,16 +91,17 @@ export const registerRouter = router({
                         }
                     },
                 }
-            }
+            },
         })
+        return account
     }),
     getPassword: procedure.input(getSuperAdminPassword).mutation(async ({ ctx, input }) => {
-        const adminPassword = await ctx.prisma.App_Meta.findUnique({
+        const adminPassword = await ctx.prisma.app_Meta.findUnique({
             where: {
                 key: "ADMIN_PASSWORD"
             },
         })
-        const isSame = await decrypt(input.password, adminPassword.value)
+        const isSame = await decrypt(input.password, adminPassword?.value ? adminPassword.value : "")
         if (isSame === false) {
             throw new Error("Password is incorrect")
         }
