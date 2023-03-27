@@ -11,7 +11,7 @@ import { formatDate } from "@/client/lib/TextFormatter";
 
 const registrants = () => {
   const { data, isLoading } =
-    trpc.application.registrant.getRegistrant.useQuery();
+    trpc.application.registrant.getAllRegistrant.useQuery();
   return (
     <AppLayout>
       <ApplicationHeader title="Registrants" search tabs filter />
