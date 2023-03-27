@@ -10,7 +10,7 @@ const order = () => {
       <div id="bg_order">
         <div className="mt-0 flex justify-center pt-0  text-white lg:items-center ">
           <div className=" text-8xl font-extrabold">
-            <span className="text-[50px] ">Hello,</span> <br />
+            <span className="text-5xl ">Hello,</span> <br />
             THERE!
           </div>
         </div>
@@ -29,7 +29,7 @@ const order = () => {
           </div>
         </div>
         <div className="pt-40">
-          <p className=" m-4 font-bold">TOP CATEGORIES </p>
+          <p className=" m-4 font-bold uppercase">Top Categories </p>
           <div className="m-5 grid grid-flow-col grid-rows-1 gap-x-3 ">
             <Categorybutton icon={<BreadIcon />} text="" />
             <Categorybutton icon={<BreadIcon />} text="" />
@@ -41,7 +41,7 @@ const order = () => {
             <Categorybutton icon={<BreadIcon />} text="" />
           </div>
           <div className=" mt-2">
-            <p className=" m-4 font-bold">RECOMMENDED FOR YOU </p>
+            <p className=" m-4 font-bold uppercase">Recommended for you</p>
           </div>
           <div className="gap-3 md:grid lg:grid-cols-6 ">
             <CardHolder
@@ -93,7 +93,7 @@ const order = () => {
                   alt="Sisig"
                 />
               }
-              text="brief"
+              text="Hotdog"
               price={78}
             />
             <CardHolder
@@ -119,7 +119,7 @@ const order = () => {
                   alt="Sisig"
                 />
               }
-              text="Tite"
+              text="Aljur"
               price={78}
             />
           </div>
