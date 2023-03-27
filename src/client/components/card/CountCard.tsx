@@ -34,5 +34,4 @@ const CountCard: FC<CountCardProps> = ({
     </div>
   );
 };
-
 export default CountCard;
