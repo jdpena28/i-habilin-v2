@@ -29,7 +29,7 @@ const dashboard = () => {
           isLoading={isLoading}
         />
         <CountCard
-          title="Total Approved Applicants"
+          title="Total Applicants"
           count={data?.total}
           isLoading={isLoading}
         />
