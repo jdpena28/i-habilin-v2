@@ -49,7 +49,7 @@ function App({ Component, pageProps }: AppProps<{ session: Session | null }>) {
         className={`${brocha.variable} ${PPNeueMachina.variable} ${poppins.variable} bg-tertiary`}>
         <DefaultSeo {...DEFAULT_SEO} />
         <Component {...pageProps} />
-        <ReactQueryDevtools initialIsOpen={false} />
+        <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
       </main>
     </SessionProvider>
   );

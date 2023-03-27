@@ -61,9 +61,11 @@ const Registrants = () => {
         goBack
         buttonText="Edit Application"
         onClickButton={() => {
-          setValue("status", data?.status);
-          setValue("id", data?.id);
-          setValue("slug", data?.slug);
+          if (data) {
+            setValue("status", data?.status);
+            setValue("id", data?.id);
+            setValue("slug", data?.slug);
+          }
           setIsOpenModal(true);
         }}
       />

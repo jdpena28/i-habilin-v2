@@ -15,7 +15,7 @@ const AppLayout = ({
   isLoading?: boolean;
 }) => {
   const { push } = useRouter();
-  const { data: session, status } = useSession();
+  const { status } = useSession();
 
   if (status === "loading") {
     return (

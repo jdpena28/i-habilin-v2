@@ -1,4 +1,5 @@
 import { decrypt, encrypt } from "@/client/lib/bcrypt";
+import { sendEmail } from "@/server/lib/SendInBlue";
 import { slugify } from "@/server/lib/slugify";
 import { createAccountSchema, createRegistrantSchema, getSuperAdminPassword } from "@/server/schema/public";
 import { router, procedure } from "@/server/trpc";
@@ -16,6 +17,13 @@ export const registerRouter = router({
         } else {
             input.registrant.slug = slugify(input.registrant.name)
         }
+        sendEmail.sendTransacEmail({
+            to: [{"email":`${input.registrant.email}`,"name":`${input.registrant.name}}`}],
+            templateId: 1,
+            params: {
+              name: `${input.registrant.name}`,
+            }
+          })
         return await ctx.prisma.registrants.create({
             data: {
                 ...omit(input.registrant, ["logo", "address"]),

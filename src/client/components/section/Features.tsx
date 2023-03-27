@@ -6,7 +6,7 @@ import Image from "next/image";
 
 const Features = () => {
   return (
-    <section id="feature" className="min-h-screen w-full lg:h-[120vh]">
+    <section id="feature" className="min-h-screen w-full lg:min-h-[120vh]">
       <div className="grid h-full grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
         <div className="flex flex-col gap-5">
           <div className="hidden h-full w-full flex-[32.5] rounded-md bg-[#E8DFC8] lg:block" />
