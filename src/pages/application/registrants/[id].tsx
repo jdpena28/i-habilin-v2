@@ -65,6 +65,8 @@ const Registrants = () => {
             setValue("status", data?.status);
             setValue("id", data?.id);
             setValue("slug", data?.slug);
+            setValue("name", data?.name);
+            setValue("email", data?.email);
           }
           setIsOpenModal(true);
         }}
@@ -123,6 +125,8 @@ const Registrants = () => {
                         ? "badge-yellow"
                         : data?.status === "Active"
                         ? "badge-lime"
+                        : data?.status === "Denied"
+                        ? "badge-orange"
                         : "badge-red"
                     }`}>
                     {data?.status}
@@ -330,6 +334,10 @@ const Registrants = () => {
               },
               {
                 id: 2,
+                text: "Denied",
+              },
+              {
+                id: 3,
                 text: "Expired",
               },
             ]}
@@ -347,6 +355,17 @@ const Registrants = () => {
             register={register}
             aboveLabel="Slug"
           />
+          {watch("status") === "Denied" ? (
+            <InputForm
+              id="reason"
+              name="reason"
+              type="textarea"
+              labelText="Slug"
+              error={errors}
+              register={register}
+              aboveLabel="Reason"
+            />
+          ) : null}
           <div className="mt-4 flex justify-end gap-x-2">
             <button
               type="reset"

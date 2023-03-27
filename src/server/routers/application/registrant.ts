@@ -4,6 +4,7 @@ import {
   updateRegistrantSchema,
 } from "@/server/schema/application/registrant";
 import { INCLUDED_ADDRESS } from "@/client/constant";
+import { sendEmail } from "@/server/lib/SendInBlue";
 
 const includedQuery = {
   owner: INCLUDED_ADDRESS,
@@ -87,6 +88,23 @@ export const registrantRouter = router({
       });
       if (isExist && input.slug !== isExist.slug) {
         throw new Error("Slug is already taken");
+      }
+      if (input.status !== "Pending") {
+        sendEmail.sendTransacEmail({
+          to: [{ email: `${input.email}`, name: `${input.name}}` }],
+          subject: `Your application has been ${input.status}`,
+          templateId: 2,
+          params: {
+            name: `${input.name}`,
+            status: `${input.status}`,
+            reason: `${input.reason}`,
+            registrant: {
+              url: `${process.env.NEXT_PUBLIC_VERCEL_URL}/registrant/${input.slug}`,
+              email: `${input.email}`,
+              password: `test123`,
+            },
+          },
+        });
       }
       return await ctx.prisma.registrants.update({
         where: {
