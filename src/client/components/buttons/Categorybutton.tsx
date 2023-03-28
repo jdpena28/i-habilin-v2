@@ -7,8 +7,10 @@ interface CategorybuttonProps {
 
 const Categorybutton: FC<CategorybuttonProps> = ({ icon, text }) => {
   return (
-    <div className="flex h-10 w-32 items-center justify-center rounded-full bg-secondary">
-      {icon} <span className="font-poppins">{text}</span>
+    <div className="flex-none  rounded-full bg-secondary">
+      <div className=" flex h-11 w-32 items-center justify-center">
+        {icon} <span className="font-poppins">{text}</span>
+      </div>
     </div>
   );
 };

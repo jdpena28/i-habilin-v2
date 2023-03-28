@@ -30,8 +30,7 @@ const order = () => {
         </div>
         <div className="pt-40">
           <p className=" m-4 font-bold uppercase">Top Categories </p>
-          <div className="m-5 grid grid-flow-col grid-rows-1 gap-x-3 ">
-            <Categorybutton icon={<BreadIcon />} text="" />
+          <div className="m-5 flex items-start gap-x-3 overflow-x-scroll pb-5">
             <Categorybutton icon={<BreadIcon />} text="" />
             <Categorybutton icon={<BreadIcon />} text="" />
             <Categorybutton icon={<BreadIcon />} text="" />
