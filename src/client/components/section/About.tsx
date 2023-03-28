@@ -6,16 +6,16 @@ const About = () => {
   return (
     <section
       id="about"
-      className="flex min-h-screen w-full flex-col-reverse items-center justify-center md:flex-row-reverse">
-      <div className="items-center text-justify">
-        <h3 className="-ml-2 space-y-3 pl-0 text-center md:items-start md:pl-12 md:text-left">
+      className="flex flex-col-reverse items-center md:h-screen md:flex-row-reverse md:justify-between">
+      <div className="md:w-5/12">
+        <h3 className="space-y-3 text-center md:text-left ">
           We build bridges
           <br /> between <span className="text-primary">companies </span>
           <br /> <span className="text-primary">and customer.</span>
         </h3>
-        <div className="m-10 w-4/5 pb-10 font-neuemachina ">
+        <div className="w-full px-2 py-10 text-justify font-neuemachina md:w-full md:pl-0 2xl:w-11/12">
           <div className="relative inline-block font-bold">
-            <div className="absolute -top-3 -left-3 h-max w-max ">
+            <div className="absolute -top-3 -left-3 h-max w-max">
               <InCircle />
             </div>
             I-Habilin
@@ -46,14 +46,14 @@ const About = () => {
                   fill="currentColor"
                 />
               </svg>
-              The proposed project focus to modernize the current state of food
+              The developed project focus to modernize the current state of food
               ordering process in some local food courts to make it something
-              more engaging and convenient for both clients and entrepreneurs.
+              more engaging and convenient for both customers and entrepreneurs.
             </p>
           </blockquote>
         </div>
       </div>
-      <div className="w-full">
+      <div className="w-full md:w-[21rem] lg:w-[29rem] xl:w-[37rem] ">
         <BoyMonitoring />
       </div>
     </section>
