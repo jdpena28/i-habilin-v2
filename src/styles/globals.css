@@ -132,6 +132,9 @@ tr {
 .badge-red {
   @apply w-full max-w-[100px] rounded-md  bg-rose-400 px-2 py-1 text-center font-poppins text-xs font-medium text-rose-800;
 }
+.badge-orange {
+  @apply w-full max-w-[100px] rounded-md  bg-orange-400 px-2 py-1 text-center font-poppins text-xs font-medium text-orange-800;
+}
 
 /* Upload Care */
 /* UPLOADCARE BTN */
@@ -156,4 +159,16 @@ tr {
 /* Grid Loader Theme */
 .grid-loader > span {
   @apply !bg-secondary;
+}
+#bg_order {
+  background-image: url("../../public/OrderBg.png");
+  background-repeat: no-repeat;
+  background-size: 600px 370px;
+  height: 100%;
+}
+
+@media only screen and (min-width: 600px) {
+  #bg_order {
+    background-size: 1980px 400px;
+  }
 }

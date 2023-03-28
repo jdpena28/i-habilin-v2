@@ -23,21 +23,24 @@ model Account {
   personId String? @unique
   person   Person? @relation(fields: [personId], references: [id], onDelete: Cascade)
 
+  registrantId String?      @unique
+  registrant   Registrants? @relation(fields: [registrantId], references: [id], onDelete: Cascade)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@unique([email])
+  @@index([registrantId])
 }
 
 model Registrants {
-  id        String @id @default(cuid())
-  name      String
-  slug      String @unique @db.VarChar(100)
-  contactNo String @db.VarChar(20)
-  email     String
-  status   String  @default("Pending") @db.VarChar(20)
+  id           String    @id @default(cuid())
+  name         String
+  slug         String    @unique @db.VarChar(100)
+  contactNo    String    @db.VarChar(20)
+  email        String
+  status       String    @default("Pending") @db.VarChar(20)
   approvedDate DateTime?
-
 
   personId String
   owner    Person @relation(fields: [personId], references: [id], onDelete: Cascade)
@@ -45,7 +48,7 @@ model Registrants {
   representative   Person @relation("Representative", fields: [representativeId], references: [id], onDelete: Cascade)
   representativeId String @unique
 
-  addressId String @unique
+  addressId String  @unique
   address   Address @relation(fields: [addressId], references: [id], onDelete: Cascade)
 
   dtiPermit   Media  @relation("dtiPermit", fields: [dtiPermitId], references: [id], onDelete: Cascade)
@@ -58,10 +61,12 @@ model Registrants {
   bussinessPermitId String @unique
 
   logo   Media  @relation("logo", fields: [logoId], references: [id], onDelete: Cascade)
-  logoId String 
+  logoId String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  
+  Account   Account?
 }
 
 model Person {
@@ -71,9 +76,9 @@ model Person {
   lastName   String
   birthdate  DateTime? @db.Date
   email      String?
-  contactNo String?
+  contactNo  String?
 
-  addressId String? @unique
+  addressId String?  @unique
   address   Address? @relation(fields: [addressId], references: [id], onDelete: Cascade)
 
   owner Registrants[]
@@ -84,20 +89,19 @@ model Person {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
 }
 
 model Address {
-  id          String @id @default(cuid())
+  id          String  @id @default(cuid())
   addressLine String? @db.VarChar(300)
 
-  city_code String 
+  city_code String
   city      City   @relation(fields: [city_code], references: [city_code])
 
-  prov_code String 
+  prov_code String
   province  Province @relation(fields: [prov_code], references: [prov_code])
 
-  brgyId Int? 
+  brgyId Int?
   Brgy   Brgy? @relation(fields: [brgyId], references: [id])
 
   createdAt DateTime @default(now())
@@ -129,8 +133,6 @@ model Province {
   cities  City[]
   brgy    Brgy[]
   Address Address[]
-
-
 
   @@index([prov_name])
 }
@@ -202,16 +204,16 @@ model Media {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  logo        Registrants[] @relation("logo")
-  dtiPermit   Registrants[] @relation("dtiPermit")
+  logo           Registrants[] @relation("logo")
+  dtiPermit      Registrants[] @relation("dtiPermit")
   sanitaryPermit Registrants[] @relation("sanitaryPermit")
-  BusinessPermit Registrants[]  @relation("bussinessPermit")
+  BusinessPermit Registrants[] @relation("bussinessPermit")
 }
 
 model App_Meta {
-  id         String  @id @default(cuid())
-  key        String  @unique 
-  value      String  @db.MediumText()
+  id    String @id @default(cuid())
+  key   String @unique
+  value String @db.MediumText()
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

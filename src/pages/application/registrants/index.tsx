@@ -55,6 +55,8 @@ const registrants = () => {
                               ? "badge-yellow"
                               : i.status === "Active"
                               ? "badge-lime"
+                              : i?.status === "Denied"
+                              ? "badge-orange"
                               : "badge-red"
                           }`}>
                           {i.status}
