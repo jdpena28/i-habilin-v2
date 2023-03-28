@@ -117,7 +117,7 @@ export const registrantRouter = router({
             status: `${input.status}`,
             reason: `${input.reason}`,
             registrant: {
-              url: `${process.env.NEXT_PUBLIC_VERCEL_URL}/registrant/${input.slug}`,
+              url: `${process.env.NEXT_PUBLIC_VERCEL_URL}/${input.slug}/auth/login`,
               email: `${input.email}`,
               password: `${password}`,
             },

@@ -76,8 +76,10 @@ export const authOptions: NextAuthOptions = {
         });
         if (
           !user ||
+          (credentials?.loginFrom === "Super Admin" &&
+            user.registrantId !== null) ||
           (credentials?.loginFrom !== "Super Admin" &&
-            user.registrantId !== null)
+            user.registrant?.slug !== credentials?.loginFrom)
         ) {
           throw new Error("No account found");
         }
