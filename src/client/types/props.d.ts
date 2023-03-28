@@ -3,7 +3,7 @@ import type { HTMLInputTypeAttribute, ReactHTMLElement } from "react";
 interface InputFormProps {
   id: string;
   name: string;
-  type: HTMLInputTypeAttribute;
+  type: HTMLInputTypeAttribute | "textarea";
   labelText: string;
   aboveLabel?: string;
   required?: boolean;

@@ -22,7 +22,9 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }: { token: JWT; user?: any }) {
       if (user) {
         token.id = user.id;
-        token.name = `${user.person.firstName} ${user.person.lastName}`;
+        token.name = user.person
+          ? `${user.person.firstName} ${user.person.lastName}`
+          : `${user.registrant.name} - SUPER ADMIN`;
       }
       return token;
     },
@@ -68,6 +70,7 @@ export const authOptions: NextAuthOptions = {
           where: { email: credentials?.email },
           include: {
             person: true,
+            registrant: true,
           },
         });
         if (!user) {
