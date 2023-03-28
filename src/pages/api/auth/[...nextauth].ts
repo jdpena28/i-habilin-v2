@@ -64,6 +64,7 @@ export const authOptions: NextAuthOptions = {
           placeholder: "johndoe@gmail.com",
         },
         password: { label: "Password", type: "password" },
+        loginFrom: { label: "Login From", type: "hidden" },
       },
       async authorize(credentials) {
         const user = await prisma.account.findUnique({
@@ -73,7 +74,11 @@ export const authOptions: NextAuthOptions = {
             registrant: true,
           },
         });
-        if (!user) {
+        if (
+          !user ||
+          (credentials?.loginFrom !== "Super Admin" &&
+            user.registrantId !== null)
+        ) {
           throw new Error("No account found");
         }
         const password = credentials?.password ? credentials?.password : "";
