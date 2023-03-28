@@ -1,17 +1,25 @@
 /* eslint-disable @next/next/no-img-element */
 import { FormatCurrency } from "@/client/lib/TextFormatter";
-import { FC, ReactNode } from "react";
+import { FC } from "react";
+import Image from "next/image";
 
 interface CardHolderProps {
-  icon: ReactNode;
+  src: string;
   text: string;
   price: number;
+  alt: string;
 }
 
-const CardHolder: FC<CardHolderProps> = ({ icon, text, price }) => {
+const CardHolder: FC<CardHolderProps> = ({ src, alt, text, price }) => {
   return (
     <div className="m-4 overflow-hidden rounded shadow-lg">
-      {icon}
+      <Image
+        className="bg-white"
+        src={src}
+        width={1980}
+        height={1020}
+        alt={alt}
+      />
       <div className="px-6 py-4">
         <div className="mb-2 text-xl font-bold">{text}</div>
         <div>{FormatCurrency(price)}</div>
