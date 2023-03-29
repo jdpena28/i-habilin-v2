@@ -8,3 +8,12 @@
 4. Open another terminal `pscale connect i-habilin dev --org ihabilindevs` it should not be close while you are developing.
 5. Another terminal `npx prisma db push` and then close it after
 6. `npm run dev`
+
+
+## How to Commit a file
+1. Refer to the issue referencing number: 
+For Example:
+![image](https://user-images.githubusercontent.com/79455416/228550629-095ecd38-6ba9-443b-b68b-a3fb04f4ca55.png)
+
+2. As reference above image here is an commit mesage copy the title issue and the number reference\
+`git commit -m "ISSUE #18: Page responsive & Currency Formatter"`

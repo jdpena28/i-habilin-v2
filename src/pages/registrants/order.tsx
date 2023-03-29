@@ -2,7 +2,6 @@ import { Categorybutton } from "@/client/components/buttons";
 import { CardHolder } from "@/client/components/itemHolder";
 import BreadIcon from "@public/bread-icon";
 import SeacrIcon from "@public/SearchIcon";
-import Image from "next/image";
 
 const order = () => {
   return (
@@ -30,97 +29,72 @@ const order = () => {
         </div>
         <div className="pt-40">
           <p className=" m-4 font-bold uppercase">Top Categories </p>
-          <div className="m-5 grid grid-flow-col grid-rows-1 gap-x-3 ">
-            <Categorybutton icon={<BreadIcon />} text="" />
-            <Categorybutton icon={<BreadIcon />} text="" />
-            <Categorybutton icon={<BreadIcon />} text="" />
-            <Categorybutton icon={<BreadIcon />} text="" />
-            <Categorybutton icon={<BreadIcon />} text="" />
-            <Categorybutton icon={<BreadIcon />} text="" />
-            <Categorybutton icon={<BreadIcon />} text="" />
-            <Categorybutton icon={<BreadIcon />} text="" />
+          <div className="m-5 flex items-start gap-x-3 overflow-x-auto pb-5">
+            <Categorybutton icon={<BreadIcon />} text="Bread" />
+            <Categorybutton icon={<BreadIcon />} text="Bread" />
+            <Categorybutton icon={<BreadIcon />} text="Bread" />
+            <Categorybutton icon={<BreadIcon />} text="Bread" />
+            <Categorybutton icon={<BreadIcon />} text="Bread" />
+            <Categorybutton icon={<BreadIcon />} text="Bread" />
+            <Categorybutton icon={<BreadIcon />} text="Bread" />
+            <Categorybutton icon={<BreadIcon />} text="Bread" />
+            <Categorybutton icon={<BreadIcon />} text="Bread" />
+            <Categorybutton icon={<BreadIcon />} text="Bread" />
+            <Categorybutton icon={<BreadIcon />} text="Bread" />
+            <Categorybutton icon={<BreadIcon />} text="Bread" />
+            <Categorybutton icon={<BreadIcon />} text="Bread" />
           </div>
           <div className=" mt-2">
             <p className=" m-4 font-bold uppercase">Recommended for you</p>
           </div>
-          <div className="gap-3 md:grid lg:grid-cols-6 ">
+          <div className="gap-2 md:grid lg:grid-cols-6 ">
             <CardHolder
-              icon={
-                <Image
-                  className="bg-white"
-                  src="/.././public/Sisig.png"
-                  width={1980}
-                  height={1020}
-                  alt="Sisig"
-                />
-              }
               text="Sisig"
               price={55}
+              src="/.././public/Sisig.png"
+              alt="Sisig na may pusa"
             />
             <CardHolder
-              icon={
-                <Image
-                  className="bg-white"
-                  src="/.././public/Sisig.png"
-                  width={1980}
-                  height={1020}
-                  alt="Sisig"
-                />
-              }
-              text="aso"
-              price={78}
+              text="Sisig"
+              price={55}
+              src="/.././public/Sisig.png"
+              alt="Sisig na may pusa"
             />
             <CardHolder
-              icon={
-                <Image
-                  className="bg-white"
-                  src="/.././public/Sisig.png"
-                  width={1980}
-                  height={1020}
-                  alt="Sisig"
-                />
-              }
-              text="sausage"
-              price={78}
+              text="Sisig"
+              price={55}
+              src="/.././public/Sisig.png"
+              alt="Sisig na may pusa"
             />
             <CardHolder
-              icon={
-                <Image
-                  className="bg-white"
-                  src="/.././public/Sisig.png"
-                  width={1980}
-                  height={1020}
-                  alt="Sisig"
-                />
-              }
-              text="Hotdog"
-              price={78}
+              text="Sisig"
+              price={55}
+              src="/.././public/Sisig.png"
+              alt="Sisig na may pusa"
             />
             <CardHolder
-              icon={
-                <Image
-                  className="bg-white"
-                  src="/.././public/Sisig.png"
-                  width={1980}
-                  height={1020}
-                  alt="Sisig"
-                />
-              }
-              text="buto"
-              price={78}
+              text="Sisig"
+              price={55}
+              src="/.././public/Sisig.png"
+              alt="Sisig na may pusa"
             />
             <CardHolder
-              icon={
-                <Image
-                  className="bg-white"
-                  src="/.././public/Sisig.png"
-                  width={1980}
-                  height={1020}
-                  alt="Sisig"
-                />
-              }
-              text="Aljur"
-              price={78}
+              text="Sisig"
+              price={55}
+              src="/.././public/Sisig.png"
+              alt="Sisig na may pusa"
+            />
+            <CardHolder
+              text="Sisig"
+              price={55}
+              src="/.././public/Sisig.png"
+              alt="Sisig na may pusa"
+            />
+            <CardHolder
+              text="Sisig"
+              price={55}
+              src="/.././public/Sisig.png"
+              alt="Sisig na may pusa"
             />
           </div>
         </div>
