@@ -22,6 +22,7 @@ const Login = () => {
     const auth = await signIn("credentials", {
       email: value.email,
       password: value.password,
+      loginFrom: "Super Admin",
       redirect: false,
     });
     if (auth?.error) {

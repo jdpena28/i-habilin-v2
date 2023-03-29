@@ -12,7 +12,9 @@ const dashboard = () => {
   const calculatePercentage = (value: number | undefined) => {
     return isLoading
       ? 0.333
-      : Math.round((value || 0 / (data?.total ? data?.total : 0)) * 1000) / 10;
+      : value
+      ? Math.round((value / (data?.total ?? 0)) * 1000) / 10
+      : 0;
   };
 
   return (
@@ -37,7 +39,7 @@ const dashboard = () => {
           <div
             className="w-full"
             style={{
-              flex: calculatePercentage(data?.active),
+              flex: calculatePercentage(data?.active) || 0.333,
             }}>
             <div className="h-2 w-full min-w-[50px] bg-lime-400" />
             <p className="heading text-sm text-lime-800">Active</p>
@@ -48,7 +50,7 @@ const dashboard = () => {
           <div
             className="w-full"
             style={{
-              flex: calculatePercentage(data?.pending),
+              flex: calculatePercentage(data?.pending) || 0.333,
             }}>
             <div className="h-2 w-full bg-amber-400" />
             <p className="heading text-sm text-amber-800">Pending</p>
@@ -59,7 +61,7 @@ const dashboard = () => {
           <div
             className="w-full"
             style={{
-              flex: calculatePercentage(data?.expired),
+              flex: calculatePercentage(data?.expired) || 0.333,
             }}>
             <div className="h-2 w-full bg-rose-400" />
             <p className="heading text-sm text-rose-800">Expired</p>

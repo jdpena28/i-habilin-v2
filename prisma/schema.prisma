@@ -9,6 +9,10 @@ datasource db {
   relationMode = "prisma"
 }
 
+
+// ---- #### NOTE #### ----: 
+// Cascade Delete not working on Planetscale
+
 model Account {
   id            String    @id @default(cuid())
   email         String
