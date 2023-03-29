@@ -2,6 +2,7 @@ import { router, protectedProcedure } from "@/server/trpc";
 import {
   getRegistrantSchema,
   updateRegistrantSchema,
+  deleteRegistrantSchema,
 } from "@/server/schema/application/registrant";
 import { INCLUDED_ADDRESS } from "@/client/constant";
 import { sendEmail } from "@/server/lib/SendInBlue";
@@ -117,7 +118,7 @@ export const registrantRouter = router({
             status: `${input.status}`,
             reason: `${input.reason}`,
             registrant: {
-              url: `${process.env.NEXT_PUBLIC_VERCEL_URL}/registrant/${input.slug}`,
+              url: `${process.env.NEXT_PUBLIC_VERCEL_URL}/${input.slug}/auth/login`,
               email: `${input.email}`,
               password: `${password}`,
             },
@@ -132,6 +133,61 @@ export const registrantRouter = router({
           status: input.status,
           approvedDate: input.status === "Active" ? new Date() : null,
           slug: input.slug,
+        },
+      });
+    }),
+  deleteRegistrant: protectedProcedure
+    .input(deleteRegistrantSchema)
+    .mutation(async ({ ctx, input }) => {
+      if (Array.isArray(input.id)) {
+        const hasAnAccount = await ctx.prisma.account.findMany({
+          where: {
+            registrantId: {
+              in: input.id,
+            },
+          },
+        });
+        if (hasAnAccount.length > 0) {
+          const ids = hasAnAccount.map((item) => {
+            if (item.registrantId) {
+              return item.registrantId;
+            }
+            return undefined;
+          });
+          await ctx.prisma.account.deleteMany({
+            where: {
+              registrantId: {
+                in: ids as string[],
+              },
+            },
+          });
+        }
+        return await ctx.prisma.registrants.deleteMany({
+          where: {
+            id: {
+              in: input.id,
+            },
+          },
+        });
+      }
+      const hasAnAccount = await ctx.prisma.account.findUnique({
+        where: {
+          registrantId: input.id,
+        },
+        include: {
+          registrant: true,
+        },
+      });
+      if (hasAnAccount) {
+        await ctx.prisma.account.delete({
+          where: {
+            registrantId: input.id,
+          },
+        });
+      }
+      return await ctx.prisma.registrants.delete({
+        where: {
+          id: input.id,
         },
       });
     }),

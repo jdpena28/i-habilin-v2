@@ -5,6 +5,15 @@ export const getRegistrantSchema = yup.object({
   slug: yup.string().optional(),
 });
 
+export const deleteRegistrantSchema = yup.object({
+  id: yup.lazy((value) => {
+    if (Array.isArray(value)) {
+      return yup.array().of(yup.string().required("The ID is required"));
+    }
+    return yup.string().required("The ID is required");
+  }),
+});
+
 export const updateRegistrantSchema = yup.object({
   status: yup
     .string()

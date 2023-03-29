@@ -1,6 +1,7 @@
 import { decrypt, encrypt } from "@/client/lib/bcrypt";
 import { sendEmail } from "@/server/lib/SendInBlue";
 import { slugify } from "@/server/lib/slugify";
+import { getRegistrantSchema } from "@/server/schema/application/registrant";
 import { createAccountSchema, createRegistrantSchema, getSuperAdminPassword } from "@/server/schema/public";
 import { router, procedure } from "@/server/trpc";
 import { omit } from "lodash";
@@ -75,8 +76,7 @@ export const registerRouter = router({
             }
         })
     }),
-    createAccount: procedure.input(createAccountSchema).mutation(async ({ ctx, input }) => {
-        console.log(JSON.stringify(input,null,1)) 
+    createAccount: procedure.input(createAccountSchema).mutation(async ({ ctx, input }) => { 
         const isEmailTaken = await ctx.prisma.account.findUnique({
             where: {
                 email: input.email
@@ -114,5 +114,25 @@ export const registerRouter = router({
             throw new Error("Password is incorrect")
         }
          return true
-    })
+    }),
+    getRegistrant: procedure
+    .input(getRegistrantSchema)
+    .query(async ({ ctx, input }) => {
+      const data =  await ctx.prisma.registrants.findFirst({
+        where: {
+          slug: input.slug,
+          AND: {
+            status: "Active"
+          }
+        },
+        include: {
+            logo: {
+                select: {
+                    cdnUrl: true,
+                }
+            }
+        }
+      });
+        return data
+    }),
 })

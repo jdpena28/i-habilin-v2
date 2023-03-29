@@ -15,7 +15,7 @@ const AppLayout = ({
   isLoading?: boolean;
 }) => {
   const { push } = useRouter();
-  const { status } = useSession();
+  const { status, data } = useSession();
 
   if (status === "loading") {
     return (
@@ -24,7 +24,7 @@ const AppLayout = ({
       </section>
     );
   }
-  if (status === "unauthenticated") {
+  if (status === "unauthenticated" || data?.user?.stall !== "super-admin") {
     push("/auth/login");
   }
 

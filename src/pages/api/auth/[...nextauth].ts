@@ -7,6 +7,9 @@ import { prisma } from "../../../server/prisma";
 
 export type extendDefaultSession = DefaultSession & {
   id?: string | unknown;
+  user?: {
+    stall?: string | unknown;
+  };
 };
 
 export const authOptions: NextAuthOptions = {
@@ -25,6 +28,7 @@ export const authOptions: NextAuthOptions = {
         token.name = user.person
           ? `${user.person.firstName} ${user.person.lastName}`
           : `${user.registrant.name} - SUPER ADMIN`;
+        token.slug = user.registrant ? user.registrant.slug : "super-admin";
       }
       return token;
     },
@@ -41,6 +45,7 @@ export const authOptions: NextAuthOptions = {
         session.user
           ? (session.user.name = token.name)
           : (session.user = { name: token.name });
+        session.user.stall = token.slug;
       }
       return session;
     },
@@ -64,6 +69,7 @@ export const authOptions: NextAuthOptions = {
           placeholder: "johndoe@gmail.com",
         },
         password: { label: "Password", type: "password" },
+        loginFrom: { label: "Login From", type: "hidden" },
       },
       async authorize(credentials) {
         const user = await prisma.account.findUnique({
@@ -73,7 +79,13 @@ export const authOptions: NextAuthOptions = {
             registrant: true,
           },
         });
-        if (!user) {
+        if (
+          !user ||
+          (credentials?.loginFrom === "Super Admin" &&
+            user.registrantId !== null) ||
+          (credentials?.loginFrom !== "Super Admin" &&
+            user.registrant?.slug !== credentials?.loginFrom)
+        ) {
           throw new Error("No account found");
         }
         const password = credentials?.password ? credentials?.password : "";
