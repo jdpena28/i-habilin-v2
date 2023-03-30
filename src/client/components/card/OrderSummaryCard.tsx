@@ -1,47 +1,53 @@
 import Image from "next/image";
 import { FC } from "react";
+import { FormatCurrency } from "@/client/lib/TextFormatter";
 
 interface OrderSummaryProps {
+  src: string;
+  alt: string;
   text: string;
   price: number;
   count?: number;
 }
 
-const OrderSummaryCard: FC<OrderSummaryProps> = ({ text, price, count }) => {
+const OrderSummaryCard: FC<OrderSummaryProps> = ({
+  src,
+  alt,
+  text,
+  price,
+  count,
+}) => {
   return (
     <div>
-      <div className="relative mb-6 flex h-32 w-full max-w-5xl rounded-3xl bg-gray-50">
+      <div className="relative mb-2 flex h-28 w-full rounded-3xl bg-gray-50 md:max-w-sm">
         <button
           type="button"
-          className="absolute -top-2 -right-3 mr-2 inline-flex items-center rounded-3xl bg-red-500 p-4 text-center text-sm font-medium text-white hover:bg-red-400 focus:outline-none">
+          className="absolute top-2 right-1 mr-2 inline-flex items-center rounded-3xl bg-red-500 p-3 text-center text-sm font-medium text-white hover:bg-red-400 focus:outline-none">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="currentColor"
             color="#ffffff"
-            className="-m-2 h-1 w-4">
+            className="-m-2 h-1 w-3">
             <path d="M0 0h21.875v4H0z" />
           </svg>
         </button>
-        <div className="relative m-2 inline-block w-32 overflow-hidden rounded-xl object-center">
+        <div className="relative m-2 inline-block w-2/6 overflow-hidden rounded-xl object-center">
           <Image
             className="bg-white"
-            src="/.././public/food-placeholder.jpg"
+            src={src}
             width={1980}
             height={1020}
-            alt=""
+            alt={alt}
           />
         </div>
         <div className="m-2 flex flex-1 flex-col">
-          <div className="mb-11">
+          <div className="mb-8">
             <p className="text-md font-bold">{text}</p>
           </div>
           <div className="flex w-full items-center justify-between">
             <div className=" mr-2">
-              <p className="text-secondary">
-                ₱{" "}
-                <span className="text-xl font-bold text-highlight">
-                  {price}
-                </span>{" "}
+              <p className="text-xl font-bold text-highlight">
+                {FormatCurrency(price, "PHP", true)}
               </p>
             </div>
             <div>
