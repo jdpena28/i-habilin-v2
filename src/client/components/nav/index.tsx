@@ -1,4 +1,5 @@
 import PublicNav from "./PublicNav";
 import AppNav from "./AppNav";
+import SideNav from "./SideNav";
 
-export { PublicNav, AppNav };
+export { PublicNav, AppNav, SideNav };

@@ -7,13 +7,13 @@ const order = () => {
   return (
     <section className="bg-white">
       <div id="bg_order">
-        <div className="mt-0 flex justify-center pt-0  text-white lg:items-center ">
+        <div className="mt-0 flex justify-center pt-12  text-white lg:items-center ">
           <div className=" text-8xl font-extrabold">
             <span className="text-5xl ">Hello,</span> <br />
             THERE!
           </div>
         </div>
-        <div className="absolute  left-1/2 top-28 -translate-x-1/2 translate-y-20 ">
+        <div className="absolute left-1/2 top-40 -translate-x-1/2 translate-y-20 ">
           <div className="relative mx-auto pt-2">
             <input
               className="w-80 rounded-[14px] border-gray-300 font-poppins text-lg "
@@ -27,9 +27,9 @@ const order = () => {
             </button>
           </div>
         </div>
-        <div className="pt-40">
+        <div className="pt-32">
           <p className=" m-4 font-bold uppercase">Top Categories </p>
-          <div className="m-5 flex items-start gap-x-3 overflow-x-auto pb-5">
+          <div className="mx-5 flex items-start gap-x-3 overflow-x-auto pb-5">
             <Categorybutton icon={<BreadIcon />} text="Bread" />
             <Categorybutton icon={<BreadIcon />} text="Bread" />
             <Categorybutton icon={<BreadIcon />} text="Bread" />

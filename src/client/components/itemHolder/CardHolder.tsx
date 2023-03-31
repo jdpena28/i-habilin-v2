@@ -12,7 +12,7 @@ interface CardHolderProps {
 
 const CardHolder: FC<CardHolderProps> = ({ src, alt, text, price }) => {
   return (
-    <div className="m-2 overflow-hidden rounded shadow-lg">
+    <div className="m-5 overflow-hidden rounded shadow-lg">
       <Image
         className="bg-white"
         src={src}
