@@ -1,4 +1,5 @@
 import HomeLayout from "./HomeLayout";
 import AppLayout from "./AppLayout";
+import StallLayout from "./StallLayout";
 
-export { HomeLayout, AppLayout };
+export { HomeLayout, AppLayout, StallLayout };

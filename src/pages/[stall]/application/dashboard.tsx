@@ -1,7 +1,12 @@
+import { StallLayout } from "@/client/components/layout";
 import React from "react";
 
 const Dashboard = () => {
-  return <h1>Apply Version 1 Design Here</h1>;
+  return (
+    <StallLayout>
+      <h1>Dashboard</h1>
+    </StallLayout>
+  );
 };
 
 export default Dashboard;
