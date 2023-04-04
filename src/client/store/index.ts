@@ -1,0 +1,31 @@
+/* eslint-disable no-unused-vars */
+import create from "zustand";
+import { persist } from "zustand/middleware";
+
+type StallConfigurationType = {
+  logo: string | undefined;
+  name: string | undefined;
+};
+
+interface StallConfigurationStore {
+  stall: StallConfigurationType;
+  updateStall: (stall: StallConfigurationType) => void;
+}
+
+export const useStallConfigurationStore = create<StallConfigurationStore>()(
+  persist(
+    (set) => ({
+      stall: {
+        logo: "",
+        name: "",
+      },
+      updateStall: (stall: StallConfigurationType) => {
+        set({ stall });
+      },
+    }),
+    {
+      name: "stall-configuration",
+      getStorage: () => localStorage,
+    }
+  )
+);

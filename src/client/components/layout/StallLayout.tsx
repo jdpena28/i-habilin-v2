@@ -6,7 +6,7 @@ import { GridLoader } from "react-spinners";
 import { Toaster } from "react-hot-toast";
 import { trpc } from "@/server/utils/trpc";
 
-import { AppNav } from "../nav";
+import { StallNav } from "../nav";
 
 const AppLayout = ({
   children,
@@ -51,7 +51,7 @@ const AppLayout = ({
 
   return (
     <div className="flex h-full min-h-screen w-full gap-x-10">
-      <AppNav />
+      <StallNav />
       <div className="w-full overflow-y-auto pr-10">
         {isLoading ? (
           <section className="flex h-screen w-full items-center justify-center">

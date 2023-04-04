@@ -11,6 +11,7 @@ import { HomeLayout } from "@/client/components/layout";
 
 import { ssgHelper } from "@/server/utils/ssgHelper";
 import { trpc } from "@/server/utils/trpc";
+import { useStallConfigurationStore } from "@/client/store";
 import { GetAccountSchema, getAccountSchema } from "@/server/schema/public";
 
 export async function getServerSideProps(
@@ -34,6 +35,7 @@ const Login = (
   const { slug } = props;
   const { push, query } = useRouter();
   const { data, status } = trpc.public.getRegistrant.useQuery({ slug });
+  const { updateStall } = useStallConfigurationStore();
   const {
     register,
     handleSubmit,
@@ -56,6 +58,10 @@ const Login = (
       });
     }
     if (auth?.ok) {
+      updateStall({
+        name: data?.name,
+        logo: data?.logo?.cdnUrl,
+      });
       push(`/${slug}/application/dashboard/`);
     }
   };
