@@ -68,6 +68,11 @@ export const registrantRouter = router({
         status: "Pending",
       },
     });
+    const denied = await ctx.prisma.registrants.count({
+      where: {
+        status: "Denied",
+      },
+    });
     const expired = await ctx.prisma.registrants.count({
       where: {
         status: "Expired",
@@ -77,6 +82,7 @@ export const registrantRouter = router({
       total,
       active,
       pending,
+      denied,
       expired,
     };
   }),
