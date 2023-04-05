@@ -59,6 +59,7 @@ const Login = (
     }
     if (auth?.ok) {
       updateStall({
+        id: data?.id,
         name: data?.name,
         logo: data?.logo?.cdnUrl,
       });
