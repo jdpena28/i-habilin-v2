@@ -10,12 +10,12 @@ import { deleteMedia } from "@/client/lib/UploadCare";
 interface InputFormProps {
   setValue: any;
   error: any;
-  label: string;
+  label?: string;
   id: string;
   crop?: string[] | string;
   required?: boolean;
   labelClassName?: string;
-  defaultValue: {
+  defaultValue?: {
     cdnUrl: string;
     name: string;
   };
@@ -62,9 +62,11 @@ const FileUploader: FC<InputFormProps> = ({
 
   return (
     <div>
-      <label className="label-text" htmlFor={id}>
-        {label} :&emsp;
-      </label>
+      {label && (
+        <label className="label-text" htmlFor={id}>
+          {label} :&emsp;
+        </label>
+      )}
       <Widget
         id={id}
         publicKey={process.env.NEXT_PUBLIC_UPLOADCARE_PUBLIC_KEY}

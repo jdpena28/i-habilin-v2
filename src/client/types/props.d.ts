@@ -1,4 +1,9 @@
-import type { HTMLInputTypeAttribute, ReactHTMLElement } from "react";
+/* eslint-disable no-unused-vars */
+import type {
+  HTMLInputTypeAttribute,
+  ReactHTMLElement,
+  ChangeEvent,
+} from "react";
 
 interface InputFormProps {
   id: string;
@@ -9,10 +14,9 @@ interface InputFormProps {
   required?: boolean;
   icon?: ReactHTMLElement;
   helperText?: string;
-
   error: any;
   register: any;
-  sideEffect?: () => void;
+  sideEffect?: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
 interface SelectFormProps {
