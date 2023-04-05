@@ -1,6 +1,7 @@
 import {
   createCategorySchema,
   getAllCategorySchema,
+  updateCategorySchema,
 } from "@/server/schema/stall/menu";
 import { protectedProcedure, router } from "@/server/trpc";
 import { omit } from "lodash";
@@ -21,14 +22,21 @@ export const categoryRouter = router({
       if (typeof input.icon === "string") {
         return await ctx.prisma.category.create({
           data: {
-            ...input,
+            ...omit(input, ["registrantId"]),
             icon: input.icon as string,
+            registrant: {
+              connect: {
+                id: input.registrantId,
+              },
+            },
+            order: input.order,
           },
         });
       }
       return await ctx.prisma.category.create({
         data: {
           ...omit(input, ["icon", "registrantId"]),
+          order: input.order,
           registrant: {
             connect: {
               id: input.registrantId,
@@ -57,6 +65,25 @@ export const categoryRouter = router({
         include: {
           customIcon: true,
         },
+        orderBy: {
+          order: "asc",
+        },
       });
+    }),
+  updateCategory: protectedProcedure
+    .input(updateCategorySchema)
+    .mutation(async ({ ctx, input }) => {
+      return await Promise.all(
+        input.map(async (category, index) => {
+          return await ctx.prisma.category.update({
+            where: {
+              id: category,
+            },
+            data: {
+              order: index,
+            },
+          });
+        })
+      );
     }),
 });

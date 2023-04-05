@@ -77,6 +77,7 @@ model Category {
   id   String @id @default(cuid())
   name String @unique @db.VarChar(100)
   slug String @unique @db.VarChar(100)
+  order Int  
 
   icon         String?
   customIconId String? @unique

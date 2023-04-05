@@ -14,6 +14,7 @@ export const createCategorySchema = yup.object().shape({
     .max(100, "Slug is too long")
     .default(""),
   registrantId: yup.string().required("Registrant ID is required").default("0"),
+  order: yup.number().required("Order is required").default(0),
   icon: yup.lazy((value) => {
     if (typeof value === "string" && value.length > 0) {
       return yup.string().trim().required("Icon is required");
@@ -33,3 +34,8 @@ export type CreateCategorySchema = yup.InferType<typeof createCategorySchema>;
 export const getAllCategorySchema = yup.object().shape({
   registrantId: yup.string().required("Registrant ID is required"),
 });
+
+export const updateCategorySchema = yup
+  .array()
+  .of(yup.string())
+  .required("Category is required");

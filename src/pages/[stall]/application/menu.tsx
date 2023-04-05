@@ -4,6 +4,20 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import toast from "react-hot-toast";
 import { isEmpty } from "lodash";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  horizontalListSortingStrategy,
+} from "@dnd-kit/sortable";
 
 import {
   createCategorySchema,
@@ -15,7 +29,10 @@ import { trpc } from "@/server/utils/trpc";
 
 import { StallLayout } from "@/client/components/layout";
 import { StallHeader } from "@/client/components/header";
-import { CategoryButton, SubmitButton } from "@/client/components/buttons";
+import {
+  SortableCategoryButton,
+  SubmitButton,
+} from "@/client/components/buttons";
 import ModalTemplate from "@/client/components/modal/ModalTemplate";
 import { FileUploader, InputForm, EmojiPicker } from "@/client/components/form";
 
@@ -33,6 +50,16 @@ const Menu: FC<NextPage> = () => {
       toast.error(err.message);
     },
   });
+  const { mutate: updateCategoryOrderList } =
+    trpc.stall.category.updateCategory.useMutation({
+      onSuccess: () => {
+        refetch();
+        toast.success("Category order updated");
+      },
+      onError: (err) => {
+        toast.error(err.message);
+      },
+    });
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [submitIsLoading, setSubmitIsLoading] = useState(false);
   const {
@@ -51,10 +78,32 @@ const Menu: FC<NextPage> = () => {
     mutate({
       ...value,
       registrantId: stall.id as string,
+      order: data?.length as number,
     });
     setIsCategoryModalOpen(false);
     setSubmitIsLoading(false);
     reset();
+  };
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleDragEnd = (event: any) => {
+    const oldList = data?.map((i) => i.id);
+    const { active, over } = event;
+
+    if (active.id !== over.id && oldList) {
+      const newList = arrayMove(
+        oldList,
+        oldList.indexOf(active.id),
+        oldList.indexOf(over.id)
+      );
+      updateCategoryOrderList(newList);
+    }
   };
 
   return (
@@ -67,11 +116,28 @@ const Menu: FC<NextPage> = () => {
         }}
       />
       <p className="font-semibold uppercase">Categories </p>
+
       <section id="category" className="flex flex-wrap gap-x-3 rounded-md p-2">
         {!isEmpty(data) ? (
-          data?.map((i) => {
-            return <CategoryButton key={i.id} icon={i.icon} text={i.name} />;
-          })
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}>
+            <SortableContext
+              strategy={horizontalListSortingStrategy}
+              items={data?.length ? data?.map((i) => i.id) : []}>
+              {data?.map((i) => {
+                return (
+                  <SortableCategoryButton
+                    key={i.id}
+                    id={i.id}
+                    icon={i.icon}
+                    text={i.name}
+                  />
+                );
+              })}
+            </SortableContext>
+          </DndContext>
         ) : (
           <p>No data available</p>
         )}
