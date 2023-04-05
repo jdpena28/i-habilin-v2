@@ -1,4 +1,4 @@
-import { Categorybutton } from "@/client/components/buttons";
+import { CategoryButton } from "@/client/components/buttons";
 import { CardHolder } from "@/client/components/itemHolder";
 import BreadIcon from "@public/bread-icon";
 import SeacrIcon from "@public/SearchIcon";
@@ -31,14 +31,14 @@ const order = () => {
         <div className="pt-40">
           <p className=" m-4 font-bold uppercase">Top Categories </p>
           <div className="m-5 grid grid-flow-col grid-rows-1 gap-x-3 ">
-            <Categorybutton icon={<BreadIcon />} text="" />
-            <Categorybutton icon={<BreadIcon />} text="" />
-            <Categorybutton icon={<BreadIcon />} text="" />
-            <Categorybutton icon={<BreadIcon />} text="" />
-            <Categorybutton icon={<BreadIcon />} text="" />
-            <Categorybutton icon={<BreadIcon />} text="" />
-            <Categorybutton icon={<BreadIcon />} text="" />
-            <Categorybutton icon={<BreadIcon />} text="" />
+            <CategoryButton icon={<BreadIcon />} text="" />
+            <CategoryButton icon={<BreadIcon />} text="" />
+            <CategoryButton icon={<BreadIcon />} text="" />
+            <CategoryButton icon={<BreadIcon />} text="" />
+            <CategoryButton icon={<BreadIcon />} text="" />
+            <CategoryButton icon={<BreadIcon />} text="" />
+            <CategoryButton icon={<BreadIcon />} text="" />
+            <CategoryButton icon={<BreadIcon />} text="" />
           </div>
           <div className=" mt-2">
             <p className=" m-4 font-bold uppercase">Recommended for you</p>

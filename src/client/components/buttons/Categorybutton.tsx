@@ -5,11 +5,12 @@ interface CategorybuttonProps {
   text: string;
 }
 
-const Categorybutton: FC<CategorybuttonProps> = ({ icon, text }) => {
+const CategoryButton: FC<CategorybuttonProps> = ({ icon, text }) => {
   return (
-    <div className="flex h-10 w-32 items-center justify-center rounded-full bg-secondary">
-      {icon} <span className="font-poppins">{text}</span>
+    <div className="flex h-10 w-full max-w-[170px] items-center justify-center gap-x-1 rounded-full bg-secondary p-2">
+      {icon}
+      <span className="truncate font-poppins">{text}</span>
     </div>
   );
 };
-export default Categorybutton;
+export default CategoryButton;

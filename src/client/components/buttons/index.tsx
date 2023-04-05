@@ -1,4 +1,4 @@
-import Categorybutton from "./Categorybutton";
+import CategoryButton from "./Categorybutton";
 import SubmitButton from "./SubmitButton";
 
-export { Categorybutton, SubmitButton };
+export { CategoryButton, SubmitButton };
