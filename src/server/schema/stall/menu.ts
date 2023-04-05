@@ -29,3 +29,7 @@ export const createCategorySchema = yup.object().shape({
 });
 
 export type CreateCategorySchema = yup.InferType<typeof createCategorySchema>;
+
+export const getAllCategorySchema = yup.object().shape({
+  registrantId: yup.string().required("Registrant ID is required"),
+});

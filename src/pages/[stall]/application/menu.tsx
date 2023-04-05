@@ -3,6 +3,7 @@ import { FC, useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import toast from "react-hot-toast";
+import { isEmpty } from "lodash";
 
 import {
   createCategorySchema,
@@ -14,20 +15,24 @@ import { trpc } from "@/server/utils/trpc";
 
 import { StallLayout } from "@/client/components/layout";
 import { StallHeader } from "@/client/components/header";
-import { SubmitButton } from "@/client/components/buttons";
+import { CategoryButton, SubmitButton } from "@/client/components/buttons";
 import ModalTemplate from "@/client/components/modal/ModalTemplate";
 import { FileUploader, InputForm, EmojiPicker } from "@/client/components/form";
 
 const Menu: FC<NextPage> = () => {
+  const { stall } = useStallConfigurationStore();
+  const { data, refetch } = trpc.stall.category.getAllCategory.useQuery({
+    registrantId: stall.id as string,
+  });
   const { mutate } = trpc.stall.category.createCategory.useMutation({
     onSuccess: () => {
+      refetch();
       toast.success("Category created");
     },
     onError: (err) => {
       toast.error(err.message);
     },
   });
-  const { stall } = useStallConfigurationStore();
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [submitIsLoading, setSubmitIsLoading] = useState(false);
   const {
@@ -61,8 +66,15 @@ const Menu: FC<NextPage> = () => {
           setIsCategoryModalOpen(true);
         }}
       />
-      <section id="menu" className="bg-white">
-        <p>Category</p>
+      <p className="font-semibold uppercase">Categories </p>
+      <section id="category" className="flex flex-wrap gap-x-3 rounded-md p-2">
+        {!isEmpty(data) ? (
+          data?.map((i) => {
+            return <CategoryButton key={i.id} icon={i.icon} text={i.name} />;
+          })
+        ) : (
+          <p>No data available</p>
+        )}
       </section>
       <ModalTemplate
         title="Edit Application"

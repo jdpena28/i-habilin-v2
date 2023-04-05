@@ -1,4 +1,7 @@
-import { createCategorySchema } from "@/server/schema/stall/menu";
+import {
+  createCategorySchema,
+  getAllCategorySchema,
+} from "@/server/schema/stall/menu";
 import { protectedProcedure, router } from "@/server/trpc";
 import { omit } from "lodash";
 
@@ -41,6 +44,18 @@ export const categoryRouter = router({
               originalUrl: input.icon.originalUrl,
             },
           },
+        },
+      });
+    }),
+  getAllCategory: protectedProcedure
+    .input(getAllCategorySchema)
+    .query(async ({ ctx, input }) => {
+      return await ctx.prisma.category.findMany({
+        where: {
+          registrantId: input.registrantId,
+        },
+        include: {
+          customIcon: true,
         },
       });
     }),
