@@ -1,10 +1,11 @@
-import { FC, ReactNode } from "react";
+import { FC } from "react";
 import { useRouter } from "next/router";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import Image from "next/image";
 
 interface CategorybuttonProps {
-  icon: ReactNode;
+  icon: string | null;
   text: string;
   id: string;
 }
@@ -41,7 +42,17 @@ const SortableCategoryButton: FC<CategorybuttonProps> = ({
       className={`${
         query?.category === id ? "active-category-button" : "category-button"
       }`}>
-      {icon}
+      {icon && icon?.length < 24 ? (
+        icon
+      ) : (
+        <Image
+          className="p-1"
+          src={`${icon}/-/resize/32x32/`}
+          alt={text}
+          height={32}
+          width={32}
+        />
+      )}
       <span className="truncate font-poppins">{text}</span>
     </div>
   );

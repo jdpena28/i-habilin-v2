@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import toast from "react-hot-toast";
@@ -18,6 +18,7 @@ import {
   sortableKeyboardCoordinates,
   horizontalListSortingStrategy,
 } from "@dnd-kit/sortable";
+import Image from "next/image";
 
 import {
   createCategorySchema,
@@ -113,6 +114,10 @@ const Menu: FC<NextPage> = () => {
     }
   };
 
+  useEffect(() => {
+    console.log(errors);
+  }, [errors]);
+
   return (
     <StallLayout>
       <StallHeader
@@ -140,7 +145,7 @@ const Menu: FC<NextPage> = () => {
                   <SortableCategoryButton
                     key={i.id}
                     id={i.id}
-                    icon={i.icon}
+                    icon={i.customIcon ? i.customIcon.originalUrl : i.icon}
                     text={i.name}
                   />
                 );
@@ -191,6 +196,14 @@ const Menu: FC<NextPage> = () => {
               />
               {typeof watch("icon") === "string" ? (
                 <p className="font-bold">: &emsp;{watch("icon") as string}</p>
+              ) : typeof watch("icon") === "object" ? (
+                <Image
+                  className="ml-3"
+                  src={watch("icon")?.cdnUrl}
+                  alt="Icon"
+                  width={32}
+                  height={32}
+                />
               ) : null}
             </div>
           </div>
