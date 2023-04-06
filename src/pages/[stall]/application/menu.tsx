@@ -35,12 +35,14 @@ import {
 } from "@/client/components/buttons";
 import ModalTemplate from "@/client/components/modal/ModalTemplate";
 import { FileUploader, InputForm, EmojiPicker } from "@/client/components/form";
+import { Spinner } from "@/client/components/loader";
 
 const Menu: FC<NextPage> = () => {
   const { stall } = useStallConfigurationStore();
-  const { data, refetch } = trpc.stall.category.getAllCategory.useQuery({
-    registrantId: stall.id as string,
-  });
+  const { data, isLoading, refetch } =
+    trpc.stall.category.getAllCategory.useQuery({
+      registrantId: stall.id as string,
+    });
   const { mutate } = trpc.stall.category.createCategory.useMutation({
     onSuccess: () => {
       refetch();
@@ -86,7 +88,12 @@ const Menu: FC<NextPage> = () => {
   };
 
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        delay: 100,
+        tolerance: 1,
+      },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
@@ -118,7 +125,9 @@ const Menu: FC<NextPage> = () => {
       <p className="font-semibold uppercase">Categories </p>
 
       <section id="category" className="flex flex-wrap gap-x-3 rounded-md p-2">
-        {!isEmpty(data) ? (
+        {isLoading ? (
+          <Spinner />
+        ) : !isEmpty(data) ? (
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}

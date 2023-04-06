@@ -1,4 +1,5 @@
 import { FC, ReactNode } from "react";
+import { useRouter } from "next/router";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
@@ -13,6 +14,7 @@ const SortableCategoryButton: FC<CategorybuttonProps> = ({
   text,
   id,
 }) => {
+  const { push, query, pathname } = useRouter();
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id });
   const style = {
@@ -25,7 +27,20 @@ const SortableCategoryButton: FC<CategorybuttonProps> = ({
       style={style}
       {...attributes}
       {...listeners}
-      className="flex h-10 w-full max-w-[170px] items-center justify-center gap-x-1 rounded-full bg-secondary p-2">
+      onClick={() =>
+        push({
+          pathname,
+          query: {
+            category: id,
+            stall: query.stall,
+          },
+        })
+      }
+      role="button"
+      aria-hidden
+      className={`${
+        query?.category === id ? "active-category-button" : "category-button"
+      }`}>
       {icon}
       <span className="truncate font-poppins">{text}</span>
     </div>

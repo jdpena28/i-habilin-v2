@@ -54,6 +54,13 @@ button {
   @apply flex items-center justify-center gap-x-5 rounded-lg p-4 font-poppins font-medium tracking-wider text-white;
 }
 
+.category-button {
+  @apply flex h-10 w-full max-w-[170px] items-center justify-center gap-x-1 rounded-full bg-secondary p-2;
+}
+.active-category-button {
+  @apply flex h-10 w-full max-w-[170px] items-center justify-center gap-x-1 rounded-full bg-primary p-2 text-white;
+}
+
 .decorated-underline {
   @apply max-w-max;
 }
