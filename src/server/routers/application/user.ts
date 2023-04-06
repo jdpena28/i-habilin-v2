@@ -39,6 +39,9 @@ const includedQuery = {
 export const userRouter = router({
   getAllUser: protectedProcedure.query(async ({ ctx }) => {
     return await ctx.prisma.account.findMany({
+      where: {
+        registrantId: null,
+      },
       include: includedQuery,
     });
   }),
