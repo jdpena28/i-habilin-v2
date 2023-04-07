@@ -1,5 +1,6 @@
 import {
   createCategorySchema,
+  createMenuSchema,
   getAllCategorySchema,
   updateCategorySchema,
 } from "@/server/schema/stall/menu";
@@ -55,21 +56,6 @@ export const categoryRouter = router({
         },
       });
     }),
-  getAllCategory: protectedProcedure
-    .input(getAllCategorySchema)
-    .query(async ({ ctx, input }) => {
-      return await ctx.prisma.category.findMany({
-        where: {
-          registrantId: input.registrantId,
-        },
-        include: {
-          customIcon: true,
-        },
-        orderBy: {
-          order: "asc",
-        },
-      });
-    }),
   updateCategory: protectedProcedure
     .input(updateCategorySchema)
     .mutation(async ({ ctx, input }) => {
@@ -85,5 +71,45 @@ export const categoryRouter = router({
           });
         })
       );
+    }),
+  createMenu: protectedProcedure
+    .input(createMenuSchema)
+    .mutation(async ({ ctx, input }) => {
+      const orderNo = await ctx.prisma.menu.count({
+        where: {
+          categoryId: input.categoryId,
+        },
+      });
+      input.order = orderNo + 1;
+      return await ctx.prisma.menu.create({
+        data: {
+          ...omit(input, ["categoryId", "media"]),
+          category: {
+            connect: {
+              id: input.categoryId,
+            },
+          },
+          media: {
+            create: {
+              ...input.media,
+            },
+          },
+        },
+      });
+    }),
+  getAllCategory: protectedProcedure
+    .input(getAllCategorySchema)
+    .query(async ({ ctx, input }) => {
+      return await ctx.prisma.category.findMany({
+        where: {
+          registrantId: input.registrantId,
+        },
+        include: {
+          customIcon: true,
+        },
+        orderBy: {
+          order: "asc",
+        },
+      });
     }),
 });

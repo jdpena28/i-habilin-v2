@@ -13,6 +13,8 @@ const InputForm: FC<InputFormProps> = ({
   register,
   error,
   sideEffect,
+  step,
+  defaultValue,
 }) => {
   const errorMessage: string = get(error, id)?.message;
   return (
@@ -46,6 +48,9 @@ const InputForm: FC<InputFormProps> = ({
               valueAsNumber: type === "number",
               onChange: sideEffect,
             })}
+            defaultValue={defaultValue}
+            min={type === "number" ? 0 : undefined}
+            step={step}
           />
         )}
         {!aboveLabel && (

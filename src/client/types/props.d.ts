@@ -3,6 +3,7 @@ import type {
   HTMLInputTypeAttribute,
   ReactHTMLElement,
   ChangeEvent,
+  Defaul,
 } from "react";
 
 interface InputFormProps {
@@ -17,6 +18,8 @@ interface InputFormProps {
   error: any;
   register: any;
   sideEffect?: (e: ChangeEvent<HTMLInputElement>) => void;
+  step?: string;
+  defaultValue?: string | number | string[] | number[] | Date;
 }
 
 interface SelectFormProps {

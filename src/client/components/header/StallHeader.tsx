@@ -41,7 +41,7 @@ const StallHeader: FC<StallHeaderProps> = ({
             <div />
           </div>
         </div>
-        <div>
+        <div className="flex gap-x-3">
           {buttonText && (
             <button
               className="bg-secondary p-2 text-black"

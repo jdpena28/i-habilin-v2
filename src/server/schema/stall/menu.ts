@@ -31,6 +31,47 @@ export const createCategorySchema = yup.object().shape({
 
 export type CreateCategorySchema = yup.InferType<typeof createCategorySchema>;
 
+export const createMenuSchema = yup.object().shape({
+  name: yup
+    .string()
+    .trim()
+    .required("Name is required")
+    .max(100, "Name is too long"),
+  order: yup.number().required("Order is required").default(0),
+  description: yup
+    .string()
+    .trim()
+    .required("Description is required")
+    .max(500, "Description is too long"),
+  price: yup
+    .number()
+    .required("Price is required")
+    .min(1, "Price must be greater than 0")
+    .typeError("Price is required"),
+  status: yup
+    .string()
+    .required("Status is required")
+    .oneOf(
+      ["Available", "Not Available"],
+      "Status must be either Available or Not Available"
+    ),
+  featured: yup.boolean().required("Featured is required").default(false),
+  discount: yup
+    .number()
+    .optional()
+    .min(0, "Discount must be greater than 0")
+    .max(100, "Discount must be less than 100")
+    .typeError(""),
+  total: yup
+    .number()
+    .required("Total is required")
+    .min(1, "Total must be greater than 0")
+    .typeError("Total is required"),
+  categoryId: yup.string().optional(),
+  media,
+});
+export type CreateMenuSchema = yup.InferType<typeof createMenuSchema>;
+
 export const getAllCategorySchema = yup.object().shape({
   registrantId: yup.string().required("Registrant ID is required"),
 });

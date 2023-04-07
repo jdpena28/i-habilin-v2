@@ -74,10 +74,10 @@ model Registrants {
 }
 
 model Category {
-  id   String @id @default(cuid())
-  name String @unique @db.VarChar(100)
-  slug String @unique @db.VarChar(100)
-  order Int  
+  id    String @id @default(cuid())
+  name  String @unique @db.VarChar(100)
+  slug  String @unique @db.VarChar(100)
+  order Int
 
   icon         String?
   customIconId String? @unique
@@ -88,8 +88,31 @@ model Category {
 
   registrantId String
   registrant   Registrants @relation(fields: [registrantId], references: [id], onDelete: Cascade)
+  
+  Menu         Menu[]
 
   @@index([registrantId])
+}
+
+model Menu {
+  id          String  @id @default(cuid())
+  name        String  @unique @db.VarChar(100)
+  order       Int
+  description String? @db.VarChar(500)
+
+  price    Decimal @db.Decimal(6, 2)
+  status   String
+  featured Boolean @default(false)
+  discount Int?
+  total    Decimal @db.Decimal(6, 2)
+
+  mediaId String @unique
+  media   Media  @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@index([categoryId])
 }
 
 model Person {
@@ -232,6 +255,7 @@ model Media {
   sanitaryPermit Registrants[] @relation("sanitaryPermit")
   BusinessPermit Registrants[] @relation("bussinessPermit")
   Category       Category?
+  Menu           Menu?
 }
 
 model App_Meta {
