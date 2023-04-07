@@ -45,12 +45,20 @@ import {
   SelectForm,
 } from "@/client/components/form";
 import { Spinner } from "@/client/components/loader";
+import SortableMenuCard from "@/client/components/card/SortableMenuCard";
 
 const Menu: FC<NextPage> = () => {
   const { query } = useRouter();
   const { stall } = useStallConfigurationStore();
   const { data, isLoading, refetch } = trpc.stall.menu.getAllCategory.useQuery({
     registrantId: stall.id as string,
+  });
+  const {
+    data: menuData,
+    isLoading: menuIsLoading,
+    refetch: menuRefetch,
+  } = trpc.stall.menu.getAllMenu.useQuery({
+    categoryId: query.category as string,
   });
   const { mutate } = trpc.stall.menu.createCategory.useMutation({
     onSuccess: () => {
@@ -63,6 +71,7 @@ const Menu: FC<NextPage> = () => {
   });
   const { mutate: addMenu } = trpc.stall.menu.createMenu.useMutation({
     onSuccess: () => {
+      menuRefetch();
       toast.success("Menu created");
     },
     onError: (err) => {
@@ -74,6 +83,16 @@ const Menu: FC<NextPage> = () => {
       onSuccess: () => {
         refetch();
         toast.success("Category order updated");
+      },
+      onError: (err) => {
+        toast.error(err.message);
+      },
+    });
+  const { mutate: updateCategoryMenuList } =
+    trpc.stall.menu.updateMenu.useMutation({
+      onSuccess: () => {
+        menuRefetch();
+        toast.success("Menu order updated");
       },
       onError: (err) => {
         toast.error(err.message);
@@ -151,6 +170,20 @@ const Menu: FC<NextPage> = () => {
     }
   };
 
+  const handleDragEndCategory = (event: any) => {
+    const oldList = menuData?.map((i) => i.id);
+    const { active, over } = event;
+
+    if (active.id !== over.id && oldList) {
+      const newList = arrayMove(
+        oldList,
+        oldList.indexOf(active.id),
+        oldList.indexOf(over.id)
+      );
+      updateCategoryMenuList(newList);
+    }
+  };
+
   return (
     <StallLayout>
       <StallHeader
@@ -172,7 +205,7 @@ const Menu: FC<NextPage> = () => {
       </StallHeader>
       <p className="font-semibold uppercase">Categories </p>
 
-      <section id="category" className="flex flex-wrap gap-x-3 rounded-md p-2">
+      <section id="category" className="flex flex-wrap gap-x-3 p-2">
         {isLoading ? (
           <Spinner />
         ) : !isEmpty(data) ? (
@@ -190,6 +223,36 @@ const Menu: FC<NextPage> = () => {
                     id={i.id}
                     icon={i.customIcon ? i.customIcon.originalUrl : i.icon}
                     text={i.name}
+                  />
+                );
+              })}
+            </SortableContext>
+          </DndContext>
+        ) : (
+          <p>No data available</p>
+        )}
+      </section>
+      <p className="font-semibold uppercase">Menu </p>
+      <section id="menu" className="grid grid-cols-4 gap-3">
+        {menuIsLoading ? (
+          <Spinner />
+        ) : !isEmpty(menuData) ? (
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEndCategory}>
+            <SortableContext
+              strategy={horizontalListSortingStrategy}
+              items={menuData?.length ? menuData?.map((i) => i.id) : []}>
+              {menuData?.map((i) => {
+                return (
+                  <SortableMenuCard
+                    key={i.id}
+                    title={i.name}
+                    price={i.total as unknown as number}
+                    description={i.description}
+                    imageUrl={i.media.cdnUrl}
+                    id={i.id}
                   />
                 );
               })}

@@ -31,6 +31,15 @@ export const createCategorySchema = yup.object().shape({
 
 export type CreateCategorySchema = yup.InferType<typeof createCategorySchema>;
 
+export const getAllCategorySchema = yup.object().shape({
+  registrantId: yup.string().required("Registrant ID is required"),
+});
+
+export const updateCategorySchema = yup
+  .array()
+  .of(yup.string())
+  .required("Category is required");
+
 export const createMenuSchema = yup.object().shape({
   name: yup
     .string()
@@ -72,11 +81,11 @@ export const createMenuSchema = yup.object().shape({
 });
 export type CreateMenuSchema = yup.InferType<typeof createMenuSchema>;
 
-export const getAllCategorySchema = yup.object().shape({
-  registrantId: yup.string().required("Registrant ID is required"),
+export const getAllMenuSchema = yup.object().shape({
+  categoryId: yup.string().required("Category ID is required"),
 });
 
-export const updateCategorySchema = yup
+export const updateMenuSchema = yup
   .array()
   .of(yup.string())
-  .required("Category is required");
+  .required("Menu is required");
