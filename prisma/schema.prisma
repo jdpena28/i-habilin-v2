@@ -75,8 +75,8 @@ model Registrants {
 
 model Category {
   id    String @id @default(cuid())
-  name  String @unique @db.VarChar(100)
-  slug  String @unique @db.VarChar(100)
+  name  String  @db.VarChar(100)
+  slug  String  @db.VarChar(100)
   order Int
 
   icon         String?

@@ -1,9 +1,10 @@
+import { deleteMedia } from "@/client/lib/UploadCare";
 import {
   createCategorySchema,
   createMenuSchema,
   getAllCategorySchema,
   getAllMenuSchema,
-  updateCategorySchema,
+  updateCategorySortSchema,
   updateMenuSchema,
 } from "@/server/schema/stall/menu";
 import { protectedProcedure, router } from "@/server/trpc";
@@ -16,6 +17,7 @@ export const categoryRouter = router({
       const isExisting = await ctx.prisma.category.count({
         where: {
           name: input.name,
+          registrantId: input.registrantId,
         },
       });
       if (isExisting > 0) {
@@ -58,8 +60,95 @@ export const categoryRouter = router({
         },
       });
     }),
+  updateCategory: protectedProcedure
+    .input(createCategorySchema)
+    .mutation(async ({ input, ctx }) => {
+      const isExisting = await ctx.prisma.category.findFirst({
+        where: {
+          name: input.name,
+          registrantId: input.registrantId,
+        },
+        include: {
+          customIcon: true,
+        },
+      });
+      const oldCategory = await ctx.prisma.category.findUnique({
+        where: {
+          id: input.id,
+        },
+        include: {
+          customIcon: true,
+        },
+      });
+      if (isExisting && oldCategory?.name !== input.name) {
+        throw new Error("Category name is already taken");
+      }
+      if (typeof input.icon === "string") {
+        const category = await ctx.prisma.category.update({
+          where: {
+            id: input.id,
+          },
+          data: {
+            ...omit(input, ["icon", "registrantId"]),
+            icon: input.icon as string,
+            customIcon: {
+              disconnect: true,
+            },
+          },
+        });
+        if (oldCategory?.customIconId) {
+          deleteMedia(oldCategory.customIcon?.uuid);
+          await ctx.prisma.media.delete({
+            where: {
+              id: oldCategory?.customIconId,
+            },
+          });
+        }
+        return category;
+      }
+      if (oldCategory?.customIconId) {
+        return await ctx.prisma.category.update({
+          where: {
+            id: input.id,
+          },
+          data: {
+            ...omit(input, ["icon", "registrantId"]),
+            icon: null,
+            customIcon: {
+              update: {
+                name: input.icon.name,
+                uuid: input.icon.uuid,
+                size: input.icon.size,
+                isImage: input.icon.isImage,
+                cdnUrl: input.icon.cdnUrl,
+                originalUrl: input.icon.originalUrl,
+              },
+            },
+          },
+        });
+      }
+      return await ctx.prisma.category.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          ...omit(input, ["icon", "registrantId"]),
+          icon: null,
+          customIcon: {
+            create: {
+              name: input.icon.name,
+              uuid: input.icon.uuid,
+              size: input.icon.size,
+              isImage: input.icon.isImage,
+              cdnUrl: input.icon.cdnUrl,
+              originalUrl: input.icon.originalUrl,
+            },
+          },
+        },
+      });
+    }),
   updateCategorySort: protectedProcedure
-    .input(updateCategorySchema)
+    .input(updateCategorySortSchema)
     .mutation(async ({ ctx, input }) => {
       return await Promise.all(
         input.map(async (category, index) => {

@@ -78,6 +78,17 @@ const Menu: FC<NextPage> = () => {
       toast.error(err.message);
     },
   });
+  const { mutate: updateCategory } = trpc.stall.menu.updateCategory.useMutation(
+    {
+      onSuccess: () => {
+        refetch();
+        toast.success("Category updated");
+      },
+      onError: (err) => {
+        toast.error(err.message);
+      },
+    }
+  );
   const { mutate: updateCategoryOrderList } =
     trpc.stall.menu.updateCategorySort.useMutation({
       onSuccess: () => {
@@ -114,11 +125,18 @@ const Menu: FC<NextPage> = () => {
   });
   const onSubmit = (value: CreateCategorySchema) => {
     setSubmitIsLoading(true);
-    mutate({
-      ...value,
-      registrantId: stall.id as string,
-      order: data?.length as number,
-    });
+    if (value.id) {
+      updateCategory({
+        ...value,
+        registrantId: stall.id as string,
+      });
+    } else {
+      mutate({
+        ...value,
+        registrantId: stall.id as string,
+        order: data?.length as number,
+      });
+    }
     setIsCategoryModalOpen(false);
     setSubmitIsLoading(false);
     reset();
@@ -184,6 +202,32 @@ const Menu: FC<NextPage> = () => {
     }
   };
 
+  const handleEditCategory = () => {
+    const activeCategory = data?.find((i) => i.id === query.category);
+    if (!activeCategory) return;
+    setValue("id", activeCategory.id);
+    setValue("name", activeCategory.name);
+    setValue("slug", activeCategory.slug);
+    setValue("registrantId", activeCategory.registrantId);
+    setValue("order", activeCategory.order);
+    setValue(
+      "icon",
+      activeCategory.icon
+        ? activeCategory.icon
+        : activeCategory.customIcon
+        ? {
+            name: activeCategory?.customIcon.name,
+            uuid: activeCategory?.customIcon.uuid,
+            size: activeCategory?.customIcon.size,
+            isImage: activeCategory?.customIcon.isImage,
+            cdnUrl: activeCategory?.customIcon.cdnUrl,
+            originalUrl: activeCategory?.customIcon.originalUrl,
+          }
+        : ""
+    );
+    setIsCategoryModalOpen(true);
+  };
+
   return (
     <StallLayout>
       <StallHeader
@@ -197,9 +241,7 @@ const Menu: FC<NextPage> = () => {
             <button
               className="bg-secondary p-2 text-black"
               type="button"
-              onClick={() => {
-                setIsMenuModalOpen(true);
-              }}>
+              onClick={handleEditCategory}>
               Edit Category
             </button>
             <button

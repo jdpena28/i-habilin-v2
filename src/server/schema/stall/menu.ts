@@ -2,6 +2,7 @@ import * as yup from "yup";
 import { media } from "..";
 
 export const createCategorySchema = yup.object().shape({
+  id: yup.string().optional(),
   name: yup
     .string()
     .trim()
@@ -35,7 +36,7 @@ export const getAllCategorySchema = yup.object().shape({
   registrantId: yup.string().required("Registrant ID is required"),
 });
 
-export const updateCategorySchema = yup
+export const updateCategorySortSchema = yup
   .array()
   .of(yup.string())
   .required("Category is required");

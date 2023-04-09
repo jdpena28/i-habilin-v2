@@ -1,6 +1,6 @@
 import { UPLOADCARE_SECRET_KEY } from "../constant";
 
-const deleteMedia = (uuid: string) => {
+const deleteMedia = (uuid: string | undefined) => {
   const privateKey = UPLOADCARE_SECRET_KEY;
   const publicKey = process.env.NEXT_PUBLIC_UPLOADCARE_PUBLIC_KEY;
   try {
