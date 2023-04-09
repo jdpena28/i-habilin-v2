@@ -63,9 +63,13 @@ const Menu: FC<NextPage> = () => {
   const { mutate } = trpc.stall.menu.createCategory.useMutation({
     onSuccess: () => {
       refetch();
+      setIsCategoryModalOpen(false);
+      setSubmitIsLoading(false);
+      reset();
       toast.success("Category created");
     },
     onError: (err) => {
+      setSubmitIsLoading(false);
       toast.error(err.message);
     },
   });
@@ -73,9 +77,13 @@ const Menu: FC<NextPage> = () => {
     {
       onSuccess: () => {
         refetch();
+        setIsCategoryModalOpen(false);
+        setSubmitIsLoading(false);
+        reset();
         toast.success("Category updated");
       },
       onError: (err) => {
+        setSubmitIsLoading(false);
         toast.error(err.message);
       },
     }
@@ -84,9 +92,18 @@ const Menu: FC<NextPage> = () => {
     {
       onSuccess: () => {
         refetch();
+        push({
+          pathname,
+          query: {
+            stall: query.stall,
+          },
+        });
+        setIsDeleteCategoryModalOpen(false);
+        setSubmitIsLoading(false);
         toast.success("Category deleted");
       },
       onError: (err) => {
+        setSubmitIsLoading(false);
         toast.error(err.message);
       },
     }
@@ -183,9 +200,6 @@ const Menu: FC<NextPage> = () => {
         order: data?.length as number,
       });
     }
-    setIsCategoryModalOpen(false);
-    setSubmitIsLoading(false);
-    reset();
   };
 
   const {
@@ -279,16 +293,10 @@ const Menu: FC<NextPage> = () => {
 
   const handleDeleteCategory = (e: FormEvent) => {
     e.preventDefault();
+    setSubmitIsLoading(true);
     deleteCategory({
       id: query.category as string,
     });
-    push({
-      pathname,
-      query: {
-        stall: query.stall,
-      },
-    });
-    setIsDeleteCategoryModalOpen(false);
   };
 
   const handleEditMenu = (id: string) => {
