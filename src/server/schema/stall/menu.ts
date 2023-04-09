@@ -46,6 +46,7 @@ export const deleteCategorySchema = yup.object().shape({
 });
 
 export const createMenuSchema = yup.object().shape({
+  id: yup.string().optional(),
   name: yup
     .string()
     .trim()

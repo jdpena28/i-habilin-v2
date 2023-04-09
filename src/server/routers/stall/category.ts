@@ -213,6 +213,23 @@ export const categoryRouter = router({
         },
       });
     }),
+  updateMenu: protectedProcedure
+    .input(createMenuSchema)
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.prisma.menu.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          ...omit(input, ["media", "categoryId"]),
+          media: {
+            update: {
+              ...input.media,
+            },
+          },
+        },
+      });
+    }),
   updateMenuSort: protectedProcedure
     .input(updateMenuSchema)
     .mutation(async ({ ctx, input }) => {
@@ -237,11 +254,7 @@ export const categoryRouter = router({
           categoryId: input.categoryId,
         },
         include: {
-          media: {
-            select: {
-              cdnUrl: true,
-            },
-          },
+          media: true,
         },
         orderBy: {
           order: "asc",

@@ -69,15 +69,6 @@ const Menu: FC<NextPage> = () => {
       toast.error(err.message);
     },
   });
-  const { mutate: addMenu } = trpc.stall.menu.createMenu.useMutation({
-    onSuccess: () => {
-      menuRefetch();
-      toast.success("Menu created");
-    },
-    onError: (err) => {
-      toast.error(err.message);
-    },
-  });
   const { mutate: updateCategory } = trpc.stall.menu.updateCategory.useMutation(
     {
       onSuccess: () => {
@@ -110,7 +101,33 @@ const Menu: FC<NextPage> = () => {
         toast.error(err.message);
       },
     });
-  const { mutate: updateCategoryMenuList } =
+  const { mutate: addMenu } = trpc.stall.menu.createMenu.useMutation({
+    onSuccess: () => {
+      menuRefetch();
+      setIsMenuModalOpen(false);
+      setSubmitIsLoading(false);
+      resetMenu();
+      toast.success("Menu created");
+    },
+    onError: (err) => {
+      setSubmitIsLoading(false);
+      toast.error(err.message);
+    },
+  });
+  const { mutate: updateMenu } = trpc.stall.menu.updateMenu.useMutation({
+    onSuccess: () => {
+      menuRefetch();
+      setIsMenuModalOpen(false);
+      setSubmitIsLoading(false);
+      resetMenu();
+      toast.success("Menu updated");
+    },
+    onError: (err) => {
+      setSubmitIsLoading(false);
+      toast.error(err.message);
+    },
+  });
+  const { mutate: updateMenuOrderList } =
     trpc.stall.menu.updateMenuSort.useMutation({
       onSuccess: () => {
         menuRefetch();
@@ -124,6 +141,8 @@ const Menu: FC<NextPage> = () => {
   const [isMenuModalOpen, setIsMenuModalOpen] = useState(false);
   const [isDeleteCategoryModalOpen, setIsDeleteCategoryModalOpen] =
     useState(false);
+  const [isDeleteMenuModalOpen, setIsDeleteMenuModalOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [submitIsLoading, setSubmitIsLoading] = useState(false);
   const {
     register,
@@ -168,11 +187,14 @@ const Menu: FC<NextPage> = () => {
   });
   const onSubmitMenu = (value: CreateMenuSchema) => {
     setSubmitIsLoading(true);
-    value.categoryId = query.category as string;
-    addMenu(value);
-    setIsMenuModalOpen(false);
-    setSubmitIsLoading(false);
-    resetMenu();
+    if (value.id) {
+      updateMenu({
+        ...value,
+      });
+    } else {
+      value.categoryId = query.category as string;
+      addMenu(value);
+    }
   };
 
   const sensors = useSensors(
@@ -211,7 +233,7 @@ const Menu: FC<NextPage> = () => {
         oldList.indexOf(active.id),
         oldList.indexOf(over?.id)
       );
-      updateCategoryMenuList(newList);
+      updateMenuOrderList(newList);
     }
   };
 
@@ -253,6 +275,34 @@ const Menu: FC<NextPage> = () => {
       },
     });
     setIsDeleteCategoryModalOpen(false);
+  };
+
+  const handleEditMenu = (id: string) => {
+    const activeMenu = menuData?.find((i) => i.id === id);
+    if (!activeMenu) return;
+    setValueMenu("id", activeMenu.id);
+    setValueMenu("name", activeMenu.name);
+    setValueMenu("order", activeMenu.order);
+    setValueMenu("description", activeMenu.description);
+    setValueMenu("price", activeMenu.price as unknown as number);
+    setValueMenu("status", activeMenu.status);
+    setValueMenu("featured", activeMenu.featured);
+    setValueMenu("discount", activeMenu.discount ? activeMenu.discount : 0);
+    setValueMenu("total", activeMenu.total as unknown as number);
+    setValueMenu("media", {
+      name: activeMenu.media.name,
+      uuid: activeMenu.media.uuid,
+      size: activeMenu.media.size,
+      isImage: activeMenu.media.isImage,
+      cdnUrl: activeMenu.media.cdnUrl,
+      originalUrl: activeMenu.media.originalUrl,
+    });
+    setIsMenuModalOpen(true);
+  };
+
+  const handleDeleteMenu = (id: string) => {
+    setIsDeleteMenuModalOpen(true);
+    setSelectedCategory(id);
   };
 
   return (
@@ -338,6 +388,8 @@ const Menu: FC<NextPage> = () => {
                     description={i.description}
                     imageUrl={i.media.cdnUrl}
                     id={i.id}
+                    handleEdit={() => handleEditMenu(i.id)}
+                    handleDelete={() => handleDeleteMenu(i.id)}
                   />
                 );
               })}
@@ -413,7 +465,7 @@ const Menu: FC<NextPage> = () => {
         </form>
       </ModalTemplate>
       <ModalTemplate
-        title="Add Menu"
+        title={`${getValuesMenu("id") ? "Edit" : "Add"} Menu`}
         isOpenModal={isMenuModalOpen}
         setIsOpenModal={setIsMenuModalOpen}
         bodyClassName="max-w-2xl min-h-[30vh]">
@@ -445,10 +497,6 @@ const Menu: FC<NextPage> = () => {
             watch={watchMenu}
             register={registerMenu}
             label="Image*"
-            defaultValue={{
-              cdnUrl: "",
-              name: "",
-            }}
           />
           <SelectForm
             register={registerMenu}
@@ -555,6 +603,35 @@ const Menu: FC<NextPage> = () => {
               className="bg-yellow-400 text-black"
               onClick={() => {
                 setIsDeleteCategoryModalOpen(false);
+              }}>
+              Cancel
+            </button>
+            <SubmitButton
+              className="!bg-red-500 text-white"
+              isLoading={submitIsLoading}
+            />
+          </div>
+        </form>
+      </ModalTemplate>
+      <ModalTemplate
+        title="Delete Menu"
+        isOpenModal={isDeleteMenuModalOpen}
+        setIsOpenModal={setIsDeleteMenuModalOpen}
+        bodyClassName="max-w-lg">
+        <form className="space-y-3" onSubmit={handleDeleteCategory}>
+          <p>
+            Are you sure you want to delete menu named{" "}
+            <span className="font-medium underline underline-offset-1">
+              {menuData?.find((i) => i.id === selectedCategory)?.name}
+            </span>
+            ?
+          </p>
+          <div className="mt-4 flex justify-end gap-x-2">
+            <button
+              type="reset"
+              className="bg-yellow-400 text-black"
+              onClick={() => {
+                setIsDeleteMenuModalOpen(false);
               }}>
               Cancel
             </button>
