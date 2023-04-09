@@ -87,6 +87,10 @@ export const createMenuSchema = yup.object().shape({
 });
 export type CreateMenuSchema = yup.InferType<typeof createMenuSchema>;
 
+export const deleteMenuSchema = yup.object().shape({
+  id: yup.string().required("Menu ID is required"),
+});
+
 export const getAllMenuSchema = yup.object().shape({
   categoryId: yup.string().required("Category ID is required"),
 });

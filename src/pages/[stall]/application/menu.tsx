@@ -127,6 +127,20 @@ const Menu: FC<NextPage> = () => {
       toast.error(err.message);
     },
   });
+  const { mutate: deleteMenu } = trpc.stall.menu.deleteMenu.useMutation({
+    onSuccess: () => {
+      menuRefetch();
+      setIsDeleteMenuModalOpen(false);
+      setSelectedMenu("");
+      setSubmitIsLoading(false);
+      resetMenu();
+      toast.success("Menu deleted");
+    },
+    onError: (err) => {
+      setSubmitIsLoading(false);
+      toast.error(err.message);
+    },
+  });
   const { mutate: updateMenuOrderList } =
     trpc.stall.menu.updateMenuSort.useMutation({
       onSuccess: () => {
@@ -142,7 +156,7 @@ const Menu: FC<NextPage> = () => {
   const [isDeleteCategoryModalOpen, setIsDeleteCategoryModalOpen] =
     useState(false);
   const [isDeleteMenuModalOpen, setIsDeleteMenuModalOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedMenu, setSelectedMenu] = useState("");
   const [submitIsLoading, setSubmitIsLoading] = useState(false);
   const {
     register,
@@ -300,9 +314,12 @@ const Menu: FC<NextPage> = () => {
     setIsMenuModalOpen(true);
   };
 
-  const handleDeleteMenu = (id: string) => {
-    setIsDeleteMenuModalOpen(true);
-    setSelectedCategory(id);
+  const handleDeleteMenu = (e: FormEvent) => {
+    e.preventDefault();
+    setSubmitIsLoading(true);
+    deleteMenu({
+      id: selectedMenu,
+    });
   };
 
   return (
@@ -389,7 +406,10 @@ const Menu: FC<NextPage> = () => {
                     imageUrl={i.media.cdnUrl}
                     id={i.id}
                     handleEdit={() => handleEditMenu(i.id)}
-                    handleDelete={() => handleDeleteMenu(i.id)}
+                    handleDelete={() => {
+                      setSelectedMenu(i.id);
+                      setIsDeleteMenuModalOpen(true);
+                    }}
                   />
                 );
               })}
@@ -618,11 +638,11 @@ const Menu: FC<NextPage> = () => {
         isOpenModal={isDeleteMenuModalOpen}
         setIsOpenModal={setIsDeleteMenuModalOpen}
         bodyClassName="max-w-lg">
-        <form className="space-y-3" onSubmit={handleDeleteCategory}>
+        <form className="space-y-3" onSubmit={handleDeleteMenu}>
           <p>
             Are you sure you want to delete menu named{" "}
             <span className="font-medium underline underline-offset-1">
-              {menuData?.find((i) => i.id === selectedCategory)?.name}
+              {menuData?.find((i) => i.id === selectedMenu)?.name}
             </span>
             ?
           </p>
@@ -632,6 +652,7 @@ const Menu: FC<NextPage> = () => {
               className="bg-yellow-400 text-black"
               onClick={() => {
                 setIsDeleteMenuModalOpen(false);
+                setSelectedMenu("");
               }}>
               Cancel
             </button>

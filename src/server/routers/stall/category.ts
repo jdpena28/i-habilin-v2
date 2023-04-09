@@ -3,6 +3,7 @@ import {
   createCategorySchema,
   createMenuSchema,
   deleteCategorySchema,
+  deleteMenuSchema,
   getAllCategorySchema,
   getAllMenuSchema,
   updateCategorySortSchema,
@@ -227,6 +228,15 @@ export const categoryRouter = router({
               ...input.media,
             },
           },
+        },
+      });
+    }),
+  deleteMenu: protectedProcedure
+    .input(deleteMenuSchema)
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.prisma.menu.delete({
+        where: {
+          id: input.id,
         },
       });
     }),
