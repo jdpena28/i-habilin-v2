@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import { FC, useState } from "react";
+import { FC, FormEvent, useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import toast from "react-hot-toast";
@@ -48,7 +48,7 @@ import { Spinner } from "@/client/components/loader";
 import SortableMenuCard from "@/client/components/card/SortableMenuCard";
 
 const Menu: FC<NextPage> = () => {
-  const { query } = useRouter();
+  const { query, pathname, push } = useRouter();
   const { stall } = useStallConfigurationStore();
   const { data, isLoading, refetch } = trpc.stall.menu.getAllCategory.useQuery({
     registrantId: stall.id as string,
@@ -89,6 +89,17 @@ const Menu: FC<NextPage> = () => {
       },
     }
   );
+  const { mutate: deleteCategory } = trpc.stall.menu.deleteCategory.useMutation(
+    {
+      onSuccess: () => {
+        refetch();
+        toast.success("Category deleted");
+      },
+      onError: (err) => {
+        toast.error(err.message);
+      },
+    }
+  );
   const { mutate: updateCategoryOrderList } =
     trpc.stall.menu.updateCategorySort.useMutation({
       onSuccess: () => {
@@ -111,6 +122,8 @@ const Menu: FC<NextPage> = () => {
     });
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [isMenuModalOpen, setIsMenuModalOpen] = useState(false);
+  const [isDeleteCategoryModalOpen, setIsDeleteCategoryModalOpen] =
+    useState(false);
   const [submitIsLoading, setSubmitIsLoading] = useState(false);
   const {
     register,
@@ -178,11 +191,11 @@ const Menu: FC<NextPage> = () => {
     const oldList = data?.map((i) => i.id);
     const { active, over } = event;
 
-    if (active.id !== over.id && oldList) {
+    if (active.id !== over?.id && oldList) {
       const newList = arrayMove(
         oldList,
         oldList.indexOf(active.id),
-        oldList.indexOf(over.id)
+        oldList.indexOf(over?.id)
       );
       updateCategoryOrderList(newList);
     }
@@ -192,11 +205,11 @@ const Menu: FC<NextPage> = () => {
     const oldList = menuData?.map((i) => i.id);
     const { active, over } = event;
 
-    if (active.id !== over.id && oldList) {
+    if (active.id !== over?.id && oldList) {
       const newList = arrayMove(
         oldList,
         oldList.indexOf(active.id),
-        oldList.indexOf(over.id)
+        oldList.indexOf(over?.id)
       );
       updateCategoryMenuList(newList);
     }
@@ -228,6 +241,20 @@ const Menu: FC<NextPage> = () => {
     setIsCategoryModalOpen(true);
   };
 
+  const handleDeleteCategory = (e: FormEvent) => {
+    e.preventDefault();
+    deleteCategory({
+      id: query.category as string,
+    });
+    push({
+      pathname,
+      query: {
+        stall: query.stall,
+      },
+    });
+    setIsDeleteCategoryModalOpen(false);
+  };
+
   return (
     <StallLayout>
       <StallHeader
@@ -243,6 +270,12 @@ const Menu: FC<NextPage> = () => {
               type="button"
               onClick={handleEditCategory}>
               Edit Category
+            </button>
+            <button
+              className="bg-red-500 p-2 text-white"
+              type="button"
+              onClick={() => setIsDeleteCategoryModalOpen(true)}>
+              Delete Category
             </button>
             <button
               className="bg-secondary p-2 text-black"
@@ -315,7 +348,7 @@ const Menu: FC<NextPage> = () => {
         )}
       </section>
       <ModalTemplate
-        title="Add Category"
+        title={`${getValues("id") ? "Edit" : "Add"} Category`}
         isOpenModal={isCategoryModalOpen}
         setIsOpenModal={setIsCategoryModalOpen}
         bodyClassName="max-w-2xl min-h-[30vh]">
@@ -500,6 +533,35 @@ const Menu: FC<NextPage> = () => {
               Cancel
             </button>
             <SubmitButton isLoading={submitIsLoading} />
+          </div>
+        </form>
+      </ModalTemplate>
+      <ModalTemplate
+        title="Delete Category"
+        isOpenModal={isDeleteCategoryModalOpen}
+        setIsOpenModal={setIsDeleteCategoryModalOpen}
+        bodyClassName="max-w-lg">
+        <form className="space-y-3" onSubmit={handleDeleteCategory}>
+          <p>
+            Are you sure you want to delete category named{" "}
+            <span className="font-medium underline underline-offset-1">
+              {data?.find((i) => i.id === query.category)?.name}
+            </span>
+            ?
+          </p>
+          <div className="mt-4 flex justify-end gap-x-2">
+            <button
+              type="reset"
+              className="bg-yellow-400 text-black"
+              onClick={() => {
+                setIsDeleteCategoryModalOpen(false);
+              }}>
+              Cancel
+            </button>
+            <SubmitButton
+              className="!bg-red-500 text-white"
+              isLoading={submitIsLoading}
+            />
           </div>
         </form>
       </ModalTemplate>

@@ -2,6 +2,7 @@ import { deleteMedia } from "@/client/lib/UploadCare";
 import {
   createCategorySchema,
   createMenuSchema,
+  deleteCategorySchema,
   getAllCategorySchema,
   getAllMenuSchema,
   updateCategorySortSchema,
@@ -144,6 +145,15 @@ export const categoryRouter = router({
               originalUrl: input.icon.originalUrl,
             },
           },
+        },
+      });
+    }),
+  deleteCategory: protectedProcedure
+    .input(deleteCategorySchema)
+    .mutation(async ({ input, ctx }) => {
+      return await ctx.prisma.category.delete({
+        where: {
+          id: input.id,
         },
       });
     }),

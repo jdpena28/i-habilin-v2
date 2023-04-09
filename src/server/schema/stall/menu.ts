@@ -41,6 +41,10 @@ export const updateCategorySortSchema = yup
   .of(yup.string())
   .required("Category is required");
 
+export const deleteCategorySchema = yup.object().shape({
+  id: yup.string().required("Category ID is required"),
+});
+
 export const createMenuSchema = yup.object().shape({
   name: yup
     .string()

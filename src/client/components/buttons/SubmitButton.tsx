@@ -2,13 +2,14 @@ import { FC } from "react";
 
 type SubmitButtonType = {
   isLoading: boolean;
+  className?: string;
 };
 
-const SubmitButton: FC<SubmitButtonType> = ({ isLoading }) => {
+const SubmitButton: FC<SubmitButtonType> = ({ isLoading, className }) => {
   return (
     <button
       type={isLoading ? "button" : "submit"}
-      className="bg-primary text-white ">
+      className={`bg-primary text-white ${className}`}>
       {isLoading ? (
         <svg className="h-5 w-5 animate-spin text-white" viewBox="0 0 24 24">
           <circle
