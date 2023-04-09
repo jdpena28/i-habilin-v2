@@ -8,7 +8,7 @@ import { CSS } from "@dnd-kit/utilities";
 interface SortableMenuCardProps {
   title: string;
   price: number;
-  description: string;
+  description: string | null;
   imageUrl: string;
   id: string;
 }

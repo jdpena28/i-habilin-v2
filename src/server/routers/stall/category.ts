@@ -58,7 +58,7 @@ export const categoryRouter = router({
         },
       });
     }),
-  updateCategory: protectedProcedure
+  updateCategorySort: protectedProcedure
     .input(updateCategorySchema)
     .mutation(async ({ ctx, input }) => {
       return await Promise.all(
@@ -114,7 +114,7 @@ export const categoryRouter = router({
         },
       });
     }),
-  updateMenu: protectedProcedure
+  updateMenuSort: protectedProcedure
     .input(updateMenuSchema)
     .mutation(async ({ ctx, input }) => {
       return await Promise.all(

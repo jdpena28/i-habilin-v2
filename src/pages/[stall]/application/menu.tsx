@@ -79,7 +79,7 @@ const Menu: FC<NextPage> = () => {
     },
   });
   const { mutate: updateCategoryOrderList } =
-    trpc.stall.menu.updateCategory.useMutation({
+    trpc.stall.menu.updateCategorySort.useMutation({
       onSuccess: () => {
         refetch();
         toast.success("Category order updated");
@@ -89,7 +89,7 @@ const Menu: FC<NextPage> = () => {
       },
     });
   const { mutate: updateCategoryMenuList } =
-    trpc.stall.menu.updateMenu.useMutation({
+    trpc.stall.menu.updateMenuSort.useMutation({
       onSuccess: () => {
         menuRefetch();
         toast.success("Menu order updated");
@@ -170,7 +170,7 @@ const Menu: FC<NextPage> = () => {
     }
   };
 
-  const handleDragEndCategory = (event: any) => {
+  const handleDragEndMenu = (event: any) => {
     const oldList = menuData?.map((i) => i.id);
     const { active, over } = event;
 
@@ -193,14 +193,24 @@ const Menu: FC<NextPage> = () => {
           setIsCategoryModalOpen(true);
         }}>
         {query.category && (
-          <button
-            className="bg-secondary p-2 text-black"
-            type="button"
-            onClick={() => {
-              setIsMenuModalOpen(true);
-            }}>
-            Add Menu
-          </button>
+          <>
+            <button
+              className="bg-secondary p-2 text-black"
+              type="button"
+              onClick={() => {
+                setIsMenuModalOpen(true);
+              }}>
+              Edit Category
+            </button>
+            <button
+              className="bg-secondary p-2 text-black"
+              type="button"
+              onClick={() => {
+                setIsMenuModalOpen(true);
+              }}>
+              Add Menu
+            </button>
+          </>
         )}
       </StallHeader>
       <p className="font-semibold uppercase">Categories </p>
@@ -240,7 +250,7 @@ const Menu: FC<NextPage> = () => {
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
-            onDragEnd={handleDragEndCategory}>
+            onDragEnd={handleDragEndMenu}>
             <SortableContext
               strategy={horizontalListSortingStrategy}
               items={menuData?.length ? menuData?.map((i) => i.id) : []}>
