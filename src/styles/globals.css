@@ -55,10 +55,10 @@ button {
 }
 
 .category-button {
-  @apply flex h-10 w-full max-w-[170px] items-center justify-center gap-x-1 rounded-full bg-secondary p-2;
+  @apply flex h-10 w-full max-w-[170px] items-center justify-center gap-x-1 rounded-full bg-secondary p-2 text-xs lg:text-base;
 }
 .active-category-button {
-  @apply flex h-10 w-full max-w-[170px] items-center justify-center gap-x-1 rounded-full bg-primary p-2 text-white;
+  @apply flex h-10 w-full max-w-[170px] items-center justify-center gap-x-1 rounded-full bg-primary p-2 text-white lg:text-base;
 }
 
 .decorated-underline {

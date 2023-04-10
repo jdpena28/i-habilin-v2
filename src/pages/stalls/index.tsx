@@ -18,7 +18,12 @@ const Stalls: FC<NextPage> = () => {
               {!isEmpty(data) ? (
                 data?.map((i) => {
                   return (
-                    <StallCard src={i.logo.cdnUrl} text={i.name} alt={i.name} />
+                    <StallCard
+                      src={i.logo.cdnUrl}
+                      text={i.name}
+                      alt={i.name}
+                      slug={i.slug}
+                    />
                   );
                 })
               ) : (

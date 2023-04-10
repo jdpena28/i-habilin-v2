@@ -52,3 +52,7 @@ export const getAccountSchema = yup.object({
 
 export type GetAccountSchema = yup.InferType<typeof getAccountSchema>
 
+export const getAllCategorySchema = yup.object({
+    slug: yup.string().trim().required("Slug is required"),
+})
+
