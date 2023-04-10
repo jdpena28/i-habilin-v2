@@ -1,5 +1,4 @@
 import { StallHolder } from "@/client/components/itemHolder";
-import { SideNav } from "@/client/components/nav";
 import { SearchNav } from "@/client/components/SeachBar";
 import BurgerMenu from "@public/burger-menu";
 import ShoppingCart from "@public/Shopping-Cart";
@@ -8,7 +7,6 @@ const foodStall = () => {
   return (
     <section>
       <div className=" relative md:flex ">
-        <SideNav />
         <div className="flex-1 bg-white ">
           <div id="bg_order2">
             <div className="flex justify-between md:hidden ">

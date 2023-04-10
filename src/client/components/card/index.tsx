@@ -1,3 +1,4 @@
 import CountCard from "./CountCard";
+import StallCard from "./StallCard";
 
-export { CountCard };
+export { CountCard, StallCard };

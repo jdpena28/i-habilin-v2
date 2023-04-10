@@ -143,4 +143,19 @@ export const registerRouter = router({
       });
         return data
     }),
+    getAllStalls: procedure.query(async ({ ctx }) => {
+        const data = await ctx.prisma.registrants.findMany({
+            where: {
+                status: "Active"
+            },
+            include: {
+                logo: {
+                    select: {
+                        cdnUrl: true,
+                    }
+                }
+            }
+        })
+        return data
+    })
 })
