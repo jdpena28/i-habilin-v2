@@ -8,6 +8,14 @@ import { omit } from "lodash";
 
 export const registerRouter = router({
     createRegistrant: procedure.input(createRegistrantSchema).mutation(async ({ ctx, input }) => {
+        const isEmailExist = await ctx.prisma.account.count({
+            where: {
+                email: input.registrant.email
+            }
+        })
+        if (isEmailExist > 0) {
+            throw new Error("Stall Email is already taken")
+        }
         const isSlugExist = await ctx.prisma.registrants.count({
             where: {
                 slug: slugify(input.registrant.name)

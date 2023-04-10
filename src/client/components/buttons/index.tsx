@@ -1,3 +1,5 @@
-import Categorybutton from "./Categorybutton";
+import CategoryButton from "./Categorybutton";
+import SubmitButton from "./SubmitButton";
+import SortableCategoryButton from "./SortableCategoryButton";
 
-export { Categorybutton };
+export { CategoryButton, SubmitButton, SortableCategoryButton };

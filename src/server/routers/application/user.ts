@@ -1,3 +1,4 @@
+import { deleteRegistrantSchema } from "@/server/schema/application/registrant";
 import { getUserSchema } from "@/server/schema/application/user";
 import { router, protectedProcedure } from "@/server/trpc";
 
@@ -38,6 +39,9 @@ const includedQuery = {
 export const userRouter = router({
   getAllUser: protectedProcedure.query(async ({ ctx }) => {
     return await ctx.prisma.account.findMany({
+      where: {
+        registrantId: null,
+      },
       include: includedQuery,
     });
   }),
@@ -50,5 +54,38 @@ export const userRouter = router({
         },
         include: includedQuery,
       });
+    }),
+  deleteUser: protectedProcedure
+    .input(deleteRegistrantSchema)
+    .mutation(async ({ ctx, input }) => {
+      if (Array.isArray(input.id)) {
+        return await ctx.prisma.account.deleteMany({
+          where: {
+            id: {
+              in: input.id,
+            },
+          },
+        });
+      }
+      const account = await ctx.prisma.account.delete({
+        where: {
+          id: input.id,
+        },
+      });
+      const person = await ctx.prisma.person.delete({
+        where: {
+          id: account.personId as string,
+        },
+      });
+      const address = await ctx.prisma.address.delete({
+        where: {
+          id: person.addressId as string,
+        },
+      });
+      return {
+        account,
+        person,
+        address,
+      };
     }),
 });

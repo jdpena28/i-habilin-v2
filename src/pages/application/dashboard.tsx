@@ -61,6 +61,17 @@ const dashboard = () => {
           <div
             className="w-full"
             style={{
+              flex: calculatePercentage(data?.denied) || 0.333,
+            }}>
+            <div className="h-2 w-full bg-red-600" />
+            <p className="heading text-sm text-red-900">Denied</p>
+            <p className="heading text-sm text-gray-800">
+              {data?.denied} [{calculatePercentage(data?.denied)}%]
+            </p>
+          </div>
+          <div
+            className="w-full"
+            style={{
               flex: calculatePercentage(data?.expired) || 0.333,
             }}>
             <div className="h-2 w-full bg-rose-400" />

@@ -1,4 +1,4 @@
-import { Categorybutton } from "@/client/components/buttons";
+import { CategoryButton } from "@/client/components/buttons";
 import { CardHolder } from "@/client/components/itemHolder";
 import BreadIcon from "@public/bread-icon";
 import SeacrIcon from "@public/SearchIcon";
@@ -30,19 +30,19 @@ const order = () => {
         <div className="pt-32">
           <p className=" m-4 font-bold uppercase">Top Categories </p>
           <div className="mx-5 flex items-start gap-x-3 overflow-x-auto pb-5">
-            <Categorybutton icon={<BreadIcon />} text="Bread" />
-            <Categorybutton icon={<BreadIcon />} text="Bread" />
-            <Categorybutton icon={<BreadIcon />} text="Bread" />
-            <Categorybutton icon={<BreadIcon />} text="Bread" />
-            <Categorybutton icon={<BreadIcon />} text="Bread" />
-            <Categorybutton icon={<BreadIcon />} text="Bread" />
-            <Categorybutton icon={<BreadIcon />} text="Bread" />
-            <Categorybutton icon={<BreadIcon />} text="Bread" />
-            <Categorybutton icon={<BreadIcon />} text="Bread" />
-            <Categorybutton icon={<BreadIcon />} text="Bread" />
-            <Categorybutton icon={<BreadIcon />} text="Bread" />
-            <Categorybutton icon={<BreadIcon />} text="Bread" />
-            <Categorybutton icon={<BreadIcon />} text="Bread" />
+            <CategoryButton icon={<BreadIcon />} text="Bread" />
+            <CategoryButton icon={<BreadIcon />} text="Bread" />
+            <CategoryButton icon={<BreadIcon />} text="Bread" />
+            <CategoryButton icon={<BreadIcon />} text="Bread" />
+            <CategoryButton icon={<BreadIcon />} text="Bread" />
+            <CategoryButton icon={<BreadIcon />} text="Bread" />
+            <CategoryButton icon={<BreadIcon />} text="Bread" />
+            <CategoryButton icon={<BreadIcon />} text="Bread" />
+            <CategoryButton icon={<BreadIcon />} text="Bread" />
+            <CategoryButton icon={<BreadIcon />} text="Bread" />
+            <CategoryButton icon={<BreadIcon />} text="Bread" />
+            <CategoryButton icon={<BreadIcon />} text="Bread" />
+            <CategoryButton icon={<BreadIcon />} text="Bread" />
           </div>
           <div className=" mt-2">
             <p className=" m-4 font-bold uppercase">Recommended for you</p>
