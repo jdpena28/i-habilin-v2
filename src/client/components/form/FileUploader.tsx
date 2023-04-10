@@ -30,6 +30,7 @@ const FileUploader: FC<InputFormProps> = ({
   crop,
   register,
   getValues,
+  watch,
   setValue,
   defaultValue,
   label,
@@ -72,7 +73,7 @@ const FileUploader: FC<InputFormProps> = ({
         publicKey={process.env.NEXT_PUBLIC_UPLOADCARE_PUBLIC_KEY}
         tabs="file url"
         crop={crop}
-        value={getValues(id)?.uuid ? getValues(id)?.uuid : ""}
+        value={watch(id)?.cdnUrl ? watch(id)?.cdnUrl : ""}
         {...register(id)}
         onChange={(e: any) => handleOnChange(e)}
       />

@@ -393,7 +393,7 @@ const Menu: FC<NextPage> = () => {
         )}
       </section>
       <p className="font-semibold uppercase">Menu </p>
-      <section id="menu" className="grid grid-cols-4 gap-3">
+      <section id="menu" className="mt-4 ml-4 grid grid-cols-4 gap-5">
         {menuIsLoading ? (
           <Spinner />
         ) : !isEmpty(menuData) ? (
@@ -409,9 +409,13 @@ const Menu: FC<NextPage> = () => {
                   <SortableMenuCard
                     key={i.id}
                     title={i.name}
-                    price={i.total as unknown as number}
+                    total={i.total as unknown as number}
+                    price={i.price as unknown as number}
                     description={i.description}
                     imageUrl={i.media.cdnUrl}
+                    featured={i.featured}
+                    discount={i.discount ? i.discount : 0}
+                    status={i.status}
                     id={i.id}
                     handleEdit={() => handleEditMenu(i.id)}
                     handleDelete={() => {
