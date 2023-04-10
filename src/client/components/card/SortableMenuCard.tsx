@@ -50,7 +50,9 @@ const SortableMenuCard: FC<SortableMenuCardProps> = ({
       {...attributes}
       {...listeners}
       className={`relative col-span-1 aspect-video h-[288px] w-full rounded p-4 shadow-lg lg:h-[432px] ${
-        featured && "ring-4 ring-primary ring-offset-4"
+        featured &&
+        status === "Available" &&
+        "ring-4 ring-primary ring-offset-4"
       }`}>
       {isHover ? (
         <div className="absolute top-2 right-2 z-40 flex flex-row space-x-2">
@@ -97,7 +99,9 @@ const SortableMenuCard: FC<SortableMenuCardProps> = ({
           {discount > 0 && ` - `}
           {FormatCurrency(total)}
         </div>
-        <p className="text-ellipsis text-gray-700">{description}</p>
+        <p className="h-32 truncate whitespace-normal text-gray-700">
+          {description}
+        </p>
       </div>
     </div>
   );
