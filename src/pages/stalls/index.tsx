@@ -15,7 +15,7 @@ const Stalls: FC<NextPage> = () => {
   const { push } = useRouter();
   const { customerReference } = useCustomerReferenceStore();
   const { data, isLoading } = trpc.public.getAllStalls.useQuery();
-  const [isOpenSurveyModal, setIsOpenSurveyModal] = useState(true);
+  const [isOpenSurveyModal, setIsOpenSurveyModal] = useState(false);
 
   useEffect(() => {
     if (!customerReference.isSurveyed) {

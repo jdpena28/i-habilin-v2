@@ -1,7 +1,7 @@
 import * as yup from "yup";
 import { encrypt } from "@/client/lib/bcrypt";
 import { createSuperAdminPassword } from "@/server/schema/public";
-import { router, protectedProcedure } from "@/server/trpc";
+import { router, protectedProcedure, procedure } from "@/server/trpc";
 
 const maintenanceMode = yup.object({
   value: yup.boolean().required("Value is required"),
@@ -11,7 +11,7 @@ const getAppMetaSchema = yup.object({
 });
 
 export const settingsRouter = router({
-  getAppMeta: protectedProcedure
+  getAppMeta: procedure
     .input(getAppMetaSchema)
     .query(async ({ ctx, input }) => {
       return await ctx.prisma.app_Meta.findUnique({
