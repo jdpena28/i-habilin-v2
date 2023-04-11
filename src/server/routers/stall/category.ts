@@ -259,6 +259,7 @@ export const categoryRouter = router({
   getAllMenu: protectedProcedure
     .input(getAllMenuSchema)
     .query(async ({ ctx, input }) => {
+      if (!input.categoryId) return [];
       return await ctx.prisma.menu.findMany({
         where: {
           categoryId: input.categoryId,
