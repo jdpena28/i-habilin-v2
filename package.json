@@ -47,6 +47,7 @@
     "react-icons": "^4.8.0",
     "react-spinners": "^0.13.8",
     "superjson": "^1.12.2",
+    "swiper": "^9.2.0",
     "yup": "^1.0.2",
     "zustand": "^4.3.7"
   },

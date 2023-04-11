@@ -92,7 +92,9 @@ export const deleteMenuSchema = yup.object().shape({
 });
 
 export const getAllMenuSchema = yup.object().shape({
-  categoryId: yup.string().required("Category ID is required"),
+  categoryId: yup.string().optional(),
+  featured: yup.boolean().optional(),
+  slug: yup.string().optional(),
 });
 
 export const updateMenuSchema = yup

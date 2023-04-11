@@ -7,6 +7,7 @@ import { CustomerLayout } from "@/client/components/layout";
 import { CategoryButton } from "@/client/components/buttons";
 import { MenuCard } from "@/client/components/card";
 import { Spinner } from "@/client/components/loader";
+import { FeaturedMenu } from "@/client/components/swiper";
 
 const Menu = () => {
   const { query, push, pathname } = useRouter();
@@ -33,6 +34,17 @@ const Menu = () => {
         },
       }
     );
+  const { data: featuredMenuData, status: featuredMenuStatus } =
+    trpc.public.getAllMenu.useQuery(
+      {
+        slug: query.stall as string,
+        featured: true,
+      },
+      {
+        refetchInterval: 1000 * 60 * 0.25,
+      }
+    );
+
   const {
     data: menuData,
     isLoading: menuIsLoading,
@@ -48,8 +60,13 @@ const Menu = () => {
 
   return (
     <CustomerLayout
-      isLoading={categoryStatus === "loading" && menuStatus === "loading"}>
+      isLoading={
+        categoryStatus === "loading" &&
+        menuStatus === "loading" &&
+        featuredMenuStatus === "loading"
+      }>
       <div className="mt-3 space-y-2">
+        {!isEmpty(featuredMenuData) && <FeaturedMenu data={featuredMenuData} />}
         <p className="font-semibold uppercase">Categories</p>
         <section id="category" className="flex w-full gap-x-3 overflow-x-auto">
           {!isEmpty(categoryData) ? (
@@ -81,7 +98,6 @@ const Menu = () => {
                   price={i.price as unknown as number}
                   description={i.description}
                   imageUrl={i.media.cdnUrl}
-                  featured={i.featured}
                   discount={i.discount as unknown as number}
                   status={i.status}
                 />

@@ -175,6 +175,24 @@ export const registerRouter = router({
        })
     }),
     getAllMenu: procedure.input(getAllMenuSchema).query(async ({input, ctx}) => {
+       if (input.featured) {
+              return await ctx.prisma.menu.findMany({
+                 where: {
+                      category:{
+                        registrant: {
+                            slug: input.slug
+                        }
+                      },
+                      featured: true
+                 },
+                 orderBy: {
+                      order: "asc"
+                 },
+                 include: {
+                      media: true,
+                 }
+              })
+       }
        return await ctx.prisma.menu.findMany({
             where: {
                 categoryId: input.categoryId

@@ -192,3 +192,8 @@ tr {
     background-size: 1980px 270px;
   }
 }
+
+/* Swiper */
+.swiper-pagination-bullet {
+  @apply !bg-highlight;
+}
