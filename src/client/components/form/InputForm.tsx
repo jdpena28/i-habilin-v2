@@ -30,7 +30,7 @@ const InputForm: FC<InputFormProps> = ({
             id={id}
             name={name}
             placeholder={labelText}
-            className="label-text peer h-32 w-full border-none bg-transparent p-0 py-1 !font-normal placeholder-transparent focus:border-transparent focus:outline-none focus:ring-0 sm:text-sm"
+            className="label-text peer h-32 w-full border-none bg-transparent p-0 py-1 !font-normal placeholder-transparent focus:border-transparent focus:outline-none focus:ring-0"
             rows={3}
             cols={20}
             {...register(id, {
@@ -43,7 +43,7 @@ const InputForm: FC<InputFormProps> = ({
             id={id}
             name={name}
             placeholder={labelText}
-            className="label-text peer h-8 w-full border-none bg-transparent p-0 !font-normal placeholder-transparent focus:border-transparent focus:outline-none focus:ring-0 sm:text-sm"
+            className="label-text peer h-8 w-full border-none bg-transparent p-0 !font-normal placeholder-transparent focus:border-transparent focus:outline-none focus:ring-0"
             {...register(id, {
               valueAsNumber: type === "number",
               onChange: sideEffect,

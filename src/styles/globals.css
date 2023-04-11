@@ -70,7 +70,7 @@ button {
 }
 
 .label-text {
-  @apply font-poppins font-medium tracking-wide placeholder:font-poppins placeholder:font-medium placeholder:tracking-wide;
+  @apply font-poppins text-sm font-medium tracking-wide placeholder:font-poppins placeholder:font-medium placeholder:tracking-wide lg:text-base;
 }
 
 .helper-text {
