@@ -30,3 +30,28 @@ export const useStallConfigurationStore = create<StallConfigurationStore>()(
     }
   )
 );
+
+type CustomerReferenceType = {
+  isSurveyed: boolean;
+};
+
+interface CustomerReference {
+  customerReference: CustomerReferenceType;
+  updateCustomerReference: (customerReference: CustomerReferenceType) => void;
+}
+
+export const useCustomerReferenceStore = create<CustomerReference>()(
+  persist(
+    (set) => ({
+      customerReference: {
+        isSurveyed: false,
+      },
+      updateCustomerReference: (customerReference: CustomerReferenceType) => {
+        set({ customerReference });
+      },
+    }),
+    {
+      name: "customer-reference",
+    }
+  )
+);
