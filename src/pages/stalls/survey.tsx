@@ -1,6 +1,11 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { toast } from "react-hot-toast";
+import { useRouter } from "next/router";
 
+import { useCustomerReferenceStore } from "@/client/store";
+import { trpc } from "@/server/utils/trpc";
 import { createSurveySchema, CreateSurveySchema } from "@/server/schema/public";
 
 import { CustomerLayout } from "@/client/components/layout";
@@ -8,6 +13,25 @@ import { SubmitButton } from "@/client/components/buttons";
 import { InputForm, SelectForm } from "@/client/components/form";
 
 const Survey = () => {
+  const { push } = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const { updateCustomerReference } = useCustomerReferenceStore();
+  const { mutate } = trpc.public.createCustomer.useMutation({
+    onSuccess: (data) => {
+      setIsLoading(false);
+      toast.success("Successfully submitted your answer");
+      updateCustomerReference({
+        id: data.id,
+        name: data.name,
+        isSurveyed: true,
+      });
+      push("/stalls");
+    },
+    onError: (error) => {
+      setIsLoading(false);
+      toast.error(error.message);
+    },
+  });
   const {
     register,
     handleSubmit,
@@ -19,7 +43,8 @@ const Survey = () => {
   });
 
   const onSubmit = (data: CreateSurveySchema) => {
-    console.log(data);
+    setIsLoading(true);
+    mutate(data);
   };
 
   const FOOD_PREFERENCE_DATA = [
@@ -119,6 +144,7 @@ const Survey = () => {
               {FOOD_PREFERENCE_DATA.map((i) => {
                 return (
                   <label
+                    key={i}
                     htmlFor="food_preference"
                     className="label-text !font-normal">
                     <input
@@ -147,6 +173,7 @@ const Survey = () => {
               {CUISINE_DATA.map((i) => {
                 return (
                   <label
+                    key={i}
                     htmlFor="cuisine_preference"
                     className="label-text !font-normal">
                     <input
@@ -192,6 +219,7 @@ const Survey = () => {
               {COOKED_PREFERENCE_DATA.map((i) => {
                 return (
                   <label
+                    key={i}
                     htmlFor="cooked_preference"
                     className="label-text !font-normal">
                     <input
@@ -222,7 +250,7 @@ const Survey = () => {
             aboveLabel="Indicate any food allergy"
           />
           <div className="flex flex-row-reverse">
-            <SubmitButton isLoading={false} />
+            <SubmitButton isLoading={isLoading} />
           </div>
         </form>
       </section>

@@ -2,7 +2,7 @@ import { decrypt, encrypt } from "@/client/lib/bcrypt";
 import { sendEmail } from "@/server/lib/SendInBlue";
 import { slugify } from "@/server/lib/slugify";
 import { getRegistrantSchema } from "@/server/schema/application/registrant";
-import { createAccountSchema, createRegistrantSchema, getAllCategorySchema, getSuperAdminPassword } from "@/server/schema/public";
+import { createAccountSchema, createRegistrantSchema, createSurveySchema, getAllCategorySchema, getSuperAdminPassword } from "@/server/schema/public";
 import { getAllMenuSchema } from "@/server/schema/stall/menu";
 import { router, procedure } from "@/server/trpc";
 import { omit } from "lodash";
@@ -205,4 +205,13 @@ export const registerRouter = router({
             }
        })
     }),
+    createCustomer: procedure.input(createSurveySchema).mutation(async ({ ctx, input }) => {
+        return await ctx.prisma.customer.create({
+            data: {
+                name: input.name,
+                surveyAnswer: JSON.stringify(input),
+                ageGroup: input.age,
+            }
+        })
+    })
 })

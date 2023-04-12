@@ -51,7 +51,7 @@ const Stalls: FC<NextPage> = () => {
         isOpenModal={isOpenSurveyModal}
         setIsOpenModal={setIsOpenSurveyModal}
         onClose={() => {
-          push("survey");
+          push("/stalls/survey");
         }}
         bodyClassName="max-w-2xl">
         <div className="bg- relative h-80 w-full bg-contain bg-center lg:h-[490px]">

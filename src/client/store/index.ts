@@ -32,6 +32,8 @@ export const useStallConfigurationStore = create<StallConfigurationStore>()(
 );
 
 type CustomerReferenceType = {
+  id: string;
+  name: string | undefined | null;
   isSurveyed: boolean;
 };
 
@@ -45,6 +47,8 @@ export const useCustomerReferenceStore = create<CustomerReference>()(
     (set) => ({
       customerReference: {
         isSurveyed: false,
+        id: "",
+        name: "",
       },
       updateCustomerReference: (customerReference: CustomerReferenceType) => {
         set({ customerReference });

@@ -3,7 +3,6 @@ import type {
   HTMLInputTypeAttribute,
   ReactHTMLElement,
   ChangeEvent,
-  Defaul,
 } from "react";
 
 interface InputFormProps {
