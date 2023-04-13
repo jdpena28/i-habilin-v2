@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
 
 type StallConfigurationType = {
   id: string | undefined;
@@ -56,6 +56,34 @@ export const useCustomerReferenceStore = create<CustomerReference>()(
     }),
     {
       name: "customer-reference",
+    }
+  )
+);
+
+type CustomerOrderType = {
+  tableNumber: number | undefined;
+  isTableModalOpen: boolean;
+};
+
+interface CustomerOrder {
+  customerOrder: CustomerOrderType;
+  updateCustomerOrder: (customerOrder: CustomerOrderType) => void;
+}
+
+export const useCustomerOrderStore = create<CustomerOrder>()(
+  persist(
+    (set) => ({
+      customerOrder: {
+        tableNumber: undefined,
+        isTableModalOpen: false,
+      },
+      updateCustomerOrder: (customerOrder: CustomerOrderType) => {
+        set({ customerOrder });
+      },
+    }),
+    {
+      name: "customer-order",
+      storage: createJSONStorage(() => sessionStorage),
     }
   )
 );
