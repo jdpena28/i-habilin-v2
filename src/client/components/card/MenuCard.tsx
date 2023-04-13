@@ -12,6 +12,7 @@ interface MenuCardProps {
   imageUrl: string;
   discount: number;
   status: string;
+  onClick: () => void;
 }
 
 const MenuCard: FC<MenuCardProps> = ({
@@ -22,9 +23,13 @@ const MenuCard: FC<MenuCardProps> = ({
   imageUrl,
   discount,
   status,
+  onClick,
 }) => {
   return (
-    <div className="relative col-span-1 aspect-video h-[288px] w-full rounded p-1 shadow-lg lg:h-[432px] lg:p-4">
+    <div
+      className="relative col-span-1 aspect-video h-[288px] w-full rounded p-1 shadow-lg lg:h-[432px] lg:p-4"
+      onClick={onClick}
+      aria-hidden>
       {discount > 0 && status === "Available" && (
         <div className="absolute -top-4 -right-2 flex h-10 w-10 flex-col items-center justify-center rounded-full bg-red-500 font-poppins font-medium text-white lg:h-14 lg:w-14">
           <span className="text-xs">Sale</span>
