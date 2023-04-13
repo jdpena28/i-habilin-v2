@@ -176,6 +176,7 @@ export const registerRouter = router({
        })
     }),
     getAllMenu: procedure.input(getAllMenuSchema).query(async ({input, ctx}) => {
+       if(!input.categoryId) return null
        if (input.featured) {
               return await ctx.prisma.menu.findMany({
                  where: {
