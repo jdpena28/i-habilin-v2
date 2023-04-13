@@ -32,6 +32,7 @@ const Stalls: FC<NextPage> = () => {
                 data?.map((i) => {
                   return (
                     <StallCard
+                      key={i.id}
                       src={i.logo.cdnUrl}
                       text={i.name}
                       alt={i.name}

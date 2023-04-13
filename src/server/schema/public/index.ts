@@ -70,3 +70,8 @@ export const createSurveySchema = yup.object({
 
 export type CreateSurveySchema = yup.InferType<typeof createSurveySchema>
 
+export const generateRecommendationSchema = yup.object({
+    customerId: yup.string().trim().required("Customer ID is required"),
+    slug: yup.string().trim().required("Slug is required"),
+})
+

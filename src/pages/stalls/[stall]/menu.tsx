@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import { isEmpty } from "lodash";
 
 import { trpc } from "@/server/utils/trpc";
+import { useCustomerReferenceStore } from "@/client/store";
 
 import { CustomerLayout } from "@/client/components/layout";
 import { CategoryButton } from "@/client/components/buttons";
@@ -10,6 +11,7 @@ import { Spinner } from "@/client/components/loader";
 import { FeaturedMenu } from "@/client/components/swiper";
 
 const Menu = () => {
+  const { customerReference } = useCustomerReferenceStore();
   const { query, push, pathname } = useRouter();
   const { data: categoryData, status: categoryStatus } =
     trpc.public.getAllCategory.useQuery(
@@ -58,6 +60,20 @@ const Menu = () => {
     }
   );
 
+  const {
+    data: foodRecommendationData,
+    isLoading: foodRecommendationIsLoading,
+  } = trpc.public.getGenerateFoodRecommendation.useQuery(
+    {
+      customerId: customerReference.id,
+      slug: query.stall as string,
+    },
+    {
+      enabled: false,
+      staleTime: 1000 * 60 * 60 * 24,
+    }
+  );
+
   return (
     <CustomerLayout
       isLoading={
@@ -73,6 +89,7 @@ const Menu = () => {
             categoryData?.map((i) => {
               return (
                 <CategoryButton
+                  key={i.id}
                   icon={i.customIcon ? i.customIcon.originalUrl : i.icon}
                   text={i.name}
                   id={i.id}
@@ -83,6 +100,33 @@ const Menu = () => {
             <p>No data available</p>
           )}
         </section>
+        {foodRecommendationIsLoading ? (
+          <p className="text-sm">Generating recommendation ...</p>
+        ) : (
+          !isEmpty(foodRecommendationData) && (
+            <>
+              <p className="font-semibold uppercase">For you</p>
+              <section
+                id="category"
+                className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
+                {foodRecommendationData?.recommended_food.map((i: any) => {
+                  return (
+                    <MenuCard
+                      key={i.id}
+                      title={i.name}
+                      total={i.total as unknown as number}
+                      price={i.price as unknown as number}
+                      description={i.description}
+                      imageUrl={i.media.cdnUrl}
+                      discount={i.discount as unknown as number}
+                      status={i.status}
+                    />
+                  );
+                })}
+              </section>
+            </>
+          )
+        )}
         <p className="font-semibold uppercase">Menu</p>
         <section
           id="category"
@@ -93,6 +137,7 @@ const Menu = () => {
             menuData?.map((i) => {
               return (
                 <MenuCard
+                  key={i.id}
                   title={i.name}
                   total={i.total as unknown as number}
                   price={i.price as unknown as number}
