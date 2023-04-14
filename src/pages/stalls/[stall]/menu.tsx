@@ -5,8 +5,12 @@ import { isEmpty } from "lodash";
 import { AiOutlinePlus, AiOutlineMinus } from "react-icons/ai";
 
 import { trpc } from "@/server/utils/trpc";
-import { useCustomerReferenceStore } from "@/client/store";
+import {
+  useCustomerOrderStore,
+  useCustomerReferenceStore,
+} from "@/client/store";
 import { FormatCurrency } from "@/client/lib/TextFormatter";
+import type { GetAllMenuType } from "@/client/types/main";
 
 import { CustomerLayout } from "@/client/components/layout";
 import { CategoryButton } from "@/client/components/buttons";
@@ -17,8 +21,11 @@ import ModalTemplate from "@/client/components/modal/ModalTemplate";
 
 const Menu = () => {
   const { customerReference } = useCustomerReferenceStore();
+  const { customerOrder, updateCustomerOrder } = useCustomerOrderStore();
   const { query, push, pathname } = useRouter();
-  const [menuDescription, setMenuDescription] = useState<any>();
+  const [menuDescription, setMenuDescription] = useState<
+    GetAllMenuType | undefined | never
+  >();
   const [isMenuDescriptionModalOpen, setIsMenuDescriptionModalOpen] =
     useState(false);
   const { data: categoryData, status: categoryStatus } =
@@ -81,6 +88,69 @@ const Menu = () => {
       staleTime: 1000 * 60 * 60 * 24,
     }
   );
+
+  const addToOrder = () => {
+    const { orders } = customerOrder;
+    if (isEmpty(orders)) {
+      updateCustomerOrder({
+        ...customerOrder,
+        orders: [
+          {
+            id: menuDescription?.category?.registrant?.id,
+            name: menuDescription?.category?.registrant?.name,
+            menuOrders: menuDescription ? [menuDescription] : [],
+          },
+        ],
+      });
+    } else {
+      const stallIndex = orders.findIndex(
+        (i) => i.id === menuDescription?.category?.registrant?.id
+      );
+      if (stallIndex !== -1) {
+        const menuIndex = orders[stallIndex].menuOrders?.findIndex(
+          (i: GetAllMenuType) => i.id === menuDescription?.id
+        );
+        if (menuIndex !== -1) {
+          orders[stallIndex].menuOrders[menuIndex] =
+            menuDescription as GetAllMenuType;
+        } else {
+          orders[stallIndex].menuOrders?.push(menuDescription);
+        }
+      } else {
+        orders.push({
+          id: menuDescription?.category?.registrant?.id,
+          name: menuDescription?.category?.registrant?.name,
+          menuOrders: menuDescription ? [menuDescription] : [],
+        });
+      }
+      updateCustomerOrder({
+        ...customerOrder,
+        orders,
+      });
+    }
+    setIsMenuDescriptionModalOpen(false);
+  };
+
+  const handleQuantityAdd = () => {
+    if (menuDescription) {
+      setMenuDescription({
+        ...menuDescription,
+        quantity: menuDescription.quantity + 1,
+      });
+    }
+  };
+
+  const handleQuantityMinus = () => {
+    if (menuDescription?.quantity === 1) {
+      return;
+    }
+    if (menuDescription) {
+      setMenuDescription({
+        ...menuDescription,
+        quantity: menuDescription.quantity - 1,
+      });
+    }
+  };
 
   return (
     <CustomerLayout
@@ -158,7 +228,17 @@ const Menu = () => {
                   discount={i.discount as unknown as number}
                   status={i.status}
                   onClick={() => {
-                    setMenuDescription(i);
+                    setMenuDescription({
+                      ...i,
+                      quantity:
+                        customerOrder.orders.length === 0
+                          ? 1
+                          : customerOrder.orders
+                              .find((j) => j.id === i.category.registrant.id)
+                              ?.menuOrders?.find(
+                                (k: GetAllMenuType) => k.id === i.id
+                              )?.quantity || 1,
+                    });
                     setIsMenuDescriptionModalOpen(true);
                   }}
                 />
@@ -177,14 +257,14 @@ const Menu = () => {
         onClose={() => {
           setIsMenuDescriptionModalOpen(false);
           setTimeout(() => {
-            setMenuDescription({});
+            setMenuDescription(undefined);
           }, 500);
         }}>
         <div className="space-y-2">
           <div className="relative aspect-video h-auto w-full bg-contain bg-center">
             <Image
-              src={menuDescription?.media?.cdnUrl}
-              alt={menuDescription?.media?.name}
+              src={menuDescription?.media?.cdnUrl as string}
+              alt={menuDescription?.media?.name as string}
               fill
             />
           </div>
@@ -196,22 +276,25 @@ const Menu = () => {
           </p>
           <p className="font-neuemachina font-semibold tracking-wide">
             <span className="line-through">
-              {menuDescription?.discount > 0 &&
+              {typeof menuDescription?.discount === "number" &&
+                menuDescription.discount > 0 &&
                 FormatCurrency(menuDescription?.price as unknown as number)}
             </span>{" "}
-            {menuDescription?.discount > 0 && ` - `}
-            {FormatCurrency(menuDescription?.total) as unknown as number}
+            {typeof menuDescription?.discount === "number" &&
+              menuDescription.discount > 0 &&
+              ` - `}
+            {FormatCurrency(menuDescription?.total as unknown as number)}
           </p>
           <div className="!mt-4 flex justify-around">
-            <div className="flex h-max w-max items-center justify-center rounded-full p-2">
-              <AiOutlineMinus size={16} />
-            </div>
-            <span className="heading font-bold">0</span>
-            <div className="flex h-max w-max items-center justify-center rounded-full p-2">
-              <AiOutlinePlus size={16} />
-            </div>
+            <AiOutlineMinus size={20} onClick={handleQuantityMinus} />
+            <span className="heading font-bold">
+              {menuDescription?.quantity}
+            </span>
+            <AiOutlinePlus size={20} onClick={handleQuantityAdd} />
           </div>
-          <button className="!mt-4 w-full bg-primary">Add to Order</button>
+          <button className="!mt-4 w-full bg-primary" onClick={addToOrder}>
+            Add to Order
+          </button>
         </div>
       </ModalTemplate>
     </CustomerLayout>

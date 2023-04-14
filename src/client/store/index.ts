@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
+import { GetAllMenuType } from "../types/main";
 
 type StallConfigurationType = {
   id: string | undefined;
@@ -63,6 +64,13 @@ export const useCustomerReferenceStore = create<CustomerReference>()(
 type CustomerOrderType = {
   tableNumber: number | undefined;
   isTableModalOpen: boolean;
+  orders: [ordersType] | any[];
+};
+
+export type ordersType = {
+  id: string | undefined;
+  name: string | undefined;
+  menuOrders: [GetAllMenuType] | any[];
 };
 
 interface CustomerOrder {
@@ -76,6 +84,7 @@ export const useCustomerOrderStore = create<CustomerOrder>()(
       customerOrder: {
         tableNumber: undefined,
         isTableModalOpen: false,
+        orders: [],
       },
       updateCustomerOrder: (customerOrder: CustomerOrderType) => {
         set({ customerOrder });
