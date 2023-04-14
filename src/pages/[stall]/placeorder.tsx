@@ -1,10 +1,12 @@
-import OrderSummaryCard from "@/client/components/OrderSummaryCard";
+import OrderSummaryCard from "@/client/components/card/OrderSummaryCard";
+import { FormatCurrency } from "@/client/lib/TextFormatter";
+import FoodStallTitle from "@/client/components/FoodStallTitle";
 
 const placeorder = () => {
   return (
     <section className="bg-white px-4">
       <form action="">
-        <div className="mt-2 mb-10 flex w-full max-w-5xl items-center ">
+        <div className="mt-2 flex w-full max-w-7xl items-center ">
           <div>
             <button
               type="button"
@@ -25,14 +27,31 @@ const placeorder = () => {
             My Order
           </div>
         </div>
-        <OrderSummaryCard text="Sinigang" price={45.0} />
+        <FoodStallTitle
+          text="Zeus Silog"
+          src="/.././public/jollibee-logo.jpg"
+          alt="Zeus Silog"
+        />
+        <OrderSummaryCard
+          src="/.././public/food-placeholder.jpg"
+          alt="sisig"
+          text="Sinigang"
+          price={45.0}
+        />
+        <OrderSummaryCard
+          src="/.././public/food-placeholder.jpg"
+          alt="sisig"
+          text="Sinigang"
+          price={45.0}
+        />
+        <hr />
         <div className="my-8">
           <div>
-            <p className="font-brocha text-lg font-bold">Have a promo code?</p>
+            <p className="font-brocha text-lg font-bold ">Have a promo code?</p>
           </div>
-          <div className="">
+          <div>
             <div className="flex">
-              <div className="relative w-full max-w-5xl">
+              <div className="relative w-full md:max-w-md">
                 <input
                   type="text"
                   className="h-14 w-full rounded-3xl border-none bg-gray-50 pr-20"
@@ -53,30 +72,36 @@ const placeorder = () => {
           <div>
             <p className="font-brocha text-lg font-bold">Order Summary</p>
           </div>
-          <div className="items-between flex w-full max-w-5xl flex-col rounded-3xl bg-gray-50 px-6 py-4 text-sm text-gray-500">
+          <div className="items-between flex w-full flex-col rounded-3xl bg-gray-50 px-6 py-4 text-sm text-gray-500 md:max-w-md">
             <div className="my-1 flex justify-between">
               <p className="font-semibold">Subtotal</p>
-              <p className="font-semibold">₱ 180.00 </p>
+              <p className="font-semibold">
+                {FormatCurrency(180, "PHP", true)}
+              </p>
             </div>
             <div className="my-1 flex justify-between">
               <p className="font-semibold">VAT</p>
-              <p className="font-semibold">₱ 21.60 </p>
+              <p className="font-semibold">
+                {FormatCurrency(21.6, "PHP", true)}
+              </p>
             </div>
             <div className="mt-1 mb-8 flex justify-between">
               <p className="font-semibold">Coupon Discount</p>
-              <p className="font-semibold">₱ 0</p>
+              <p className="font-semibold">{FormatCurrency(0, "PHP", true)}</p>
             </div>
             <div>
               <hr />
             </div>
             <div className="flex justify-between pt-4 text-lg text-highlight">
               <p className="font-semibold ">Total</p>
-              <p className="font-semibold">₱ 201.60 </p>
+              <p className="font-semibold">
+                {FormatCurrency(201.6, "PHP", true)}
+              </p>
             </div>
           </div>
           <button
             type="button"
-            className="my-24 w-full max-w-5xl bg-secondary font-brocha text-highlight">
+            className="my-12 w-full bg-secondary font-brocha text-highlight md:max-w-md">
             Place Order
           </button>
         </div>
