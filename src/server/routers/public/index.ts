@@ -176,6 +176,7 @@ export const registerRouter = router({
        })
     }),
     getAllMenu: procedure.input(getAllMenuSchema).query(async ({input, ctx}) => {
+       if(!input.categoryId) return null
        if (input.featured) {
               return await ctx.prisma.menu.findMany({
                  where: {
@@ -191,6 +192,16 @@ export const registerRouter = router({
                  },
                  include: {
                       media: true,
+                      category: {
+                        select: {
+                            registrant: {
+                                select: {
+                                    id: true,
+                                    name: true,
+                                }
+                            }
+                        }
+                      }
                  }
               })
        }
@@ -203,7 +214,17 @@ export const registerRouter = router({
             },
             include: {
                 media: true,
-            }
+                category: {
+                  select: {
+                      registrant: {
+                          select: {
+                              id: true,
+                              name: true,
+                          }
+                      }
+                  }
+                }
+           }
        })
     }),
     createCustomer: procedure.input(createSurveySchema).mutation(async ({ ctx, input }) => {
