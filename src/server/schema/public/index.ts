@@ -75,3 +75,8 @@ export const generateRecommendationSchema = yup.object({
     slug: yup.string().trim().required("Slug is required"),
 })
 
+export const createTableSchema = yup.object({
+    tableNumber: yup.number().required("Table number is required").min(1, "Table number must be greater than 0").typeError("Table number is required"),
+})
+export type CreateTableSchema = yup.InferType<typeof createTableSchema>
+
