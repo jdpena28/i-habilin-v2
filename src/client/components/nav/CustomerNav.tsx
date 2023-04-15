@@ -98,7 +98,7 @@ const CustomerNav = () => {
       {isCartOpen && (
         <div className="fixed right-0 z-50 h-full min-h-screen w-screen overflow-auto scroll-smooth bg-white px-4 drop-shadow-md sm:max-w-md">
           <form action="">
-            <div className="mt-2 flex w-full max-w-xl items-center">
+            <div className="mt-2 flex w-full  items-center border-b-2 pb-2">
               <div>
                 <button type="button" onClick={() => setIsCartOpen(false)}>
                   <svg
@@ -119,7 +119,7 @@ const CustomerNav = () => {
               </div>
             </div>
             {customerOrder.orders.length === 0 ? (
-              <p>No Data Available</p>
+              <p className="mt-3">No Data Available</p>
             ) : (
               customerOrder.orders.map((order) => {
                 return (
@@ -143,51 +143,15 @@ const CustomerNav = () => {
                 );
               })
             )}
-            <div className="mt-4 sm:my-4">
+            <div className="mt-3">
               <div>
-                <p className="font-brocha font-bold ">Have a promo code?</p>
-              </div>
-              <div>
-                <div className="flex flex-wrap items-center sm:flex-nowrap sm:rounded-3xl sm:border-none sm:bg-gray-50 ">
-                  <input
-                    type="text"
-                    className="h-14 w-full rounded-3xl border-none bg-gray-50 font-poppins text-sm font-semibold text-gray-500 focus:ring-0"
-                    placeholder="Enter promo code here..."
-                  />
-                  <div className="flex flex-1 justify-end ">
-                    <button
-                      type="button"
-                      className="my-2 h-10 w-28 rounded-2xl bg-secondary text-sm text-highlight sm:mx-3">
-                      Apply
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div>
-              <div>
-                <p className="font-brocha font-bold">Order Summary</p>
+                <p className="ml-2 font-brocha font-bold">Order Summary</p>
               </div>
               <div className="items-between flex w-full flex-col rounded-3xl bg-gray-50 px-6 py-4 text-sm text-gray-500 sm:max-w-md">
-                <div className="my-1 flex justify-between">
-                  <p className="font-semibold">Subtotal</p>
-                  <p className="font-semibold">
-                    {FormatCurrency(total, "PHP", true)}
-                  </p>
-                </div>
-                <div className="mt-1 mb-8 flex justify-between">
-                  <p className="font-semibold">Coupon Discount</p>
-                  <p className="font-semibold">
-                    {FormatCurrency(0, "PHP", true)}
-                  </p>
-                </div>
-                <div>
-                  <hr />
-                </div>
                 <div className="flex justify-between pt-4 text-base text-highlight">
                   <p className="font-semibold ">Total</p>
                   <p className="font-semibold">
-                    {FormatCurrency(201.6, "PHP", true)}
+                    {FormatCurrency(total, "PHP")}
                   </p>
                 </div>
               </div>

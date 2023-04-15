@@ -87,17 +87,11 @@ const OrderSummaryCard: FC<OrderSummaryProps> = ({
           <path d="M0 0h21.875v4H0z" />
         </svg>
       </button>
-      <div className="flex">
-        <div className="m-2 flex h-auto w-[35%] overflow-hidden rounded-xl object-contain">
-          <Image
-            className="bg-white"
-            src={src}
-            width={1980}
-            height={1020}
-            alt={alt}
-          />
+      <div className="flex flex-1">
+        <div className="relative m-2 flex aspect-video h-auto w-full flex-[.34] rounded-xl object-contain">
+          <Image className="bg-white" src={src} alt={alt} fill />
         </div>
-        <div className="m-2 flex flex-1 flex-col overflow-hidden text-sm sm:text-base">
+        <div className="m-2 flex w-full flex-[.66] flex-col overflow-hidden text-sm sm:text-base">
           <div className="mb-8">
             <p className="truncate pr-8 font-bold">{text}</p>
           </div>
