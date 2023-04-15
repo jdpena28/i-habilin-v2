@@ -5,6 +5,7 @@ import BreadIcon from "@public/bread-icon";
 import SeacrIcon from "@public/SearchIcon";
 import FoodStallTitle from "@/client/components/FoodStallTitle";
 import { FormatCurrency } from "@/client/lib/TextFormatter";
+import React from "react";
 
 const order = () => {
   return (
