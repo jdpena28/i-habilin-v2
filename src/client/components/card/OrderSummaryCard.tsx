@@ -113,6 +113,7 @@ const OrderSummaryCard: FC<OrderSummaryProps> = ({
                   type="number"
                   id="Quantity"
                   value={findValue()}
+                  readOnly
                   className="h-8 w-12 border-none text-center text-xs font-bold [-moz-appearance:_textfield] sm:text-sm sm:text-sm [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none"
                 />
                 <button

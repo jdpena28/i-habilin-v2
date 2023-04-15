@@ -3,10 +3,15 @@ import Link from "next/link";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/router";
 import { ReactNode, useState, useMemo } from "react";
+import { flatten } from "lodash";
 
-import { useCustomerOrderStore } from "@/client/store";
+import {
+  useCustomerOrderStore,
+  useCustomerReferenceStore,
+} from "@/client/store";
 import { FormatCurrency } from "@/client/lib/TextFormatter";
 import type { GetAllMenuType } from "@/client/types/main";
+import { trpc } from "@/server/utils/trpc";
 
 import { HiMenu, HiShoppingCart } from "react-icons/hi";
 import { MdFoodBank, MdTableBar } from "react-icons/md";
@@ -17,9 +22,22 @@ import { OrderSummaryCard } from "../card";
 
 const CustomerNav = () => {
   const { customerOrder, updateCustomerOrder } = useCustomerOrderStore();
+  const { customerReference } = useCustomerReferenceStore();
   const { pathname } = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
+
+  const { mutate } = trpc.public.order.createOrder.useMutation({
+    onSuccess: (data) => {
+      toast.remove("place-order");
+      console.log(data);
+    },
+    onError: (error) => {
+      toast.remove("place-order");
+      toast.error(error.message);
+      console.log(error);
+    },
+  });
 
   const total = useMemo(() => {
     return customerOrder.orders.reduce((acc: number, curr: any) => {
@@ -32,6 +50,27 @@ const CustomerNav = () => {
       return acc + eachTotal;
     }, 0);
   }, [customerOrder]);
+
+  const placeOrder = () => {
+    toast.loading("Placing Order...", {
+      id: "place-order",
+      duration: 999999,
+    });
+    const refinedOrdersData = customerOrder.orders.map((order) => {
+      return order.menuOrders.map((menuOrder: GetAllMenuType) => {
+        return {
+          menuId: menuOrder.id,
+          quantity: menuOrder.quantity,
+        };
+      });
+    });
+    mutate({
+      tableNumber: customerOrder.tableNumber as number,
+      customerId: customerReference.id,
+      orders: flatten(refinedOrdersData),
+    });
+  };
+
   return (
     <>
       <nav className="fixed top-0 z-50 flex h-16 w-full items-center justify-between bg-primary px-2">
@@ -157,6 +196,7 @@ const CustomerNav = () => {
               </div>
               <button
                 type="button"
+                onClick={placeOrder}
                 className="my-12 w-full bg-secondary font-brocha text-highlight sm:max-w-md">
                 Place Order
               </button>

@@ -75,8 +75,8 @@ model Registrants {
 
 model Category {
   id    String @id @default(cuid())
-  name  String  @db.VarChar(100)
-  slug  String  @db.VarChar(100)
+  name  String @db.VarChar(100)
+  slug  String @db.VarChar(100)
   order Int
 
   icon         String?
@@ -88,15 +88,15 @@ model Category {
 
   registrantId String
   registrant   Registrants @relation(fields: [registrantId], references: [id], onDelete: Cascade)
-  
-  Menu         Menu[]
+
+  Menu Menu[]
 
   @@index([registrantId])
 }
 
 model Menu {
-  id          String  @id @default(cuid())
-  name        String  @unique @db.VarChar(100)
+  id          String @id @default(cuid())
+  name        String @unique @db.VarChar(100)
   order       Int
   description String @db.VarChar(500)
 
@@ -112,17 +112,78 @@ model Menu {
   categoryId String
   category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
+  Order Order[]
+
   @@index([categoryId])
 }
 
 model Customer {
-  id        String    @id @default(cuid())
-  name      String?
-  surveyAnswer String @db.MediumText
-  ageGroup String 
+  id           String  @id @default(cuid())
+  name         String?
+  surveyAnswer String  @db.MediumText
+  ageGroup     String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  Order Order[]
+}
+
+model Order {
+  id       String @id @default(cuid())
+  quantity Int
+  status   String @default("Order") // this is used to edit by the stalls
+
+  createdAt DateTime @default(now())
+  updateAt  DateTime @updatedAt
+
+  menuId String
+  menu   Menu   @relation(fields: [menuId], references: [id], onDelete: Cascade)
+
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  batchNo String
+
+  tableNumber Int
+  tableOrder  TableOrder @relation(fields: [tableNumber], references: [tableNumber], onDelete: Cascade)
+
+  @@index([menuId])
+  @@index([customerId])
+}
+
+model TableOrder {
+  id          String @id @default(cuid())
+  tableNumber Int    @unique
+  status      String @default("Ordered") // if status is Ordered or Bill Out
+
+  total        Decimal? @db.Decimal(6, 2) // total will be inputed after bill out computed by Orders
+  cashTendered Decimal? @db.Decimal(6, 2) // yung binayad ng customer
+
+  order Order[]
+
+  discountId String?   @unique // this will be inputed when billout
+  discount   Discount? @relation(fields: [discountId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updateAt  DateTime @updatedAt
+
+  @@index([createdAt(sort: Asc)])
+}
+
+model Discount {
+  id         String   @id @default(cuid())
+  code       String   @unique @db.VarChar(300) // this will be the code for example: #IhabilnLangMalakas
+  discount   Decimal  @db.Decimal(6, 2) // this will be the discount for example: 10% of
+  status     String   @default("Active") // this will be the status of the code for example: Active, Expired, Used
+  validUntil DateTime // this will be the valid from date of the code for example: 2021-01-01
+  quantity   Int // this will be the quantity of the code for example: 10
+  used       Int      @default(0) // this will be the quantity of the code that is used for example: 10
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  TableOrder TableOrder[]
 }
 
 model Person {
