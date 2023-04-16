@@ -1,6 +1,6 @@
 import { router, procedure } from "@/server/trpc"
-import { createOrderSchema } from "@/server/schema/public/order";
-
+import { createOrderSchema, getOrderSchema } from "@/server/schema/public/order";
+import { groupBy, chain, mapValues, flattenDeep } from "lodash";
 
 export const orderRouter = router({
     createOrder: procedure.input(createOrderSchema).mutation(async ({ctx,input}) => {
@@ -34,4 +34,54 @@ export const orderRouter = router({
             return isTableNumberExist
         })
     }),
+    getOrder: procedure.input(getOrderSchema).query(async ({ctx,input}) => {
+        const orders = await ctx.prisma.order.findMany({
+            where: {
+                tableOrder: {
+                    id: input.id,
+                }
+            },
+            orderBy: {
+                createdAt: "asc"
+            },
+            include: {
+                menu: {
+                    select: {
+                        category: {
+                            select: {
+                                registrant: {
+                                    select: {
+                                        name: true,
+                                        slug: true,
+                                    }
+                                }
+                            }
+                        },
+                        media: {
+                            select: {
+                                cdnUrl: true,
+                            }
+                        },
+                        total: true,
+                        name: true,
+                    }
+                }
+            }
+        })
+        const data = groupBy(orders, "menu.category.registrant.name")
+        //if there is same menuId quantity should add together
+        
+        const result = mapValues(data, (value) => {
+            return chain(value)
+                .groupBy("menuId")
+                .map((value) => {
+                    return {
+                        ...value[0],
+                        quantity: value.reduce((a, b) => a + b.quantity, 0),
+                    }
+                })
+                .value()
+        })
+        return result
+    })
 })

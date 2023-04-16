@@ -92,8 +92,8 @@ const OrderSummaryCard: FC<OrderSummaryProps> = ({
           <Image className="bg-white" src={src} alt={alt} fill />
         </div>
         <div className="m-2 flex w-full flex-[.66] flex-col overflow-hidden text-sm sm:text-base">
-          <div className="mb-8">
-            <p className="truncate pr-8 font-bold">{text}</p>
+          <div className="mb-8 w-full max-w-[200px]">
+            <p className="w-full truncate pr-8 font-bold">{text}</p>
           </div>
           <div className="flex w-full items-center justify-between">
             <div className="mr-2">

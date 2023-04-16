@@ -10,3 +10,7 @@ export const createOrderSchema = yup.object({
 })
 
 export type CreateOrderSchema = yup.InferType<typeof createOrderSchema>
+
+export const getOrderSchema = yup.object({
+    id: yup.string().required("ID is required"),
+})
