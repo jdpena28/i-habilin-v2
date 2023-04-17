@@ -7,10 +7,10 @@ const Page404 = () => {
         <div className="flex  items-center justify-center px-10 text-gray-700 md:flex-row">
           <div className="max-w-md">
             <div className="text-[115px] font-bold text-primary">404!</div>
-            <p className="text-2xl font-light leading-normal md:text-3xl">
+            <p className="pb-5 text-2xl font-light leading-normal md:text-3xl">
               Sorry we couldnt find this page.{" "}
             </p>
-            <p className="mb-8">
+            <p className="mb-5">
               But dont worry, you can find plenty of other things on our
               homepage.
             </p>
