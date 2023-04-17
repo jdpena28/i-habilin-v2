@@ -1,9 +1,9 @@
+/* eslint-disable no-shadow */
 import Image from "next/image";
 import { FC, useMemo } from "react";
 import { isEmpty } from "lodash";
 
 import { trpc } from "@/server/utils/trpc";
-import { useCustomerOrderStore } from "@/client/store/";
 import { FormatCurrency } from "@/client/lib/TextFormatter";
 
 import { CustomerLayout } from "@/client/components/layout";
@@ -13,42 +13,79 @@ const Orders = () => {
   const { data, isLoading } = trpc.public.order.getOrder.useQuery({
     id: "clgiunj3l0000ui8gx3yv6dxv",
   });
-  const { customerOrder } = useCustomerOrderStore();
+
   const total = useMemo(() => {
     if (isEmpty(data)) return 0;
-    return Object.keys(data).reduce((acc, curr) => {
-      const eachTotal = data[curr].reduce((sum, item) => {
-        return sum + item.quantity * (item.menu.total as unknown as number);
+    return Object.keys(data.data).reduce((acc, key) => {
+      const menuTotal = data.data[key].reduce((acc, item) => {
+        const eachTotal = item.data.reduce((acc, item) => {
+          if (item.status === "Cancelled") return acc;
+          return (
+            acc +
+            parseInt(item.menu.total as unknown as string, 10) * item.quantity
+          );
+        }, 0);
+        return acc + eachTotal;
       }, 0);
-      return acc + eachTotal;
+      return acc + menuTotal;
     }, 0);
   }, [data]);
+
+  const statusBadge = (status: string) => {
+    switch (status) {
+      case "Order":
+        return "badge-yellow";
+      case "Preparing":
+        return "badge-orange";
+      case "Ready":
+        return "badge-lime";
+      case "Bill Out":
+        return "badge-blue";
+      default:
+        return "badge-red";
+    }
+  };
+
   return (
-    <CustomerLayout isLoading={false}>
+    <CustomerLayout isLoading={isLoading}>
       <section id="orders" className="space-y-3">
         <div className="mt-3 w-full rounded-lg bg-white p-2 text-center">
           <h3 className="text-lg lg:text-2xl">Orders</h3>
           <p className="font-bold text-gray-500">
-            Table #: {customerOrder.tableNumber}{" "}
+            Table #: {data?.tableNumber}{" "}
           </p>
         </div>
-        <div className="flex w-full flex-col rounded-lg bg-white p-2 lg:p-5">
+        <div className="flex w-full flex-col gap-y-3 divide-y-2 rounded-lg bg-white p-2 lg:p-5">
           {isLoading ? (
             <Spinner />
           ) : !isEmpty(data) ? (
-            Object.keys(data).map((key) => {
+            Object.keys(data.data).map((key) => {
               return (
-                <>
+                <div key={key} className="space-y-3">
                   <p className="font-bold lg:mb-3">{key}</p>
-                  {data[key].map((item) => (
-                    <MenuOrderCard
-                      src={item.menu.media.cdnUrl}
-                      text={item.menu.name}
-                      quantity={item.quantity}
-                      price={item.menu.total as unknown as number}
-                    />
-                  ))}
-                </>
+                  {data.data[key].map((i) => {
+                    return (
+                      <>
+                        <div
+                          key={Math.random()}
+                          className={`${statusBadge(i.status)} !max-w-full`}>
+                          {i.status}
+                        </div>
+                        <div key={Math.random()} className="space-y-3">
+                          {i.data.map((item) => (
+                            <MenuOrderCard
+                              key={item.id[0]}
+                              src={item.menu.media.cdnUrl}
+                              text={item.menu.name}
+                              quantity={item.quantity}
+                              price={item.menu.total as unknown as number}
+                            />
+                          ))}
+                        </div>
+                      </>
+                    );
+                  })}
+                </div>
               );
             })
           ) : (

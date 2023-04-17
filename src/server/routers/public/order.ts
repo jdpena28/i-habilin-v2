@@ -1,6 +1,6 @@
 import { router, procedure } from "@/server/trpc"
 import { createOrderSchema, getOrderSchema } from "@/server/schema/public/order";
-import { groupBy, chain, mapValues, flattenDeep } from "lodash";
+import { groupBy, chain, mapValues, } from "lodash";
 
 export const orderRouter = router({
     createOrder: procedure.input(createOrderSchema).mutation(async ({ctx,input}) => {
@@ -69,19 +69,31 @@ export const orderRouter = router({
             }
         })
         const data = groupBy(orders, "menu.category.registrant.name")
-        //if there is same menuId quantity should add together
         
         const result = mapValues(data, (value) => {
             return chain(value)
-                .groupBy("menuId")
-                .map((value) => {
+                .groupBy("status")
+                .map((value, key) => {
+                   const addQuantity = chain(value)
+                        .groupBy("menuId")
+                        .map((value) => {
+                            return {
+                                ...value[0],
+                                id: value.map((value) => value.id),
+                                quantity: value.reduce((a, b) => a + b.quantity, 0),
+                            }
+                        })
+                        .value()
                     return {
-                        ...value[0],
-                        quantity: value.reduce((a, b) => a + b.quantity, 0),
+                        status: key,
+                        data: addQuantity,
                     }
                 })
                 .value()
         })
-        return result
+        return {
+            tableNumber: orders ? orders[0].tableNumber : null,
+            data: result
+        }
     })
 })

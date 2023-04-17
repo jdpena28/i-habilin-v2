@@ -132,7 +132,7 @@ model Customer {
 model Order {
   id       String @id @default(cuid())
   quantity Int
-  status   String @default("Order") // this is used to edit by the stalls
+  status   String @default("Order") // this is used to edit by the stalls [Order, Cancelled, Prepairing, Ready, Bill Out]
 
   createdAt DateTime @default(now())
   updateAt  DateTime @updatedAt
