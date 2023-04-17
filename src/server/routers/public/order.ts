@@ -5,8 +5,13 @@ import { groupBy, chain, mapValues, } from "lodash";
 export const orderRouter = router({
     createOrder: procedure.input(createOrderSchema).mutation(async ({ctx,input}) => {
         const batchNo = Math.random().toString(36).slice(-8)
-        let isTableNumberExist = await ctx.prisma.tableOrder.findUnique({
-            where: { tableNumber: input.tableNumber },
+        let isTableNumberExist = await ctx.prisma.tableOrder.findFirst({
+            where: {
+                tableNumber: input.tableNumber,
+                AND: {
+                    status: "Ordered"
+                }
+            },
         })
         if (!isTableNumberExist) {
             isTableNumberExist = await ctx.prisma.tableOrder.create({
@@ -31,8 +36,8 @@ export const orderRouter = router({
                     }
                 }
             })
-            return isTableNumberExist
         })
+        return isTableNumberExist
     }),
     getOrder: procedure.input(getOrderSchema).query(async ({ctx,input}) => {
         const orders = await ctx.prisma.order.findMany({
@@ -65,6 +70,11 @@ export const orderRouter = router({
                         total: true,
                         name: true,
                     }
+                },
+                tableOrder: {
+                    select: {
+                        tableNumber: true,
+                    }
                 }
             }
         })
@@ -92,7 +102,7 @@ export const orderRouter = router({
                 .value()
         })
         return {
-            tableNumber: orders ? orders[0].tableNumber : null,
+            tableNumber: orders ? orders[0].tableOrder.tableNumber : null,
             data: result
         }
     })

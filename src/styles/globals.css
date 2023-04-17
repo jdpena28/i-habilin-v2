@@ -129,6 +129,10 @@ tr {
   @apply max-h-max hover:bg-gray-100;
 }
 
+strong {
+  @apply font-medium;
+}
+
 /* badges */
 .badge-lime {
   @apply w-full max-w-[100px] rounded-md  bg-lime-400 px-2 py-1 text-center font-poppins text-xs font-medium text-lime-800;

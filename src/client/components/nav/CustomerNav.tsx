@@ -3,7 +3,7 @@ import Link from "next/link";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/router";
 import { ReactNode, useState, useMemo } from "react";
-import { flatten } from "lodash";
+import { flatten, find } from "lodash";
 
 import {
   useCustomerOrderStore,
@@ -16,26 +16,54 @@ import { trpc } from "@/server/utils/trpc";
 import { HiMenu, HiShoppingCart } from "react-icons/hi";
 import { MdFoodBank, MdTableBar } from "react-icons/md";
 import { IoCloseSharp } from "react-icons/io5";
+import { BiHistory } from "react-icons/bi";
 
 import FoodStallTitle from "@/client/components/FoodStallTitle";
 import { OrderSummaryCard } from "../card";
 
 const CustomerNav = () => {
   const { customerOrder, updateCustomerOrder } = useCustomerOrderStore();
-  const { customerReference } = useCustomerReferenceStore();
-  const { pathname } = useRouter();
+  const { customerReference, updateCustomerReference } =
+    useCustomerReferenceStore();
+  const { pathname, push } = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
   const { mutate } = trpc.public.order.createOrder.useMutation({
     onSuccess: (data) => {
       toast.remove("place-order");
-      console.log(data);
+      let { history } = customerReference;
+      const isExisting = find(history, { transactionNo: data.id });
+      if (!isExisting) {
+        if (history && history?.length > 0) {
+          history.push({
+            transactionNo: data.id,
+            date: data.createdAt,
+            tableNumber: data.tableNumber,
+          });
+        } else {
+          history = [
+            {
+              transactionNo: data.id,
+              date: data.createdAt,
+              tableNumber: data.tableNumber,
+            },
+          ];
+        }
+      }
+      updateCustomerReference({
+        ...customerReference,
+        history,
+      });
+      updateCustomerOrder({
+        ...customerOrder,
+        orders: [],
+      });
+      push(`/orders/${data.id}`);
     },
     onError: (error) => {
       toast.remove("place-order");
       toast.error(error.message);
-      console.log(error);
     },
   });
 
@@ -105,7 +133,11 @@ const CustomerNav = () => {
       </nav>
       {isMenuOpen && (
         <div className="fixed left-0 z-30 h-screen w-2/5  bg-primary pt-16">
-          <Links href="/stalls" text="Stalls" pathname={pathname}>
+          <Links
+            activeLink="stalls"
+            href="/stalls"
+            text="Stalls"
+            pathname={pathname}>
             <MdFoodBank className="fill-white" size={24} />
           </Links>
           <div
@@ -132,6 +164,13 @@ const CustomerNav = () => {
               Table Number
             </span>
           </div>
+          <Links
+            activeLink="orders"
+            href="/orders"
+            text="Orders"
+            pathname={pathname}>
+            <BiHistory className="fill-white" size={24} />
+          </Links>
         </div>
       )}
       {isCartOpen && (
@@ -213,17 +252,19 @@ const Links = ({
   children,
   text,
   pathname,
+  activeLink,
 }: {
   href: string;
   text: string;
   children: ReactNode;
   pathname: string;
+  activeLink: string;
 }) => {
   return (
     <Link
       href={href}
       className={`flex items-center gap-2 border-l-[3px] border-transparent px-4 py-3 text-white ${
-        pathname.split("/")[1] === "stalls" ? "border-white" : null
+        pathname.split("/")[1] === activeLink ? "border-white" : null
       }`}>
       {children}
       <span className="font-poppins text-sm font-medium tracking-wider">

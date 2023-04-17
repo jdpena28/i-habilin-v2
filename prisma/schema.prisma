@@ -145,16 +145,17 @@ model Order {
 
   batchNo String
 
-  tableNumber Int
-  tableOrder  TableOrder @relation(fields: [tableNumber], references: [tableNumber], onDelete: Cascade)
+  tableId String
+  tableOrder  TableOrder @relation(fields: [tableId], references: [id], onDelete: Cascade)
 
   @@index([menuId])
   @@index([customerId])
+  @@index([tableId])
 }
 
 model TableOrder {
   id          String @id @default(cuid())
-  tableNumber Int    @unique
+  tableNumber Int    
   status      String @default("Ordered") // if status is Ordered or Bill Out
 
   total        Decimal? @db.Decimal(6, 2) // total will be inputed after bill out computed by Orders
