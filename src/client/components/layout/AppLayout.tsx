@@ -24,7 +24,7 @@ const AppLayout = ({
       </section>
     );
   }
-  if (status === "unauthenticated" || data?.user?.stall !== "super-admin") {
+  if (status === "unauthenticated" || data?.user?.image !== "super-admin") {
     push("/auth/login");
   }
 
