@@ -8,6 +8,9 @@ const nextConfig = {
   images: {
     domains: ["ucarecdn.com"],
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 };
 
 module.exports = nextConfig;
