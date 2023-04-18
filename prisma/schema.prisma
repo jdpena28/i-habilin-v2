@@ -1,0 +1,340 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextIndex", "fullTextSearch"]
+}
+
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+// ---- #### NOTE #### ----: 
+// Cascade Delete not working on Planetscale
+
+model Account {
+  id            String    @id @default(cuid())
+  email         String
+  password      String    @db.Text
+  emailVerified DateTime?
+  expires_at    Int?
+  token_type    String?
+  scope         String?
+  id_token      String?   @db.Text
+  session_state String?
+
+  personId String? @unique
+  person   Person? @relation(fields: [personId], references: [id], onDelete: Cascade)
+
+  registrantId String?      @unique
+  registrant   Registrants? @relation(fields: [registrantId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([email])
+  @@index([registrantId])
+}
+
+model Registrants {
+  id           String    @id @default(cuid())
+  name         String
+  slug         String    @unique @db.VarChar(100)
+  contactNo    String    @db.VarChar(20)
+  email        String
+  status       String    @default("Pending") @db.VarChar(20)
+  approvedDate DateTime?
+
+  personId String
+  owner    Person @relation(fields: [personId], references: [id], onDelete: Cascade)
+
+  representative   Person @relation("Representative", fields: [representativeId], references: [id], onDelete: Cascade)
+  representativeId String @unique
+
+  addressId String  @unique
+  address   Address @relation(fields: [addressId], references: [id], onDelete: Cascade)
+
+  dtiPermit   Media  @relation("dtiPermit", fields: [dtiPermitId], references: [id], onDelete: Cascade)
+  dtiPermitId String @unique
+
+  sanitaryPermit   Media  @relation("sanitaryPermit", fields: [sanitaryPermitId], references: [id], onDelete: Cascade)
+  sanitaryPermitId String @unique
+
+  bussinessPermit   Media  @relation("bussinessPermit", fields: [bussinessPermitId], references: [id], onDelete: Cascade)
+  bussinessPermitId String @unique
+
+  logo   Media  @relation("logo", fields: [logoId], references: [id], onDelete: Cascade)
+  logoId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Account  Account?
+  Category Category[]
+}
+
+model Category {
+  id    String @id @default(cuid())
+  name  String @db.VarChar(100)
+  slug  String @db.VarChar(100)
+  order Int
+
+  icon         String?
+  customIconId String? @unique
+  customIcon   Media?  @relation(fields: [customIconId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  registrantId String
+  registrant   Registrants @relation(fields: [registrantId], references: [id], onDelete: Cascade)
+
+  Menu Menu[]
+
+  @@index([registrantId])
+}
+
+model Menu {
+  id          String @id @default(cuid())
+  name        String @unique @db.VarChar(100)
+  order       Int
+  description String @db.VarChar(500)
+
+  price    Decimal @db.Decimal(6, 2)
+  status   String
+  featured Boolean @default(false)
+  discount Int?
+  total    Decimal @db.Decimal(6, 2)
+
+  mediaId String @unique
+  media   Media  @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  Order Order[]
+
+  @@index([categoryId])
+}
+
+model Customer {
+  id           String  @id @default(cuid())
+  name         String?
+  surveyAnswer String  @db.MediumText
+  ageGroup     String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Order Order[]
+}
+
+model Order {
+  id       String @id @default(cuid())
+  quantity Int
+  status   String @default("Order") // this is used to edit by the stalls [Order, Cancelled, Prepairing, Ready, Bill Out]
+
+  createdAt DateTime @default(now())
+  updateAt  DateTime @updatedAt
+
+  menuId String
+  menu   Menu   @relation(fields: [menuId], references: [id], onDelete: Cascade)
+
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  batchNo String
+
+  tableId String
+  tableOrder  TableOrder @relation(fields: [tableId], references: [id], onDelete: Cascade)
+
+  @@index([menuId])
+  @@index([customerId])
+  @@index([tableId])
+}
+
+model TableOrder {
+  id          String @id @default(cuid())
+  tableNumber Int    
+  status      String @default("Ordered") // if status is Ordered or Bill Out
+
+  total        Decimal? @db.Decimal(6, 2) // total will be inputed after bill out computed by Orders
+  cashTendered Decimal? @db.Decimal(6, 2) // yung binayad ng customer
+
+  order Order[]
+
+  discountId String?   @unique // this will be inputed when billout
+  discount   Discount? @relation(fields: [discountId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updateAt  DateTime @updatedAt
+
+  @@index([createdAt(sort: Asc)])
+}
+
+model Discount {
+  id         String   @id @default(cuid())
+  code       String   @unique @db.VarChar(300) // this will be the code for example: #IhabilnLangMalakas
+  discount   Decimal  @db.Decimal(6, 2) // this will be the discount for example: 10% of
+  status     String   @default("Active") // this will be the status of the code for example: Active, Expired, Used
+  validUntil DateTime // this will be the valid from date of the code for example: 2021-01-01
+  quantity   Int // this will be the quantity of the code for example: 10
+  used       Int      @default(0) // this will be the quantity of the code that is used for example: 10
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  TableOrder TableOrder[]
+}
+
+model Person {
+  id         String    @id @default(cuid())
+  firstName  String
+  middleName String?
+  lastName   String
+  birthdate  DateTime? @db.Date
+  email      String?
+  contactNo  String?
+
+  addressId String?  @unique
+  address   Address? @relation(fields: [addressId], references: [id], onDelete: Cascade)
+
+  owner Registrants[]
+
+  representative Registrants[] @relation("Representative")
+
+  Account Account?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Address {
+  id          String  @id @default(cuid())
+  addressLine String? @db.VarChar(300)
+
+  city_code String
+  city      City   @relation(fields: [city_code], references: [city_code])
+
+  prov_code String
+  province  Province @relation(fields: [prov_code], references: [prov_code])
+
+  brgyId Int?
+  Brgy   Brgy? @relation(fields: [brgyId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Person      Person[]
+  Registrants Registrants[]
+
+  @@index([city_code])
+  @@index([prov_code])
+  @@index([brgyId])
+}
+
+model Province {
+  id             Int       @id @default(autoincrement())
+  region_id      Int
+  prov_code      String    @unique @db.VarChar(17)
+  prov_name      String    @db.VarChar(35)
+  prov_name_slug String    @db.VarChar(100)
+  region_code    String    @db.VarChar(17)
+  start_validity DateTime? @db.Date
+  end_validity   DateTime? @db.Date
+  updated_by     String    @db.VarChar(20)
+  last_updated   DateTime? @db.Date
+  modified       DateTime  @updatedAt
+  created        DateTime  @default(now())
+
+  // ONE TO MANY RELATION
+  cities  City[]
+  brgy    Brgy[]
+  Address Address[]
+
+  @@index([prov_name])
+}
+
+model City {
+  id             Int       @id @default(autoincrement())
+  city_code      String    @unique @db.VarChar(17)
+  city_name      String    @db.VarChar(35)
+  city_name_slug String    @default("") @db.VarChar(100)
+  // prov_code      String    @db.VarChar(150)
+  start_validity DateTime? @db.Date
+  end_validity   DateTime? @db.Date
+  updated_by     String    @db.VarChar(20)
+  last_updated   DateTime? @db.Date
+  modified       DateTime  @updatedAt
+  created        DateTime  @default(now())
+
+  // RELATION ID TO OTHER TABLE
+  prov_code String
+  province  Province @relation(fields: [prov_code], references: [prov_code])
+
+  // ONE TO ONE RELATION
+  brgy    Brgy[]
+  Address Address[]
+
+  @@index([prov_code])
+}
+
+model Brgy {
+  id             Int       @id @default(autoincrement())
+  zip_code       String    @db.VarChar(17)
+  brgy_loc       String    @db.VarChar(50)
+  lot            String?   @db.VarChar(17)
+  leg_district   String?   @db.VarChar(35)
+  location_id    String    @db.VarChar(17)
+  route_id       String    @db.VarChar(35)
+  route_num      String?   @db.VarChar(17)
+  loc_zone       String?   @db.VarChar(17)
+  hal_flag       Int       @db.TinyInt()
+  loc_rate       String?   @db.VarChar(17)
+  linehaul       String?   @db.VarChar(17)
+  start_validity DateTime? @db.Date
+  end_validity   DateTime? @db.Date
+  updated_by     String    @db.VarChar(20)
+  last_updated   DateTime? @db.Date
+  modified       DateTime  @updatedAt
+  created        DateTime  @default(now())
+
+  // RELATION ID TO OTHER TABLE
+  prov_code String
+  province  Province  @relation(fields: [prov_code], references: [prov_code])
+  city_code String
+  city      City      @relation(fields: [city_code], references: [city_code])
+  Address   Address[]
+
+  @@index([prov_code, city_code])
+  @@index([city_code])
+}
+
+model Media {
+  id          String  @id @default(cuid())
+  uuid        String  @unique
+  name        String
+  size        Int
+  isImage     Boolean
+  cdnUrl      String
+  originalUrl String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  logo           Registrants[] @relation("logo")
+  dtiPermit      Registrants[] @relation("dtiPermit")
+  sanitaryPermit Registrants[] @relation("sanitaryPermit")
+  BusinessPermit Registrants[] @relation("bussinessPermit")
+  Category       Category?
+  Menu           Menu?
+}
+
+model App_Meta {
+  id    String @id @default(cuid())
+  key   String @unique
+  value String @db.MediumText()
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
