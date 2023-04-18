@@ -42,7 +42,7 @@ export const authOptions: NextAuthOptions = {
         session.user
           ? (session.user.name = token.name)
           : (session.user = { name: token.name });
-        session.user.email = token.slug as unknown as string;
+        session.user.image = token.slug as unknown as string;
       }
       return session;
     },
