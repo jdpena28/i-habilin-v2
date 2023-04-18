@@ -68,7 +68,7 @@ const CustomerNav = () => {
   });
 
   const total = useMemo(() => {
-    return customerOrder.orders.reduce((acc: number, curr: any) => {
+    return customerOrder?.orders?.reduce((acc: number, curr: any) => {
       const eachTotal = curr.menuOrders.reduce(
         (sum: number, item: GetAllMenuType) => {
           return sum + item.quantity * (item.total as unknown as number);
@@ -84,7 +84,7 @@ const CustomerNav = () => {
       id: "place-order",
       duration: 999999,
     });
-    const refinedOrdersData = customerOrder.orders.map((order) => {
+    const refinedOrdersData = customerOrder?.orders?.map((order) => {
       return order.menuOrders.map((menuOrder: GetAllMenuType) => {
         return {
           menuId: menuOrder.id,
@@ -196,10 +196,10 @@ const CustomerNav = () => {
                 Table # : {customerOrder.tableNumber}
               </div>
             </div>
-            {customerOrder.orders.length === 0 ? (
+            {customerOrder?.orders?.length === 0 ? (
               <p className="mt-3">No Data Available</p>
             ) : (
-              customerOrder.orders.map((order) => {
+              customerOrder?.orders?.map((order) => {
                 return (
                   <>
                     <FoodStallTitle key={order.id} text={order.name} />

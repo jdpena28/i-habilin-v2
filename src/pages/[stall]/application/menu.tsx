@@ -474,7 +474,7 @@ const Menu: FC<NextPage> = () => {
               ) : typeof watch("icon") === "object" ? (
                 <Image
                   className="ml-3"
-                  src={watch("icon")?.cdnUrl}
+                  src={watch("icon.cdnUrl")}
                   alt="Icon"
                   width={32}
                   height={32}

@@ -7,9 +7,6 @@ import { prisma } from "../../../server/prisma";
 
 export type extendDefaultSession = DefaultSession & {
   id?: string | unknown;
-  user?: {
-    stall?: string | unknown;
-  };
 };
 
 export const authOptions: NextAuthOptions = {
@@ -45,7 +42,7 @@ export const authOptions: NextAuthOptions = {
         session.user
           ? (session.user.name = token.name)
           : (session.user = { name: token.name });
-        session.user.stall = token.slug;
+        session.user.email = token.slug as unknown as string;
       }
       return session;
     },
