@@ -40,7 +40,9 @@ const Index = () => {
       <StallHeader title="Orders" />
       <section id="order-board" className="space-y-3 overflow-y-auto">
         {/* Order Section */}
-        <p className="mb-2 border-b-2 font-brocha text-xl font-bold">Order</p>
+        <p className="badge-yellow !max-w-full text-center !text-base !font-bold">
+          Order
+        </p>
         <section
           id="orders"
           className="grid max-h-[50vh] grid-cols-5 gap-3 overflow-y-auto rounded-md bg-white p-5">
@@ -72,7 +74,7 @@ const Index = () => {
           )}
         </section>
         {/* Prepairing Section */}
-        <p className="mb-2 border-b-2 font-brocha text-xl font-bold">
+        <p className="badge-orange !max-w-full text-center !text-base !font-bold">
           Preparing
         </p>
         <section
@@ -106,7 +108,9 @@ const Index = () => {
           )}
         </section>
         {/* Ready Section */}
-        <p className="mb-2 border-b-2 font-brocha text-xl font-bold">Ready</p>
+        <p className="badge-lime !max-w-full text-center !text-base !font-bold">
+          Ready
+        </p>
         <section
           id="ready"
           className="grid max-h-[50vh] grid-cols-5 gap-3 overflow-y-auto rounded-md bg-white p-5">
@@ -120,7 +124,7 @@ const Index = () => {
                     key={item.id}
                     id={item.id}
                     tableNo={key}
-                    status="Preparing">
+                    status="Ready">
                     {item.orders.map((order) => {
                       return (
                         <p key={item.id}>
@@ -138,7 +142,7 @@ const Index = () => {
           )}
         </section>
         {/* Bill Out Section */}
-        <p className="mb-2 border-b-2 font-brocha text-xl font-bold">
+        <p className="badge-blue !max-w-full text-center !text-base !font-bold">
           Bill Out
         </p>
         <section
@@ -154,7 +158,7 @@ const Index = () => {
                     key={item.id}
                     id={item.id}
                     tableNo={key}
-                    status="Preparing">
+                    status="Bill Out">
                     {item.orders.map((order) => {
                       return (
                         <p key={item.id}>
@@ -172,7 +176,7 @@ const Index = () => {
           )}
         </section>
         {/* Cancelled Section */}
-        <p className="mb-2 border-b-2 font-brocha text-xl font-bold">
+        <p className="badge-red !max-w-full text-center !text-base !font-bold">
           Cancelled
         </p>
         <section
@@ -188,7 +192,7 @@ const Index = () => {
                     key={item.id}
                     id={item.id}
                     tableNo={key}
-                    status="Preparing">
+                    status="Cancelled">
                     {item.orders.map((order) => {
                       return (
                         <p key={item.id}>

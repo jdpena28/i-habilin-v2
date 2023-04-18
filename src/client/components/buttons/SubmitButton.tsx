@@ -3,12 +3,18 @@ import { FC } from "react";
 type SubmitButtonType = {
   isLoading: boolean;
   className?: string;
+  onClick?: () => void;
 };
 
-const SubmitButton: FC<SubmitButtonType> = ({ isLoading, className }) => {
+const SubmitButton: FC<SubmitButtonType> = ({
+  isLoading,
+  className,
+  onClick,
+}) => {
   return (
     <button
       type={isLoading ? "button" : "submit"}
+      onClick={isLoading ? undefined : onClick}
       className={`bg-primary text-white ${className}`}>
       {isLoading ? (
         <svg className="h-5 w-5 animate-spin text-white" viewBox="0 0 24 24">
