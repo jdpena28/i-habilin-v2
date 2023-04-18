@@ -306,7 +306,7 @@ export const registerRouter = router({
                 role: "user",
                 content: `
                 Based on this customer preference data: 
-                ${JSON.stringify(JSON.parse(surveyAnswer?.surveyAnswer),null,2)}
+                ${JSON.stringify(JSON.parse(surveyAnswer?.surveyAnswer ? surveyAnswer?.surveyAnswer : "{}"),null,2)}
         
                  As Expert on Data Analyst, return all recommended food based on customer preference data that are in this menu JSON Data:
                  ${JSON.stringify(menu,null,2)}

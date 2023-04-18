@@ -1,7 +1,7 @@
 import { FC } from "react";
 
 interface FoodStallTitleProps {
-  text: string;
+  text: string | undefined;
 }
 
 const FoodStallTitle: FC<FoodStallTitleProps> = ({ text }) => {
