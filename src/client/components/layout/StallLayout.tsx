@@ -8,7 +8,7 @@ import { trpc } from "@/server/utils/trpc";
 
 import { StallNav } from "../nav";
 
-const AppLayout = ({
+const StallLayout = ({
   children,
   isLoading,
 }: {
@@ -66,4 +66,4 @@ const AppLayout = ({
   );
 };
 
-export default AppLayout;
+export default StallLayout;

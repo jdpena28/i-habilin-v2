@@ -15,12 +15,14 @@ import { InputForm, SelectForm } from "@/client/components/form";
 const Survey = () => {
   const { push } = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const { updateCustomerReference } = useCustomerReferenceStore();
+  const { customerReference, updateCustomerReference } =
+    useCustomerReferenceStore();
   const { mutate } = trpc.public.createCustomer.useMutation({
     onSuccess: (data) => {
       setIsLoading(false);
       toast.success("Successfully submitted your answer");
       updateCustomerReference({
+        ...customerReference,
         id: data.id,
         name: data.name,
         isSurveyed: true,

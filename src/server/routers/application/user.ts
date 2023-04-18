@@ -1,5 +1,8 @@
 import { deleteRegistrantSchema } from "@/server/schema/application/registrant";
-import { getUserSchema } from "@/server/schema/application/user";
+import {
+  getAllUserSchema,
+  getUserSchema,
+} from "@/server/schema/application/user";
 import { router, protectedProcedure } from "@/server/trpc";
 
 const includedQuery = {
@@ -37,14 +40,19 @@ const includedQuery = {
 };
 
 export const userRouter = router({
-  getAllUser: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.prisma.account.findMany({
-      where: {
-        registrantId: null,
-      },
-      include: includedQuery,
-    });
-  }),
+  getAllUser: protectedProcedure
+    .input(getAllUserSchema)
+    .query(async ({ ctx, input }) => {
+      return await ctx.prisma.account.findMany({
+        where: {
+          registrantId: input?.registrantId ? input.registrantId : null,
+          NOT: {
+            personId: null,
+          },
+        },
+        include: includedQuery,
+      });
+    }),
   getUser: protectedProcedure
     .input(getUserSchema)
     .query(async ({ ctx, input }) => {

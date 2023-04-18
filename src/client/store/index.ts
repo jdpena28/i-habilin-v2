@@ -36,6 +36,13 @@ type CustomerReferenceType = {
   id: string;
   name: string | undefined | null;
   isSurveyed: boolean;
+  history: historyType[] | undefined;
+};
+
+type historyType = {
+  transactionNo: string;
+  date: string | Date;
+  tableNumber: number | undefined;
 };
 
 interface CustomerReference {
@@ -50,6 +57,7 @@ export const useCustomerReferenceStore = create<CustomerReference>()(
         isSurveyed: false,
         id: "",
         name: "",
+        history: [],
       },
       updateCustomerReference: (customerReference: CustomerReferenceType) => {
         set({ customerReference });

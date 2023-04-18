@@ -7,6 +7,7 @@ import { createAccountSchema, createRegistrantSchema, createSurveySchema, genera
 import { getAllMenuSchema } from "@/server/schema/stall/menu";
 import { router, procedure } from "@/server/trpc";
 import { omit } from "lodash";
+import { orderRouter } from "./order";
 
 export const registerRouter = router({
     createRegistrant: procedure.input(createRegistrantSchema).mutation(async ({ ctx, input }) => {
@@ -322,4 +323,5 @@ export const registerRouter = router({
         }
         return JSON.parse(recommended.data.choices[0].message.content)
     }),
+    order: orderRouter
 })
