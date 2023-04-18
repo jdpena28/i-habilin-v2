@@ -72,13 +72,13 @@ export const useCustomerReferenceStore = create<CustomerReference>()(
 type CustomerOrderType = {
   tableNumber: number | undefined;
   isTableModalOpen: boolean;
-  orders: [ordersType] | any[];
+  orders: ordersType[];
 };
 
 export type ordersType = {
   id: string | undefined;
   name: string | undefined;
-  menuOrders: [GetAllMenuType] | any[];
+  menuOrders: GetAllMenuType[];
 };
 
 interface CustomerOrder {

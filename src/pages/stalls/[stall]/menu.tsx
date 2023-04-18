@@ -114,7 +114,9 @@ const Menu = () => {
           orders[stallIndex].menuOrders[menuIndex] =
             menuDescription as GetAllMenuType;
         } else {
-          orders[stallIndex].menuOrders?.push(menuDescription);
+          orders[stallIndex].menuOrders?.push(
+            menuDescription as GetAllMenuType
+          );
         }
       } else {
         orders.push({
