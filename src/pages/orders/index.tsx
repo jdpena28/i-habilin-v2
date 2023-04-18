@@ -12,7 +12,7 @@ const HistoryOrders = () => {
           <h3 className="text-lg lg:text-2xl">Order History</h3>
         </div>
         <div className="space-y-3">
-          {customerReference.history ? (
+          {customerReference.history?.length ? (
             customerReference.history.map((i) => {
               return (
                 <Link key={i.transactionNo} href={`/orders/${i.transactionNo}`}>

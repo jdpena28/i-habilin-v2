@@ -12,6 +12,7 @@ interface ActionDropdownProps {
   viewOnClick: string;
   options: optionType[];
   onDelete: () => void;
+  onEdit?: () => void;
 }
 type optionType = "View" | "Edit" | "Delete";
 
@@ -19,6 +20,7 @@ const ActionDropdown: FC<ActionDropdownProps> = ({
   viewOnClick,
   options = ["View", "Edit", "Delete"],
   onDelete,
+  onEdit,
 }) => {
   const { push } = useRouter();
   return (
@@ -63,7 +65,8 @@ const ActionDropdown: FC<ActionDropdownProps> = ({
                       className={`${
                         active ? "" : "bg-primary"
                       } w-full cursor-pointer gap-x-1 rounded-none p-1.5 hover:bg-orange-600`}
-                      type="button">
+                      type="button"
+                      onClick={onEdit}>
                       <BsFillPencilFill className="h-4 w-4" />
                       Edit&emsp;&nbsp;
                     </button>

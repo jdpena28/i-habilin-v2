@@ -98,7 +98,7 @@ const Orders = () => {
           <p className="font-brocha text-sm font-bold ">Have a promo code?</p>
           <div>
             <div className="flex">
-              <div className="relative flex w-full rounded-lg p-2 ring-1 ring-primary md:max-w-md">
+              <div className="relative flex w-full rounded-lg p-2 ring-1 ring-primary">
                 <input
                   type="text"
                   className="w-full appearance-none border-none text-sm outline-none ring-0 focus:outline-none  focus:ring-0 "
@@ -115,7 +115,7 @@ const Orders = () => {
         </div>
         <div className="space-y-3 rounded-lg bg-white p-2 lg:p-5">
           <p className="font-brocha text-sm font-bold">Order Summary</p>
-          <div className="items-between flex w-full flex-col rounded-3xl bg-gray-50 px-6 py-4 text-sm text-gray-500 md:max-w-md">
+          <div className="items-between flex w-full flex-col rounded-3xl bg-gray-50 px-6 py-4 text-sm text-gray-500">
             <div className="my-1 flex justify-between">
               <p className="font-semibold">Subtotal</p>
               <p className="font-semibold">

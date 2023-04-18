@@ -13,7 +13,7 @@ const StallNav = () => {
   const { data } = useSession();
   const { stall } = useStallConfigurationStore();
   return (
-    <nav className="sticky left-0 h-screen w-[15%] bg-primary">
+    <nav className="sticky left-0 top-0 h-screen w-[15%] bg-primary">
       <div className="relative mx-auto my-10 h-36 w-36 rounded-lg bg-white object-contain object-center p-2 lg:p-5">
         <Image
           className="rounded-lg"

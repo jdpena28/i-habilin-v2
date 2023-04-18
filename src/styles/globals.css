@@ -204,3 +204,19 @@ strong {
 .swiper-pagination-bullet {
   @apply !bg-highlight;
 }
+
+#note::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  transform: rotate(90deg);
+  border-width: 0 28px 28px 0;
+  border-style: solid;
+  border-color: #808074 #ececec;
+
+  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3),
+    -1px 1px 1px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3), -1px 1px 1px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3), -1px 1px 1px rgba(0, 0, 0, 0.2);
+}
