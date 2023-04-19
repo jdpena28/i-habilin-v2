@@ -1,5 +1,6 @@
 import { Toaster } from "react-hot-toast";
 import type { FC, ReactNode } from "react";
+import { useRouter } from "next/router";
 import { GridLoader } from "react-spinners";
 import { trpc } from "@/server/utils/trpc";
 import { CustomerNav } from "../nav";
@@ -10,6 +11,7 @@ interface CustomerLayoutProps {
 }
 
 const CustomerLayout: FC<CustomerLayoutProps> = ({ children, isLoading }) => {
+  const { push } = useRouter();
   const { data, status: maintenanceStatus } =
     trpc.application.settings.getAppMeta.useQuery(
       {
@@ -27,11 +29,7 @@ const CustomerLayout: FC<CustomerLayoutProps> = ({ children, isLoading }) => {
     );
   }
   if (maintenanceStatus === "success" && data?.value === "true") {
-    return (
-      <section className="flex h-screen w-full items-center justify-center">
-        <h4>Maintenance Mode</h4>
-      </section>
-    );
+    push("/maintenance");
   }
   return (
     <div className="bg-tertiary">

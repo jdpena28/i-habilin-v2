@@ -15,6 +15,7 @@ import { useRouter } from "next/router";
 import BackgroundImage from "@public/public/background-image";
 import InputForm from "@/client/components/form/InputForm";
 import { SelectForm } from "@/client/components/form";
+import { SubmitButton } from "@/client/components/buttons";
 
 const Signup = () => {
   const { push } = useRouter();
@@ -38,6 +39,7 @@ const Signup = () => {
 
   const [isAuthenticateViaPassword, setIsAuthenticatedViaPassword] =
     useState<boolean>(false);
+  const [submitIsLoading, setSubmitIsLoading] = useState(false);
 
   const { data: provData, isFetching: provIsFetching } =
     trpc.address.getProvinces.useQuery();
@@ -51,10 +53,12 @@ const Signup = () => {
     });
   const { mutate } = trpc.public.createAccount.useMutation({
     onSuccess: () => {
+      setSubmitIsLoading(false);
       toast.success("Account created successfully");
       push("/auth/login");
     },
     onError: (err) => {
+      setSubmitIsLoading(false);
       toast.error(err.message);
     },
   });
@@ -70,6 +74,7 @@ const Signup = () => {
     });
 
   const onSubmit = (values: CreateAccountSchema) => {
+    setSubmitIsLoading(true);
     mutate(values);
   };
 
@@ -233,11 +238,11 @@ const Signup = () => {
                     />
                   </div>
                 </div>
-                <button
-                  type="submit"
-                  className="focus:tertiary mt-6 w-full bg-secondary text-highlight hover:bg-primary focus:ring">
-                  Create account
-                </button>
+                <SubmitButton
+                  text="Create an account"
+                  className="mt-6 !w-full bg-secondary !text-highlight hover:bg-primary focus:ring"
+                  isLoading={submitIsLoading}
+                />
               </form>
             </div>
           </div>

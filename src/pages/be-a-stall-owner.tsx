@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { trpc } from "@/server/utils/trpc";
@@ -10,8 +11,10 @@ import { useRouter } from "next/router";
 
 import { FileUploader, InputForm, SelectForm } from "@/client/components/form";
 import { HomeLayout } from "@/client/components/layout";
+import { SubmitButton } from "@/client/components/buttons";
 
 const BeAStallOwner = () => {
+  const [submitIsLoading, setSubmitIsLoading] = useState(false);
   const { push } = useRouter();
   const {
     register,
@@ -66,16 +69,19 @@ const BeAStallOwner = () => {
   const { mutate: createRegistrant } = trpc.public.createRegistrant.useMutation(
     {
       onSuccess: () => {
-        toast.success("Success");
+        setSubmitIsLoading(false);
+        toast.success("Your application has been saved");
         push("/notification");
       },
       onError: (error) => {
+        setSubmitIsLoading(false);
         toast.error(error.message);
       },
     }
   );
 
   const onSubmit = async (value: CreateRegistrantSchema) => {
+    setSubmitIsLoading(true);
     createRegistrant(value);
   };
 
@@ -506,14 +512,10 @@ const BeAStallOwner = () => {
             </div>
           </div>
         </div>
-        <button
-          type="submit"
-          onClick={() => {
-            console.log(errors);
-          }}
-          className="focus:tertiary my-10 ml-auto flex  w-32 bg-secondary text-highlight hover:bg-primary focus:ring">
-          Submit
-        </button>
+        <SubmitButton
+          className="focus:tertiary my-10 ml-auto flex  w-32 bg-secondary text-highlight hover:bg-primary focus:ring"
+          isLoading={submitIsLoading}
+        />
       </form>
     </HomeLayout>
   );

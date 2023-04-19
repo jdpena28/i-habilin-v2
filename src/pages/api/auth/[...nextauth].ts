@@ -81,6 +81,7 @@ export const authOptions: NextAuthOptions = {
           (credentials?.loginFrom === "Super Admin" &&
             user.registrantId !== null) ||
           (credentials?.loginFrom !== "Super Admin" &&
+            user.scope !== "SUPER ADMIN" &&
             user.registrant?.slug !== credentials?.loginFrom)
         ) {
           throw new Error("No account found");

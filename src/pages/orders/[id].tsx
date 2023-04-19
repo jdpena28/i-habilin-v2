@@ -1,7 +1,7 @@
 /* eslint-disable no-shadow */
 import Image from "next/image";
-import { FC, useMemo } from "react";
-import { isEmpty } from "lodash";
+import { FC, useMemo, useState } from "react";
+import { isEmpty, flattenDeep, isEqual } from "lodash";
 import { useRouter } from "next/router";
 
 import { trpc } from "@/server/utils/trpc";
@@ -9,12 +9,51 @@ import { FormatCurrency } from "@/client/lib/TextFormatter";
 
 import { CustomerLayout } from "@/client/components/layout";
 import { Spinner } from "@/client/components/loader";
+import ModalTemplate from "@/client/components/modal/ModalTemplate";
 
 const Orders = () => {
+  const [isFoodReadyModalOpen, setIsFoodReadyModalOpen] = useState(false);
+  const [readyFood, setReadyFood] = useState<any>();
   const { query } = useRouter();
-  const { data, isLoading } = trpc.public.order.getOrder.useQuery({
-    id: query.id as string,
-  });
+  const { data, isLoading } = trpc.public.order.getOrder.useQuery(
+    {
+      id: query.id as string,
+    },
+    {
+      refetchInterval: 1000 * 10, // 15 seconds
+      onSuccess: (data) => {
+        if (data.data) {
+          // #FIX: data should be refined when they close the modal remove on the ready food and replace with new ready food
+          const allReadyFood = Object.keys(data.data).map((key) => {
+            const eachStall = data.data[key].map((item) => {
+              const eachMenu = item.data.filter((item) => {
+                return item.status === "Ready";
+              });
+              return eachMenu;
+            });
+            return eachStall;
+          });
+          const flattenedData = flattenDeep(allReadyFood);
+          const areEquals = isEqual(flattenedData, readyFood);
+          if (areEquals) return;
+          if (!isEmpty(flattenedData)) {
+            setIsFoodReadyModalOpen(true);
+            setReadyFood(flattenedData);
+            if (
+              window.navigator.userAgent.includes("Android") ||
+              window.navigator.userAgent.includes("iPhone") ||
+              window.navigator.userAgent.includes("iPad")
+            ) {
+              window.navigator.vibrate([
+                1000, 500, 1000, 500, 1000, 500, 1000, 500, 1000, 500, 1000,
+                500,
+              ]);
+            }
+          }
+        }
+      },
+    }
+  );
 
   const total = useMemo(() => {
     if (isEmpty(data)) return 0;
@@ -143,6 +182,26 @@ const Orders = () => {
           <button className="w-full bg-primary text-white">Bill Out</button>
         </div>
       </section>
+      <ModalTemplate
+        title="Food are ready"
+        isOpenModal={isFoodReadyModalOpen}
+        setIsOpenModal={setIsFoodReadyModalOpen}
+        bodyClassName="max-w-2xl">
+        <ul className="list-inside list-disc space-y-3">
+          {readyFood?.map((item: any) => {
+            return <li key={`${item.id}`}>{item.menu.name}</li>;
+          })}
+        </ul>
+        <div className="flex flex-row-reverse">
+          <button
+            className="bg-primary text-white"
+            onClick={() => {
+              setIsFoodReadyModalOpen(false);
+            }}>
+            Okey
+          </button>
+        </div>
+      </ModalTemplate>
     </CustomerLayout>
   );
 };
