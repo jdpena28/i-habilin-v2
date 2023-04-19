@@ -100,6 +100,7 @@ export const registerRouter = router({
         const account = await ctx.prisma.account.create({
             data: {
                 ...omit(input, ["person",'confirmPassword']),
+                scope: "SUPER ADMIN",
                 person: {
                     create: {
                         ...omit(input.person, ["address"]),
