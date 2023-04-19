@@ -84,8 +84,9 @@ const Menu = () => {
       slug: query.stall as string,
     },
     {
-      enabled: false,
+      enabled: true,
       staleTime: 1000 * 60 * 60 * 24,
+      cacheTime: 1000 * 60 * 60 * 24,
     }
   );
 
