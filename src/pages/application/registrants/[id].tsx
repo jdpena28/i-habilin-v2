@@ -5,6 +5,7 @@ import { isEmpty } from "lodash";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { toast } from "react-hot-toast";
 import {
   UpdateRegistrantSchema,
   updateRegistrantSchema,
@@ -15,7 +16,7 @@ import { AppLayout } from "@/client/components/layout";
 import { ApplicationHeader } from "@/client/components/header";
 import ModalTemplate from "@/client/components/modal/ModalTemplate";
 import { InputForm, SelectForm } from "@/client/components/form";
-import { toast } from "react-hot-toast";
+import { SubmitButton } from "@/client/components/buttons";
 
 const Registrants = () => {
   const { query } = useRouter();
@@ -33,6 +34,7 @@ const Registrants = () => {
       toast.error("There is no changes");
       return;
     }
+    setSubmitIsLoading(true);
     mutate(value);
   };
   const sidebarModules = [
@@ -42,6 +44,7 @@ const Registrants = () => {
   ];
   const [activeModule, setActiveModule] = useState<string>(sidebarModules[0]);
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
+  const [submitIsLoading, setSubmitIsLoading] = useState(false);
   const { data, isLoading, refetch } =
     trpc.application.registrant.getRegistrant.useQuery({
       id: query.id as string,
@@ -49,11 +52,13 @@ const Registrants = () => {
 
   const { mutate } = trpc.application.registrant.updateRegistrant.useMutation({
     onSuccess: () => {
+      setSubmitIsLoading(false);
       toast.success("Successfully updated registrant");
       refetch();
       setIsOpenModal(false);
     },
     onError: (err) => {
+      setSubmitIsLoading(false);
       toast.error(err.message);
     },
   });
@@ -379,9 +384,7 @@ const Registrants = () => {
               }}>
               Cancel
             </button>
-            <button type="submit" className="bg-primary text-white">
-              Submit
-            </button>
+            <SubmitButton isLoading={submitIsLoading} />
           </div>
         </form>
       </ModalTemplate>

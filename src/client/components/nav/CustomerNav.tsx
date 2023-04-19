@@ -28,9 +28,11 @@ const CustomerNav = () => {
   const { pathname, push } = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [submitIsLoading, setSubmitIsLoading] = useState(false);
 
   const { mutate } = trpc.public.order.createOrder.useMutation({
     onSuccess: (data) => {
+      setSubmitIsLoading(false);
       toast.remove("place-order");
       let { history } = customerReference;
       const isExisting = find(history, { transactionNo: data.id });
@@ -62,6 +64,7 @@ const CustomerNav = () => {
       push(`/orders/${data.id}`);
     },
     onError: (error) => {
+      setSubmitIsLoading(false);
       toast.remove("place-order");
       toast.error(error.message);
     },
@@ -80,6 +83,7 @@ const CustomerNav = () => {
   }, [customerOrder]);
 
   const placeOrder = () => {
+    setSubmitIsLoading(true);
     toast.loading("Placing Order...", {
       id: "place-order",
       duration: 999999,
@@ -235,7 +239,7 @@ const CustomerNav = () => {
               </div>
               <button
                 type="button"
-                onClick={placeOrder}
+                onClick={submitIsLoading ? undefined : placeOrder}
                 className="my-12 w-full bg-secondary font-brocha text-highlight sm:max-w-md">
                 Place Order
               </button>

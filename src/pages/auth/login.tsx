@@ -1,14 +1,17 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { GetAccountSchema, getAccountSchema } from "@/server/schema/public";
 import { useRouter } from "next/router";
 import { signIn } from "next-auth/react";
+import Link from "next/link";
 
 import { InputForm } from "@/client/components/form";
 import { HomeLayout } from "@/client/components/layout";
-import Link from "next/link";
+import { SubmitButton } from "@/client/components/buttons";
 
 const Login = () => {
+  const [submitIsLoading, setSubmitIsLoading] = useState(false);
   const { push, query } = useRouter();
   const {
     register,
@@ -19,6 +22,7 @@ const Login = () => {
   });
 
   const onSubmit = async (value: GetAccountSchema) => {
+    setSubmitIsLoading(true);
     const auth = await signIn("credentials", {
       email: value.email,
       password: value.password,
@@ -34,6 +38,7 @@ const Login = () => {
     if (auth?.ok) {
       push(`/application/dashboard`);
     }
+    setSubmitIsLoading(false);
   };
 
   return (
@@ -81,9 +86,7 @@ const Login = () => {
             <Link className="text-right underline underline-offset-2" href="/">
               <p className="mt-5">Forgot Password?</p>
             </Link>
-            <button className="w-full bg-primary" type="submit">
-              Login
-            </button>
+            <SubmitButton className="!w-full" isLoading={submitIsLoading} />
           </form>
         </div>
       </section>

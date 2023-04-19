@@ -11,7 +11,7 @@ const HistoryOrders = () => {
         <div className="mt-3 w-full rounded-lg bg-white p-2 text-center">
           <h3 className="text-lg lg:text-2xl">Order History</h3>
         </div>
-        <div className="space-y-3">
+        <div className="flex flex-col gap-y-3">
           {customerReference.history?.length ? (
             customerReference.history.map((i) => {
               return (

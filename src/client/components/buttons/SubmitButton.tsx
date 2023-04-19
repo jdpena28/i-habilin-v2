@@ -4,12 +4,14 @@ type SubmitButtonType = {
   isLoading: boolean;
   className?: string;
   onClick?: () => void;
+  text?: string;
 };
 
 const SubmitButton: FC<SubmitButtonType> = ({
   isLoading,
   className,
   onClick,
+  text,
 }) => {
   return (
     <button
@@ -32,7 +34,7 @@ const SubmitButton: FC<SubmitButtonType> = ({
           />
         </svg>
       ) : (
-        "Submit"
+        text || "Submit"
       )}
     </button>
   );
