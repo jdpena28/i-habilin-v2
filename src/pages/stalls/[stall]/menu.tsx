@@ -84,7 +84,7 @@ const Menu = () => {
       slug: query.stall as string,
     },
     {
-      enabled: true,
+      enabled: process.env.NODE_ENV !== "development",
       staleTime: 1000 * 60 * 60 * 24,
       cacheTime: 1000 * 60 * 60 * 24,
     }
@@ -198,7 +198,7 @@ const Menu = () => {
                       total={i.total as unknown as number}
                       price={i.price as unknown as number}
                       description={i.description}
-                      imageUrl={i.media.cdnUrl}
+                      imageUrl={i?.media?.cdnUrl}
                       discount={i.discount as unknown as number}
                       status={i.status}
                       onClick={() => {

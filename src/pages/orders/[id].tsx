@@ -39,12 +39,8 @@ const Orders = () => {
           if (!isEmpty(flattenedData)) {
             setIsFoodReadyModalOpen(true);
             setReadyFood(flattenedData);
-            if (
-              window.navigator.userAgent.includes("Android") ||
-              window.navigator.userAgent.includes("iPhone") ||
-              window.navigator.userAgent.includes("iPad")
-            ) {
-              window.navigator.vibrate([
+            if (window.navigator.userAgent.includes("Android")) {
+              window?.navigator?.vibrate([
                 1000, 500, 1000, 500, 1000, 500, 1000, 500, 1000, 500, 1000,
                 500,
               ]);
