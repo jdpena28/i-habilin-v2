@@ -5,6 +5,7 @@ import { GetAccountSchema, getAccountSchema } from "@/server/schema/public";
 import { useRouter } from "next/router";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
+import Image from "next/image";
 
 import { InputForm } from "@/client/components/form";
 import { HomeLayout } from "@/client/components/layout";
@@ -55,10 +56,12 @@ const Login = () => {
           </div>
         </div>
         <div className="flex h-full w-full flex-col flex-wrap justify-center gap-y-5 bg-white p-5 md:p-14">
-          <div className="decorated-underline">
-            <h3>I-Habilin</h3>
-            <div />
-          </div>
+          <Image
+            src="/i-habilin-logo.png"
+            width={200.4}
+            height={50.46}
+            alt="I-Habilin logo"
+          />
           <p className="font-brocha text-2xl">Hey, hello 👋</p>
           <p className="helper-text text-2xl">
             We&apos;ll never share your email with anyone else.

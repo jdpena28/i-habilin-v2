@@ -10,7 +10,7 @@ const QrCode = () => {
   const URL = `${
     process.env.NODE_ENV === "development"
       ? "http://192.168.100.114:3000/"
-      : process.env.NEXT_PUBLIC_VERCEL_URL
+      : `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
   }/stalls/`;
   const handleSaveButton = () => {
     const node = document.getElementById("qr-code-image") as HTMLElement;
