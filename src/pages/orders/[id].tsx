@@ -1,7 +1,7 @@
 /* eslint-disable no-shadow */
 import Image from "next/image";
 import { FC, useMemo, useState } from "react";
-import { isEmpty, flattenDeep, isEqual } from "lodash";
+import { isEmpty, flattenDeep, isEqual, filter } from "lodash";
 import { useRouter } from "next/router";
 
 import { trpc } from "@/server/utils/trpc";
@@ -14,20 +14,23 @@ import ModalTemplate from "@/client/components/modal/ModalTemplate";
 const Orders = () => {
   const [isFoodReadyModalOpen, setIsFoodReadyModalOpen] = useState(false);
   const [readyFood, setReadyFood] = useState<any>();
+  const [readedFood, setReadedFood] = useState<any>([]);
   const { query } = useRouter();
   const { data, isLoading } = trpc.public.order.getOrder.useQuery(
     {
       id: query.id as string,
     },
     {
-      refetchInterval: 1000 * 10, // 15 seconds
+      refetchInterval: 1000 * 15, // 15 seconds
       onSuccess: (data) => {
         if (data.data) {
           // #FIX: data should be refined when they close the modal remove on the ready food and replace with new ready food
           const allReadyFood = Object.keys(data.data).map((key) => {
             const eachStall = data.data[key].map((item) => {
               const eachMenu = item.data.filter((item) => {
-                return item.status === "Ready";
+                return (
+                  item.status === "Ready" && !readedFood.includes(item.id[0])
+                );
               });
               return eachMenu;
             });
@@ -37,8 +40,8 @@ const Orders = () => {
           const areEquals = isEqual(flattenedData, readyFood);
           if (areEquals) return;
           if (!isEmpty(flattenedData)) {
-            setIsFoodReadyModalOpen(true);
             setReadyFood(flattenedData);
+            setIsFoodReadyModalOpen(true);
             if (window.navigator.userAgent.includes("Android")) {
               window?.navigator?.vibrate([
                 1000, 500, 1000, 500, 1000, 500, 1000, 500, 1000, 500, 1000,
@@ -81,6 +84,27 @@ const Orders = () => {
       default:
         return "badge-red";
     }
+  };
+
+  const handleReadedFoodModal = () => {
+    if (readedFood.length > 0) {
+      const filterIdWithLengthOfTwo = filter(readyFood, (item) => {
+        return item.id.length <= 1;
+      });
+      setReadedFood(
+        filterIdWithLengthOfTwo.map((item: any) => {
+          return item.id[0];
+        })
+      );
+    }
+    setReadedFood(
+      readedFood.concat(
+        readyFood?.map((item: any) => {
+          return item.id[0];
+        })
+      )
+    );
+    setIsFoodReadyModalOpen(false);
   };
 
   return (
@@ -182,18 +206,17 @@ const Orders = () => {
         title="Food are ready"
         isOpenModal={isFoodReadyModalOpen}
         setIsOpenModal={setIsFoodReadyModalOpen}
+        onClose={handleReadedFoodModal}
         bodyClassName="max-w-2xl">
         <ul className="list-inside list-disc space-y-3">
           {readyFood?.map((item: any) => {
-            return <li key={`${item.id}`}>{item.menu.name}</li>;
+            return <li key={item.id}>{item.menu.name}</li>;
           })}
         </ul>
         <div className="flex flex-row-reverse">
           <button
             className="bg-primary text-white"
-            onClick={() => {
-              setIsFoodReadyModalOpen(false);
-            }}>
+            onClick={handleReadedFoodModal}>
             Okey
           </button>
         </div>

@@ -44,7 +44,7 @@ const Index = () => {
           Order
         </p>
         <section
-          id="orders"
+          id="order"
           className="grid max-h-[50vh] grid-cols-5 gap-3 overflow-y-auto rounded-md bg-white p-5">
           {isLoading ? (
             <Spinner />
@@ -146,7 +146,7 @@ const Index = () => {
           Bill Out
         </p>
         <section
-          id="billout"
+          id="bill out"
           className="grid max-h-[50vh] grid-cols-5 gap-3 overflow-y-auto rounded-md bg-white p-5">
           {billOutIsLoading ? (
             <Spinner />

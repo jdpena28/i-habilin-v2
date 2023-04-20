@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/router";
@@ -19,6 +18,7 @@ import { HiMenu, HiShoppingCart } from "react-icons/hi";
 import { MdFoodBank, MdTableBar } from "react-icons/md";
 import { IoCloseSharp } from "react-icons/io5";
 import { BiHistory } from "react-icons/bi";
+import IHabilinLogo from "@public/i-habilin-logo2";
 
 import FoodStallTitle from "@/client/components/FoodStallTitle";
 import { OrderSummaryCard } from "../card";
@@ -122,12 +122,7 @@ const CustomerNav = () => {
               onClick={() => setIsMenuOpen(true)}
             />
           )}
-          <Image
-            src="/i-habilin-logo.svg"
-            alt="I-Habilin Logo"
-            height={124 * 0.5}
-            width={198 * 0.5}
-          />
+          <IHabilinLogo className="my-10 w-1/2" />
         </div>
         <div>
           <HiShoppingCart
