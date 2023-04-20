@@ -78,7 +78,7 @@ button {
 }
 
 .nav-links {
-  @apply border-b-4 border-transparent p-4 font-brocha text-xl font-bold tracking-wide transition-colors duration-500 hover:border-secondary;
+  @apply border-b-4 border-transparent p-2 font-brocha text-lg font-bold tracking-wide text-white transition-colors duration-500 hover:border-secondary md:p-4 md:text-xl md:text-black;
 }
 
 .active-link {

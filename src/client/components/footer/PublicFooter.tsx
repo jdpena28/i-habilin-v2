@@ -28,6 +28,7 @@ const PublicFooter = () => {
         <div className="lg:flex lg:items-end lg:justify-between">
           <div>
             <Image
+              className="mx-auto lg:mx-0"
               src="/i-habilin-logo.png"
               width={200.4}
               height={50.46}
