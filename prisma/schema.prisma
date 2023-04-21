@@ -161,6 +161,8 @@ model TableOrder {
   total        Decimal? @db.Decimal(6, 2) // total will be inputed after bill out computed by Orders
   cashTendered Decimal? @db.Decimal(6, 2) // yung binayad ng customer
 
+  email String? // when billout receipt will be sent to this email
+
   order Order[]
 
   discountId String?   @unique // this will be inputed when billout

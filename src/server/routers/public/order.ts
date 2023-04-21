@@ -1,5 +1,5 @@
 import { router, procedure } from "@/server/trpc"
-import { createOrderSchema, getOrderSchema } from "@/server/schema/public/order";
+import { billOutSchema, createOrderSchema, getOrderSchema } from "@/server/schema/public/order";
 import { groupBy, chain, mapValues, } from "lodash";
 
 export const orderRouter = router({
@@ -73,7 +73,9 @@ export const orderRouter = router({
                 },
                 tableOrder: {
                     select: {
+                        id: true,
                         tableNumber: true,
+                        status: true,
                     }
                 }
             }
@@ -102,8 +104,31 @@ export const orderRouter = router({
                 .value()
         })
         return {
+            id: orders ? orders[0].tableOrder.id : null,
             tableNumber: orders ? orders[0].tableOrder.tableNumber : null,
+            status: orders ? orders[0].tableOrder.status : null,
             data: result
         }
+    }),
+    billOut: procedure.input(billOutSchema).mutation(async ({ctx,input}) => {
+        const updateToBillOutEachOrder = await ctx.prisma.order.updateMany({
+            where: {
+                id: {
+                    in: input.menuIds,
+                }
+            },
+            data: {
+                status: "Bill Out",
+            }
+        })
+        return await ctx.prisma.tableOrder.update({
+            where: {
+                id: input.id,
+            },
+            data: {
+                status: "Bill Out",
+                email: input.email,
+            }
+        })
     })
 })

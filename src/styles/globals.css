@@ -51,7 +51,7 @@ h6 {
 }
 
 button {
-  @apply flex items-center justify-center gap-x-5 rounded-lg p-4 font-poppins font-medium tracking-wider text-white;
+  @apply flex items-center justify-center gap-x-5 rounded-lg p-2 font-poppins font-medium tracking-wider text-white lg:p-4;
 }
 
 .category-button {

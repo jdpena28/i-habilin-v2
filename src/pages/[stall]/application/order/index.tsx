@@ -10,30 +10,55 @@ import { Notes } from "@/client/components/card";
 
 const Index = () => {
   const { stall } = useStallConfigurationStore();
-  const { data, isLoading } = trpc.stall.order.getAllOrders.useQuery({
-    id: stall.id as string,
-    status: "Order",
-  });
+  const { data, isLoading } = trpc.stall.order.getAllOrders.useQuery(
+    {
+      id: stall.id as string,
+      status: "Order",
+    },
+    {
+      refetchInterval: 1000 * 15, // 15 seconds
+    }
+  );
   const { data: preparingData, isLoading: preparingIsLoading } =
-    trpc.stall.order.getAllOrders.useQuery({
-      id: stall.id as string,
-      status: "Preparing",
-    });
+    trpc.stall.order.getAllOrders.useQuery(
+      {
+        id: stall.id as string,
+        status: "Preparing",
+      },
+      {
+        refetchInterval: 1000 * 15, // 15 seconds
+      }
+    );
   const { data: readyData, isLoading: readyIsLoading } =
-    trpc.stall.order.getAllOrders.useQuery({
-      id: stall.id as string,
-      status: "Ready",
-    });
+    trpc.stall.order.getAllOrders.useQuery(
+      {
+        id: stall.id as string,
+        status: "Ready",
+      },
+      {
+        refetchInterval: 1000 * 15, // 15 seconds
+      }
+    );
   const { data: billOutData, isLoading: billOutIsLoading } =
-    trpc.stall.order.getAllOrders.useQuery({
-      id: stall.id as string,
-      status: "Bill Out",
-    });
+    trpc.stall.order.getAllOrders.useQuery(
+      {
+        id: stall.id as string,
+        status: "Bill Out",
+      },
+      {
+        refetchInterval: 1000 * 15, // 15 seconds
+      }
+    );
   const { data: cancelledData, isLoading: cancelledIsLoading } =
-    trpc.stall.order.getAllOrders.useQuery({
-      id: stall.id as string,
-      status: "Cancelled",
-    });
+    trpc.stall.order.getAllOrders.useQuery(
+      {
+        id: stall.id as string,
+        status: "Cancelled",
+      },
+      {
+        refetchInterval: 1000 * 15, // 15 seconds
+      }
+    );
 
   return (
     <StallLayout>
