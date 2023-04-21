@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { FC } from "react";
+import { motion } from "framer-motion";
 
 interface StallCardProps {
   src: string;
@@ -12,7 +13,11 @@ interface StallCardProps {
 const StallCard: FC<StallCardProps> = ({ src, text, alt, slug }) => {
   return (
     <Link href={`/stalls/${slug}/menu`}>
-      <div className="rounded-lg border-2 border-secondary bg-white p-2 shadow-lg">
+      <motion.div
+        whileTap={{
+          scale: 0.7,
+        }}
+        className="rounded-lg border-2 border-secondary bg-white p-2 shadow-lg">
         <div className=" h-32 w-auto font-semibold">
           <Image
             className="mx-auto mt-2 bg-white"
@@ -25,7 +30,7 @@ const StallCard: FC<StallCardProps> = ({ src, text, alt, slug }) => {
             <p className="truncate text-sm font-bold">{text}</p>
           </div>
         </div>
-      </div>
+      </motion.div>
     </Link>
   );
 };
