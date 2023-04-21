@@ -60,7 +60,7 @@ const InputForm: FC<InputFormProps> = ({
         )}
         {icon && <span className="absolute right-3">{icon}</span>}
       </label>
-      {helperText && <p className="helper-text">{helperText}</p>}
+      {helperText && <p className="helper-text mt-1">{helperText}</p>}
       {errorMessage && (
         <p className="helper-text mt-1 font-medium !text-red-400">
           {errorMessage}

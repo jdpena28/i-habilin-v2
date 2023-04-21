@@ -52,6 +52,20 @@ export const getAccountSchema = yup.object({
 
 export type GetAccountSchema = yup.InferType<typeof getAccountSchema>
 
+export const forgotPasswordSchema = yup.object({
+    email: yup.string().trim().required("Email is required").email(),
+    pageFrom: yup.string().trim().required("Page from is required").oneOf(["Super Admin", "Stall"], "Invalid page from").default("Stall"),
+    slug: yup.string().optional(),
+})
+
+export type ForgotPasswordSchema = yup.InferType<typeof forgotPasswordSchema>
+
+export const updatePasswordSchema = createSuperAdminPassword.shape({
+    id: yup.string().trim().optional(),
+})
+
+export type UpdatePasswordSchema = yup.InferType<typeof updatePasswordSchema>
+
 export const getAllCategorySchema = yup.object({
     slug: yup.string().trim().required("Slug is required"),
 })

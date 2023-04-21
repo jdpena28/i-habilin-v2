@@ -86,7 +86,9 @@ const Login = () => {
             <p className="helper-text text-right font-medium !text-red-400">
               {query.error}
             </p>
-            <Link className="text-right underline underline-offset-2" href="/">
+            <Link
+              className="text-right underline underline-offset-2"
+              href="/auth/forgot-password">
               <p className="mt-5">Forgot Password?</p>
             </Link>
             <SubmitButton className="!w-full" isLoading={submitIsLoading} />
