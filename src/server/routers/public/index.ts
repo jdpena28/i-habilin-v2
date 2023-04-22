@@ -279,6 +279,7 @@ export const registerRouter = router({
 
         const recommended = await openai.createChatCompletion({
             model: "gpt-3.5-turbo",
+            max_tokens: 1500,
             messages: [
               {
                 role: "system",
@@ -313,7 +314,7 @@ export const registerRouter = router({
                  ${JSON.stringify(menu,null,2)}
         
         
-                  Return it as JSON with a key of "recommended_food" note that you are only allowed to return your recommended food that are only in the menu JSON Data
+                  Return it as JSON with a key of "recommended_food" note that you are only allowed to return your recommended food that are only in the menu JSON Data and limit recommended food up to 8.
                 `
               }
             ],

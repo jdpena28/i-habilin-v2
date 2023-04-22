@@ -1,4 +1,5 @@
 import { isEmpty } from "lodash";
+import { useRouter } from "next/router";
 
 import { trpc } from "@/server/utils/trpc";
 import { useStallConfigurationStore } from "@/client/store";
@@ -7,8 +8,10 @@ import { StallLayout } from "@/client/components/layout";
 import { StallHeader } from "@/client/components/header";
 import { Spinner } from "@/client/components/loader";
 import { Notes } from "@/client/components/card";
+import { Filter } from "@/client/components/filtering-sorting";
 
 const Index = () => {
+  const { query } = useRouter();
   const { stall } = useStallConfigurationStore();
   const { data, isLoading } = trpc.stall.order.getAllOrders.useQuery(
     {
@@ -24,9 +27,11 @@ const Index = () => {
       {
         id: stall.id as string,
         status: "Preparing",
+        orderBy: query.sortPreparingBy as string,
       },
       {
         refetchInterval: 1000 * 15, // 15 seconds
+        staleTime: 1000 * 60 * 15, // 15 minutes
       }
     );
   const { data: readyData, isLoading: readyIsLoading } =
@@ -60,9 +65,14 @@ const Index = () => {
       }
     );
 
+  const sortByOptions = [
+    "Order Time (Asc.)",
+    "Order Time (Desc.)",
+    "Preparation Time",
+  ];
   return (
     <StallLayout>
-      <StallHeader title="Orders" />
+      <StallHeader title="Orders" filter />
       <section id="order-board" className="space-y-3 overflow-y-auto">
         {/* Order Section */}
         <p className="badge-yellow !max-w-full text-center !text-base !font-bold">
@@ -75,24 +85,21 @@ const Index = () => {
             <Spinner />
           ) : !isEmpty(data) ? (
             Object.keys(data).map((key) => {
-              const eachItem = data[key].map((item) => {
-                return (
-                  <Notes
-                    key={item.id}
-                    id={item.id}
-                    tableNo={key}
-                    status="Order">
-                    {item.orders.map((order) => {
-                      return (
-                        <p key={item.id}>
-                          {order.quantity} x {order.menu.name}
-                        </p>
-                      );
-                    })}
-                  </Notes>
-                );
-              });
-              return eachItem;
+              return (
+                <Notes
+                  key={data[key].id}
+                  id={data[key].id}
+                  tableNo={key}
+                  status="Order">
+                  {data[key].orders.map((order) => {
+                    return (
+                      <p key={order.menu.name}>
+                        {order.quantity} x {order.menu.name}
+                      </p>
+                    );
+                  })}
+                </Notes>
+              );
             })
           ) : (
             <p>No Data Available</p>
@@ -102,6 +109,16 @@ const Index = () => {
         <p className="badge-orange !max-w-full text-center !text-base !font-bold">
           Preparing
         </p>
+        <div className="flex flex-row-reverse">
+          <Filter sortQuery="sortPreparingBy">
+            <option value="default" selected>
+              Sort By
+            </option>
+            {sortByOptions.map((option) => {
+              return <option value={option}>{option}</option>;
+            })}
+          </Filter>
+        </div>
         <section
           id="preparing"
           className="grid max-h-[50vh] grid-cols-5 gap-3 overflow-y-auto rounded-md bg-white p-5">
@@ -109,24 +126,21 @@ const Index = () => {
             <Spinner />
           ) : !isEmpty(preparingData) ? (
             Object.keys(preparingData).map((key) => {
-              const eachItem = preparingData[key].map((item) => {
-                return (
-                  <Notes
-                    key={item.id}
-                    id={item.id}
-                    tableNo={key}
-                    status="Preparing">
-                    {item.orders.map((order) => {
-                      return (
-                        <p key={item.id}>
-                          {order.quantity} x {order.menu.name}
-                        </p>
-                      );
-                    })}
-                  </Notes>
-                );
-              });
-              return eachItem;
+              return (
+                <Notes
+                  key={preparingData[key].id}
+                  id={preparingData[key].id}
+                  tableNo={key}
+                  status="Preparing">
+                  {preparingData[key].orders.map((order) => {
+                    return (
+                      <p key={order.menu.name}>
+                        {order.quantity} x {order.menu.name}
+                      </p>
+                    );
+                  })}
+                </Notes>
+              );
             })
           ) : (
             <p>No Data Available</p>
@@ -143,24 +157,21 @@ const Index = () => {
             <Spinner />
           ) : !isEmpty(readyData) ? (
             Object.keys(readyData).map((key) => {
-              const eachItem = readyData[key].map((item) => {
-                return (
-                  <Notes
-                    key={item.id}
-                    id={item.id}
-                    tableNo={key}
-                    status="Ready">
-                    {item.orders.map((order) => {
-                      return (
-                        <p key={item.id}>
-                          {order.quantity} x {order.menu.name}
-                        </p>
-                      );
-                    })}
-                  </Notes>
-                );
-              });
-              return eachItem;
+              return (
+                <Notes
+                  key={readyData[key].id}
+                  id={readyData[key].id}
+                  tableNo={key}
+                  status="Ready">
+                  {readyData[key].orders.map((order) => {
+                    return (
+                      <p key={order.menu.name}>
+                        {order.quantity} x {order.menu.name}
+                      </p>
+                    );
+                  })}
+                </Notes>
+              );
             })
           ) : (
             <p>No Data Available</p>
@@ -177,24 +188,21 @@ const Index = () => {
             <Spinner />
           ) : !isEmpty(billOutData) ? (
             Object.keys(billOutData).map((key) => {
-              const eachItem = billOutData[key].map((item) => {
-                return (
-                  <Notes
-                    key={item.id}
-                    id={item.id}
-                    tableNo={key}
-                    status="Bill Out">
-                    {item.orders.map((order) => {
-                      return (
-                        <p key={item.id}>
-                          {order.quantity} x {order.menu.name}
-                        </p>
-                      );
-                    })}
-                  </Notes>
-                );
-              });
-              return eachItem;
+              return (
+                <Notes
+                  key={billOutData[key].id}
+                  id={billOutData[key].id}
+                  tableNo={key}
+                  status="Order">
+                  {billOutData[key].orders.map((order) => {
+                    return (
+                      <p key={order.menu.name}>
+                        {order.quantity} x {order.menu.name}
+                      </p>
+                    );
+                  })}
+                </Notes>
+              );
             })
           ) : (
             <p>No Data Available</p>
@@ -211,24 +219,21 @@ const Index = () => {
             <Spinner />
           ) : !isEmpty(cancelledData) ? (
             Object.keys(cancelledData).map((key) => {
-              const eachItem = cancelledData[key].map((item) => {
-                return (
-                  <Notes
-                    key={item.id}
-                    id={item.id}
-                    tableNo={key}
-                    status="Cancelled">
-                    {item.orders.map((order) => {
-                      return (
-                        <p key={item.id}>
-                          {order.quantity} x {order.menu.name}
-                        </p>
-                      );
-                    })}
-                  </Notes>
-                );
-              });
-              return eachItem;
+              return (
+                <Notes
+                  key={cancelledData[key].id}
+                  id={cancelledData[key].id}
+                  tableNo={key}
+                  status="Order">
+                  {cancelledData[key].orders.map((order) => {
+                    return (
+                      <p key={order.menu.name}>
+                        {order.quantity} x {order.menu.name}
+                      </p>
+                    );
+                  })}
+                </Notes>
+              );
             })
           ) : (
             <p>No Data Available</p>

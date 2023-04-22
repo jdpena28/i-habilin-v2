@@ -75,6 +75,7 @@ const StallHeader: FC<StallHeaderProps> = ({
             <div className="border-b-2 border-transparent p-2">Expired</div>
           </div>
         )}
+        {!tabs && filter && <div className="invisible" />}
         {filter && (
           <div className="flex items-center gap-x-1 rounded-md bg-white p-2">
             <IoFilter className="h-5 w-5" />

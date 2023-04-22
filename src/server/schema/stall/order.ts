@@ -3,6 +3,17 @@ import * as yup from "yup";
 export const getAllOrderSchema = yup.object({
   id: yup.string().trim().required("Slug is required"),
   status: yup.string().trim().required("Status is required"),
+  orderBy: yup
+    .string()
+    .trim()
+    .optional()
+    .oneOf([
+      "Order Time",
+      "Order Time (Asc.)",
+      "Order Time (Desc.)",
+      "Table No",
+      "Preparation Time",
+    ]),
 });
 
 export const getOrderSchema = yup.object({
