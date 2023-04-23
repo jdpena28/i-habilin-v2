@@ -149,6 +149,9 @@ strong {
 .badge-blue {
   @apply w-full max-w-[100px] rounded-md  bg-blue-400 px-2 py-1 text-center font-poppins text-xs font-medium text-white;
 }
+.badge-green {
+  @apply w-full max-w-[100px] rounded-md  bg-green-400 px-2 py-1 text-center font-poppins text-xs font-medium text-green-800;
+}
 
 /* Upload Care */
 /* UPLOADCARE BTN */

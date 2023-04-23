@@ -50,6 +50,9 @@ const OrderDetails = () => {
       text: "Bill Out",
     },
     {
+      text: "Completed",
+    },
+    {
       text: "Cancelled",
     },
   ];

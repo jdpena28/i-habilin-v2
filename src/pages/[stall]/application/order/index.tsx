@@ -64,6 +64,17 @@ const Index = () => {
         refetchInterval: 1000 * 15, // 15 seconds
       }
     );
+  const { data: completedData, isLoading: completedIsLoading } =
+    trpc.stall.order.getAllOrders.useQuery(
+      {
+        id: stall.id as string,
+        status: "Completed",
+        orderBy: query.sortBy as string,
+      },
+      {
+        refetchInterval: 1000 * 15, // 15 seconds
+      }
+    );
   const { data: cancelledData, isLoading: cancelledIsLoading } =
     trpc.stall.order.getAllOrders.useQuery(
       {
@@ -236,6 +247,37 @@ const Index = () => {
                   tableNo={key.replace("Table Number:", "")}
                   status="Order">
                   {billOutData[key].orders.map((order) => {
+                    return (
+                      <p key={order.menu.name}>
+                        {order.quantity} x {order.menu.name}
+                      </p>
+                    );
+                  })}
+                </Notes>
+              );
+            })
+          ) : (
+            <p>No Data Available</p>
+          )}
+        </section>
+        {/* Completed Section */}
+        <p className="badge-green !max-w-full text-center !text-base !font-bold">
+          Completed
+        </p>
+        <section
+          id="completed"
+          className="grid max-h-[50vh] grid-cols-5 gap-3 overflow-y-auto rounded-md bg-white p-5">
+          {completedIsLoading ? (
+            <Spinner />
+          ) : !isEmpty(completedData) ? (
+            Object.keys(completedData).map((key) => {
+              return (
+                <Notes
+                  key={completedData[key].id}
+                  id={completedData[key].id}
+                  tableNo={key.replace("Table Number:", "")}
+                  status="Order">
+                  {completedData[key].orders.map((order) => {
                     return (
                       <p key={order.menu.name}>
                         {order.quantity} x {order.menu.name}

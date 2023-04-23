@@ -143,6 +143,8 @@ const Orders = () => {
         return "badge-lime";
       case "Bill Out":
         return "badge-blue";
+      case "Completed":
+        return "badge-green";
       default:
         return "badge-red";
     }
