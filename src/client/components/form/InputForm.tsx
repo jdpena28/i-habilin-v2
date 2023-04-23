@@ -15,10 +15,11 @@ const InputForm: FC<InputFormProps> = ({
   sideEffect,
   step,
   defaultValue,
+  parentClassName,
 }) => {
   const errorMessage: string = get(error, id)?.message;
   return (
-    <div>
+    <div className={parentClassName}>
       <p className="label-text mb-1">{aboveLabel}</p>
       <label
         htmlFor={id}

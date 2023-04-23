@@ -18,7 +18,8 @@ interface InputFormProps {
   register: any;
   sideEffect?: (e: ChangeEvent<HTMLInputElement>) => void;
   step?: string;
-  defaultValue?: string | number | string[] | number[] | Date;
+  defaultValue?: string | number | string[] | number[] | Date | null;
+  parentClassName?: string;
 }
 
 interface SelectFormProps {
