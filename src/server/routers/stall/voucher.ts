@@ -3,6 +3,7 @@ import {
   createVoucherSchema,
   deleteVoucherSchema,
   getAllVoucherSchema,
+  updateVoucherSchema,
 } from "@/server/schema/stall/voucher";
 import { omit } from "lodash";
 
@@ -21,6 +22,7 @@ export const voucherRouter = router({
       return await ctx.prisma.discount.create({
         data: {
           ...omit(input, ["registrantId"]),
+          validUntil: input.validUntil ? new Date(input.validUntil) : null,
           registrant: {
             connect: {
               id: input.registrantId,
@@ -46,6 +48,27 @@ export const voucherRouter = router({
           id: {
             in: input.ids,
           },
+        },
+      });
+    }),
+  updateVoucher: protectedProcedure
+    .input(updateVoucherSchema)
+    .mutation(async ({ ctx, input }) => {
+      const isExisting = await ctx.prisma.discount.findUnique({
+        where: {
+          code: input.code,
+        },
+      });
+      if (isExisting && isExisting.code !== input.code) {
+        throw new Error("Code already taken");
+      }
+      return await ctx.prisma.discount.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          ...omit(input, ["registrantId", "id"]),
+          validUntil: input.validUntil ? new Date(input.validUntil) : null,
         },
       });
     }),

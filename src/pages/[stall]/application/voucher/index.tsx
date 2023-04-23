@@ -5,11 +5,13 @@ import { isEmpty } from "lodash";
 import { toast } from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { format } from "date-fns";
 
 import { formatDate } from "@/client/lib/TextFormatter";
 import {
   createVoucherSchema,
   CreateVoucherSchema,
+  UpdateVoucherSchema,
 } from "@/server/schema/stall/voucher";
 import { useStallConfigurationStore } from "@/client/store";
 
@@ -64,6 +66,21 @@ const Voucher = () => {
       },
     });
 
+  const { mutate: updateVoucher } =
+    trpc.stall.voucher.updateVoucher.useMutation({
+      onSuccess: () => {
+        refetch();
+        setSubmitIsLoading(false);
+        toast.success("Voucher successfully updated.");
+        reset();
+        setIsVoucherModalOpen(false);
+      },
+      onError: (error) => {
+        setSubmitIsLoading(false);
+        toast.error(error.message);
+      },
+    });
+
   const selectIds = (id: string, type?: "select-all") => {
     if (type === "select-all") {
       return data?.length === ids?.length
@@ -83,13 +100,23 @@ const Voucher = () => {
     reset,
     formState: { errors },
     watch,
-  } = useForm<CreateVoucherSchema>({
+  } = useForm<CreateVoucherSchema | UpdateVoucherSchema>({
     resolver: yupResolver(createVoucherSchema),
   });
 
-  const onSubmit = (value: CreateVoucherSchema) => {
+  const onSubmit = (
+    value: CreateVoucherSchema & {
+      id?: string;
+    }
+  ) => {
     setSubmitIsLoading(true);
-    createVoucher(value);
+    if (value.id) {
+      return updateVoucher({
+        ...value,
+        id: value.id,
+      });
+    }
+    return createVoucher(value);
   };
 
   const onDelete = () => {
@@ -97,6 +124,26 @@ const Voucher = () => {
     deleteVoucher({
       ids: ids as string[],
     });
+  };
+
+  const onUpdate = (id: string) => {
+    const findData = data?.find((i) => i.id === id);
+    if (!findData) return;
+    reset();
+    setValue("id", id);
+    setValue("code", findData.code);
+    setValue("discount", findData.discount as unknown as number);
+    setValue(
+      "validUntil",
+      format(
+        findData.validUntil ? findData.validUntil : new Date(),
+        "yyyy-MM-dd HH:mm:ss"
+      )
+    );
+    setValue("status", findData.status);
+    setValue("quantity", findData.quantity);
+    setValue("registrantId", findData.registrantId);
+    setIsVoucherModalOpen(true);
   };
 
   const findStatusClass = (status: string) => {
@@ -197,6 +244,7 @@ const Voucher = () => {
                             setIds([i.id]);
                             setIsDeleteModalOpen(true);
                           }}
+                          onEdit={() => onUpdate(i.id)}
                         />
                       </td>
                     </tr>
@@ -270,7 +318,6 @@ const Voucher = () => {
             name="validUntil"
             type="datetime-local"
             labelText="Validity Date"
-            defaultValue={null}
             error={errors}
             register={register}
             aboveLabel="Validity Date"

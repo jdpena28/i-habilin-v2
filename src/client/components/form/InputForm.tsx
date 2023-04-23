@@ -47,6 +47,7 @@ const InputForm: FC<InputFormProps> = ({
             className="label-text peer h-8 w-full border-none bg-transparent p-0 !font-normal placeholder-transparent focus:border-transparent focus:outline-none focus:ring-0"
             {...register(id, {
               valueAsNumber: type === "number",
+              valueAsDate: type === "date" || type === "datetime-local",
               onChange: sideEffect,
             })}
             defaultValue={defaultValue}

@@ -16,11 +16,7 @@ export const createVoucherSchema = yup.object().shape({
     .string()
     .required("Status is required")
     .oneOf(["Active", "Expired", "Used"], "Invalid Option"),
-  validUntil: yup
-    .date()
-    .nullable()
-    .transform((curr, orig) => (orig === "" ? null : curr))
-    .optional(),
+  validUntil: yup.string().optional(),
   quantity: yup
     .number()
     .required("Quantity is required")
@@ -43,3 +39,9 @@ export const deleteVoucherSchema = yup.object().shape({
     .of(yup.string().required("ID is required"))
     .required("IDs is required"),
 });
+
+export const updateVoucherSchema = createVoucherSchema.shape({
+  id: yup.string().required("ID is required"),
+});
+
+export type UpdateVoucherSchema = yup.InferType<typeof updateVoucherSchema>;
