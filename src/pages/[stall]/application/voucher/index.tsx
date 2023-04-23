@@ -26,6 +26,7 @@ const Voucher = () => {
   const { stall } = useStallConfigurationStore();
   const [ids, setIds] = useState<string[] | undefined>([]);
   const [isVoucherModalOpen, setIsVoucherModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [submitIsLoading, setSubmitIsLoading] = useState(false);
 
   const { data, isLoading, refetch } =
@@ -41,6 +42,21 @@ const Voucher = () => {
         toast.success("Voucher successfully created.");
         setIsVoucherModalOpen(false);
         reset();
+      },
+      onError: (error) => {
+        setSubmitIsLoading(false);
+        toast.error(error.message);
+      },
+    });
+
+  const { mutate: deleteVoucher } =
+    trpc.stall.voucher.deleteVoucher.useMutation({
+      onSuccess: () => {
+        refetch();
+        setSubmitIsLoading(false);
+        toast.success("Voucher successfully deleted.");
+        setIds([]);
+        setIsDeleteModalOpen(false);
       },
       onError: (error) => {
         setSubmitIsLoading(false);
@@ -76,6 +92,13 @@ const Voucher = () => {
     createVoucher(value);
   };
 
+  const onDelete = () => {
+    setSubmitIsLoading(true);
+    deleteVoucher({
+      ids: ids as string[],
+    });
+  };
+
   const findStatusClass = (status: string) => {
     switch (status) {
       case "Active":
@@ -104,7 +127,7 @@ const Voucher = () => {
         <button
           className="my-1 ml-1 bg-red-500 !p-1 text-sm text-white"
           onClick={() => {
-            // empty
+            setIsDeleteModalOpen(true);
           }}>
           Delete
         </button>
@@ -171,7 +194,8 @@ const Voucher = () => {
                           viewOnClick=""
                           options={["Edit", "Delete"]}
                           onDelete={() => {
-                            // empty
+                            setIds([i.id]);
+                            setIsDeleteModalOpen(true);
                           }}
                         />
                       </td>
@@ -273,6 +297,36 @@ const Voucher = () => {
             <SubmitButton isLoading={submitIsLoading} />
           </div>
         </form>
+      </ModalTemplate>
+      <ModalTemplate
+        title="Delete Voucher"
+        isOpenModal={isDeleteModalOpen}
+        setIsOpenModal={setIsDeleteModalOpen}
+        bodyClassName="max-w-2xl">
+        <p>Are you sure you want to delete ?</p>
+        <ul className="ml-4 list-disc">
+          {data
+            ?.filter((i) => ids?.includes(i.id))
+            .map((i) => {
+              return <li>{i.code}</li>;
+            })}
+        </ul>
+        <div className="mt-4 flex justify-end gap-x-2">
+          <button
+            type="reset"
+            className="bg-yellow-400 text-black"
+            onClick={() => {
+              setIsDeleteModalOpen(false);
+              setIds([]);
+            }}>
+            Cancel
+          </button>
+          <SubmitButton
+            className="!bg-red-500 text-white"
+            isLoading={submitIsLoading}
+            onClick={onDelete}
+          />
+        </div>
       </ModalTemplate>
     </StallLayout>
   );

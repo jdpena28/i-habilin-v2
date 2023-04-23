@@ -1,6 +1,7 @@
 import { router, protectedProcedure } from "@/server/trpc";
 import {
   createVoucherSchema,
+  deleteVoucherSchema,
   getAllVoucherSchema,
 } from "@/server/schema/stall/voucher";
 import { omit } from "lodash";
@@ -34,6 +35,17 @@ export const voucherRouter = router({
       return await ctx.prisma.discount.findMany({
         where: {
           registrantId: input.registrantId,
+        },
+      });
+    }),
+  deleteVoucher: protectedProcedure
+    .input(deleteVoucherSchema)
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.prisma.discount.deleteMany({
+        where: {
+          id: {
+            in: input.ids,
+          },
         },
       });
     }),

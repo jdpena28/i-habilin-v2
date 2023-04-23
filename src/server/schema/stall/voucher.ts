@@ -36,3 +36,10 @@ export const getAllVoucherSchema = yup
   .required();
 
 export type CreateVoucherSchema = yup.InferType<typeof createVoucherSchema>;
+
+export const deleteVoucherSchema = yup.object().shape({
+  ids: yup
+    .array()
+    .of(yup.string().required("ID is required"))
+    .required("IDs is required"),
+});
