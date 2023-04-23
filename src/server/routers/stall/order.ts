@@ -1,4 +1,4 @@
-import { groupBy, chain, mapValues, isEmpty } from "lodash";
+import { groupBy, chain, mapValues, isEmpty, flatten } from "lodash";
 import {
   getAllOrderSchema,
   getOrderSchema,
@@ -143,25 +143,27 @@ export const orderRouter = router({
         );
         return Object.fromEntries(entries) as resultType;
       }
-      /* if (input.orderBy && ["Order Time (Asc.)", "Order Time (Desc.)"].includes(input.orderBy)) {
-        const sortByOrderTime = Object.values(result).sort((a, b) => {
-          if (input.orderBy === "Order Time (Asc.)") {
-            return a.createdAt.getTime() - b.createdAt.getTime();
-          }
-          return b.createdAt.getTime() - a.createdAt.getTime();
-          
-        })
-        .reduce((acc, key) => (
-          {
-            [key.tableNumber]: {
-              ...key,
-            },
-            ...acc
-          }
-        ),{})
-        console.log(sortByOrderTime)
-      
-      } */
+      if (
+        input.orderBy &&
+        ["Order Time (Asc.)", "Order Time (Desc.)"].includes(input.orderBy)
+      ) {
+        const entries = Object.entries(result);
+        if (input.orderBy === "Order Time (Asc.)") {
+          entries.sort((a: any, b: any) => a[1].createdAt - b[1].createdAt);
+        } else {
+          entries.sort((a: any, b: any) => b[1].createdAt - a[1].createdAt);
+        }
+        const flattedEntries = flatten(entries);
+        const groupedObject: { [key: string]: any } = {};
+        for (let i = 1; i < flattedEntries.length; i += 2) {
+          const object = flattedEntries[i];
+          const tableNumber = `Table Number: ${
+            typeof object === "object" ? object.tableNumber : "2"
+          }`;
+          groupedObject[tableNumber] = object;
+        }
+        return groupedObject as resultType;
+      }
       return result;
     }),
   getOrder: protectedProcedure

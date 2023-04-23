@@ -17,6 +17,7 @@ const Index = () => {
     {
       id: stall.id as string,
       status: "Order",
+      orderBy: query.sortBy as string,
     },
     {
       refetchInterval: 1000 * 15, // 15 seconds
@@ -27,11 +28,18 @@ const Index = () => {
       {
         id: stall.id as string,
         status: "Preparing",
-        orderBy: query.sortPreparingBy as string,
+        orderBy: query.sortPreparingBy
+          ? (query.sortPreparingBy as string)
+          : (query.sortBy as string),
       },
       {
-        refetchInterval: 1000 * 15, // 15 seconds
-        staleTime: 1000 * 60 * 15, // 15 minutes
+        refetchInterval:
+          query?.sortPreparingBy === "Preparing Time"
+            ? 1000 * 60 * 10
+            : 1000 * 15, // 10 minutes or 15 seconds
+        cacheTime: 1000 * 60 * 15, // 15 minutes
+        staleTime:
+          query?.sortPreparingBy === "Preparing Time" ? 1000 * 60 * 10 : 0, // 10 minutes or 0 seconds
       }
     );
   const { data: readyData, isLoading: readyIsLoading } =
@@ -39,6 +47,7 @@ const Index = () => {
       {
         id: stall.id as string,
         status: "Ready",
+        orderBy: query.sortBy as string,
       },
       {
         refetchInterval: 1000 * 15, // 15 seconds
@@ -49,6 +58,7 @@ const Index = () => {
       {
         id: stall.id as string,
         status: "Bill Out",
+        orderBy: query.sortBy as string,
       },
       {
         refetchInterval: 1000 * 15, // 15 seconds
@@ -59,6 +69,7 @@ const Index = () => {
       {
         id: stall.id as string,
         status: "Cancelled",
+        orderBy: query.sortBy as string,
       },
       {
         refetchInterval: 1000 * 15, // 15 seconds
@@ -72,7 +83,30 @@ const Index = () => {
   ];
   return (
     <StallLayout>
-      <StallHeader title="Orders" filter />
+      <StallHeader
+        title="Orders"
+        filterQuery="sortBy"
+        filter={
+          <>
+            <option value="default" selected>
+              Sort By
+            </option>
+            {sortByOptions.map((option, key) => {
+              if (key + 1 === sortByOptions.length) {
+                return null;
+              }
+              return (
+                <option
+                  selected={query?.sortPreparingBy === option}
+                  key={option}
+                  value={option}>
+                  {option}
+                </option>
+              );
+            })}
+          </>
+        }
+      />
       <section id="order-board" className="space-y-3 overflow-y-auto">
         {/* Order Section */}
         <p className="badge-yellow !max-w-full text-center !text-base !font-bold">
@@ -89,7 +123,7 @@ const Index = () => {
                 <Notes
                   key={data[key].id}
                   id={data[key].id}
-                  tableNo={key}
+                  tableNo={key.replace("Table Number:", "")}
                   status="Order">
                   {data[key].orders.map((order) => {
                     return (
@@ -115,7 +149,14 @@ const Index = () => {
               Sort By
             </option>
             {sortByOptions.map((option) => {
-              return <option value={option}>{option}</option>;
+              return (
+                <option
+                  selected={query?.sortPreparingBy === option}
+                  key={option}
+                  value={option}>
+                  {option}
+                </option>
+              );
             })}
           </Filter>
         </div>
@@ -130,7 +171,7 @@ const Index = () => {
                 <Notes
                   key={preparingData[key].id}
                   id={preparingData[key].id}
-                  tableNo={key}
+                  tableNo={key.replace("Table Number:", "")}
                   status="Preparing">
                   {preparingData[key].orders.map((order) => {
                     return (
@@ -161,7 +202,7 @@ const Index = () => {
                 <Notes
                   key={readyData[key].id}
                   id={readyData[key].id}
-                  tableNo={key}
+                  tableNo={key.replace("Table Number:", "")}
                   status="Ready">
                   {readyData[key].orders.map((order) => {
                     return (
@@ -192,7 +233,7 @@ const Index = () => {
                 <Notes
                   key={billOutData[key].id}
                   id={billOutData[key].id}
-                  tableNo={key}
+                  tableNo={key.replace("Table Number:", "")}
                   status="Order">
                   {billOutData[key].orders.map((order) => {
                     return (
@@ -223,7 +264,7 @@ const Index = () => {
                 <Notes
                   key={cancelledData[key].id}
                   id={cancelledData[key].id}
-                  tableNo={key}
+                  tableNo={key.replace("Table Number:", "")}
                   status="Order">
                   {cancelledData[key].orders.map((order) => {
                     return (

@@ -1,17 +1,18 @@
 import { FC, ReactNode } from "react";
 import { useRouter } from "next/router";
 import { BsArrowLeft, BsSearch } from "react-icons/bs";
-import { IoFilter } from "react-icons/io5";
+import { Filter } from "../filtering-sorting";
 
 interface StallHeaderProps {
   title: string;
   goBack?: boolean;
   search?: boolean;
   tabs?: boolean;
-  filter?: boolean;
+  filter?: boolean | ReactNode;
   buttonText?: string;
   onClickButton?: () => void;
   children?: ReactNode;
+  filterQuery?: string;
 }
 
 const StallHeader: FC<StallHeaderProps> = ({
@@ -23,6 +24,7 @@ const StallHeader: FC<StallHeaderProps> = ({
   onClickButton,
   buttonText,
   children,
+  filterQuery,
 }) => {
   const { back } = useRouter();
   return (
@@ -76,19 +78,7 @@ const StallHeader: FC<StallHeaderProps> = ({
           </div>
         )}
         {!tabs && filter && <div className="invisible" />}
-        {filter && (
-          <div className="flex items-center gap-x-1 rounded-md bg-white p-2">
-            <IoFilter className="h-5 w-5" />
-            <select
-              className="border-none font-poppins outline-none focus:border-transparent focus:outline-none focus:ring-0"
-              name="filter"
-              id="filter">
-              <option value="" selected>
-                Filter
-              </option>
-            </select>
-          </div>
-        )}
+        {filter && <Filter sortQuery={filterQuery as string}>{filter}</Filter>}
       </div>
     </header>
   );
