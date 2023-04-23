@@ -107,7 +107,7 @@ const CustomerNav = () => {
 
   return (
     <>
-      <nav className="fixed top-0 z-50 flex h-16 w-full items-center justify-between bg-primary px-2">
+      <nav className="fixed top-0 z-50 flex h-16 w-full items-center justify-between overflow-hidden bg-primary px-2">
         <div className="flex items-center gap-x-2">
           {isMenuOpen ? (
             <IoCloseSharp
