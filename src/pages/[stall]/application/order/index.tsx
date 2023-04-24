@@ -245,7 +245,7 @@ const Index = () => {
                   key={billOutData[key].id}
                   id={billOutData[key].id}
                   tableNo={key.replace("Table Number:", "")}
-                  status="Order">
+                  status="Bill Out">
                   {billOutData[key].orders.map((order) => {
                     return (
                       <p key={order.menu.name}>
@@ -276,7 +276,7 @@ const Index = () => {
                   key={completedData[key].id}
                   id={completedData[key].id}
                   tableNo={key.replace("Table Number:", "")}
-                  status="Order">
+                  status="Completed">
                   {completedData[key].orders.map((order) => {
                     return (
                       <p key={order.menu.name}>
@@ -307,7 +307,7 @@ const Index = () => {
                   key={cancelledData[key].id}
                   id={cancelledData[key].id}
                   tableNo={key.replace("Table Number:", "")}
-                  status="Order">
+                  status="Cancelled">
                   {cancelledData[key].orders.map((order) => {
                     return (
                       <p key={order.menu.name}>
