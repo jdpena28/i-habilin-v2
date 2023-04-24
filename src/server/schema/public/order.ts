@@ -23,3 +23,12 @@ export const billOutSchema = yup.object({
 })
 
 export type BillOutSchema = yup.InferType<typeof billOutSchema>
+
+export const getCouponCodeSchema = yup.object({
+    orderId: yup.string().required("Order ID is required"),
+    code: yup.string().trim().required("Code is required"),
+})
+
+export const deleteCouponCodeSchema = yup.object({
+    orderId: yup.string().required("Order ID is required"),
+})

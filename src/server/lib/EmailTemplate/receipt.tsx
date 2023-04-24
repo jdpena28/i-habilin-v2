@@ -24,6 +24,21 @@ const ReceiptEmailTemplate = (data: CustomerOrderType) => {
     }, 0);
     return acc + menuTotal;
   }, 0);
+
+  const DISCOUNT = Object.keys(data.data).reduce((acc, key) => {
+    if (key !== data?.tableOrder?.discount?.registrant?.name) return acc;
+    const menuTotal = data.data[key].reduce((acc, item) => {
+      const eachTotal = item.data.reduce((acc, item) => {
+        if (item.status === "Cancelled") return acc;
+        return (
+          acc + parseFloat(item.menu.total as unknown as string) * item.quantity
+        );
+      }, 0);
+      return acc + eachTotal;
+    }, 0);
+    return acc + menuTotal;
+  }, 0);
+
   return `<!DOCTYPE html>
     <html>
       <head>
@@ -214,20 +229,39 @@ const ReceiptEmailTemplate = (data: CustomerOrderType) => {
             </tr>
     
             <tr class="item">
-              <td>[DISCOUNT CODE]</td>
+              <td> ${
+                data?.tableOrder?.discount?.code
+                  ? `${data?.tableOrder?.discount?.registrant?.name} -
+              ${data?.tableOrder?.discount?.code}`
+                  : "None"
+              }</td>
     
-              <td>- [TOTAL DISCOUNT]</td>
+              <td>${FormatCurrency(
+                Math.abs(
+                  DISCOUNT *
+                    ((data?.tableOrder?.discount
+                      ?.discount as unknown as number) /
+                      100)
+                ) * -1
+              )}</td>
             </tr>
-    
-            <tr class="item details">
-              <td>[DISCOUNT CODE]</td>
-    
-              <td>- [TOTAL DISCOUNT]</td>
-            </tr>
-    
             <tr class="total">
               <td></td>
-              <td><strong>Total:</strong> ${FormatCurrency(SUB_TOTAL)}</td>
+              <td><strong>Total:</strong>${
+                data?.tableOrder?.discount?.code
+                  ? `${FormatCurrency(
+                      SUB_TOTAL +
+                        Math.abs(
+                          DISCOUNT *
+                            ((data?.tableOrder?.discount
+                              ?.discount as unknown as number) /
+                              100)
+                        ) *
+                          -1,
+                      "PHP"
+                    )}`
+                  : `${FormatCurrency(SUB_TOTAL, "PHP")}`
+              }</td>
             </tr>
           </table>
         </div>

@@ -23,6 +23,7 @@ const Orders = () => {
   const [submitIsLoading, setSubmitIsLoading] = useState(false);
   const [readyFood, setReadyFood] = useState<any>();
   const [readedFood, setReadedFood] = useState<any>([]);
+  const [code, setCode] = useState<string>("");
   const { query } = useRouter();
   const { data, isLoading, refetch } = trpc.public.order.getOrder.useQuery(
     {
@@ -73,6 +74,24 @@ const Orders = () => {
       toast.error(error.message);
     },
   });
+  const { mutate: redeemCode } = trpc.public.order.redeemCode.useMutation({
+    onSuccess: () => {
+      refetch();
+      toast.success("Code Redeemed");
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+  const { mutate: deleteCode } = trpc.public.order.deleteCode.useMutation({
+    onSuccess: () => {
+      refetch();
+      toast.success("Code Deleted");
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
 
   const {
     register,
@@ -116,7 +135,7 @@ const Orders = () => {
           if (item.status === "Cancelled") return acc;
           return (
             acc +
-            parseInt(item.menu.total as unknown as string, 10) * item.quantity
+            parseFloat(item.menu.total as unknown as string) * item.quantity
           );
         }, 0);
         return acc + eachTotal;
@@ -124,6 +143,35 @@ const Orders = () => {
       return acc + menuTotal;
     }, 0);
   }, [data]);
+
+  const couponDiscount = useMemo(() => {
+    if (
+      isEmpty(data?.tableOrder?.discount) ||
+      isEmpty(data?.data) ||
+      isEmpty(data)
+    )
+      return 0;
+    const totalFromTheMenu = Object.keys(data.data).reduce((acc, key) => {
+      if (key !== data?.tableOrder?.discount?.registrant?.name) return acc;
+      const menuTotal = data.data[key].reduce((acc, item) => {
+        const eachTotal = item.data.reduce((acc, item) => {
+          if (item.status === "Cancelled") return acc;
+          return (
+            acc +
+            parseFloat(item.menu.total as unknown as string) * item.quantity
+          );
+        }, 0);
+        return acc + eachTotal;
+      }, 0);
+      return acc + menuTotal;
+    }, 0);
+    return (
+      Math.abs(
+        totalFromTheMenu *
+          ((data?.tableOrder?.discount?.discount as unknown as number) / 100)
+      ) * -1
+    );
+  }, [data?.tableOrder?.discount]);
 
   const isBillOut = useMemo(() => {
     if (isEmpty(data)) return false;
@@ -172,6 +220,20 @@ const Orders = () => {
       )
     );
     setIsFoodReadyModalOpen(false);
+  };
+
+  const handleApplyCode = () => {
+    if (!code) return;
+    redeemCode({
+      code,
+      orderId: query.id as string,
+    });
+  };
+
+  const handleDeleteCode = () => {
+    deleteCode({
+      orderId: query.id as string,
+    });
   };
 
   return (
@@ -225,17 +287,38 @@ const Orders = () => {
             <p className="font-brocha text-sm font-bold ">Have a promo code?</p>
             <div>
               <div className="flex">
-                <div className="relative flex w-full rounded-lg p-2 ring-1 ring-primary">
-                  <input
-                    type="text"
-                    className="w-full appearance-none border-none text-sm outline-none ring-0 focus:outline-none  focus:ring-0 "
-                    placeholder="Enter promo code here"
-                  />
-                  <button
-                    type="button"
-                    className="rounded-2xl bg-secondary !p-3 text-xs text-highlight">
-                    Apply
-                  </button>
+                <div
+                  className={`relative flex w-full rounded-lg p-2 ring-1 ring-primary ${
+                    data.tableOrder && "justify-between gap-x-3"
+                  }`}>
+                  {!isEmpty(data?.tableOrder?.discount) ? (
+                    <p className="flex max-w-full items-center  truncate rounded-lg bg-secondary/60 p-1.5 text-xs font-semibold text-black ring-2 ring-secondary ring-offset-2 lg:text-base">
+                      {data?.tableOrder?.discount?.registrant?.name}-
+                      {data?.tableOrder?.discount?.code}
+                    </p>
+                  ) : (
+                    <input
+                      type="text"
+                      className="w-full appearance-none border-none text-sm outline-none ring-0 focus:outline-none focus:ring-0"
+                      onChange={(e) => setCode(e.target.value)}
+                      placeholder="Enter promo code here"
+                    />
+                  )}
+                  {!isEmpty(data?.tableOrder?.discount) ? (
+                    <button
+                      type="button"
+                      onClick={handleDeleteCode}
+                      className="rounded-2xl bg-red-500 !p-3 text-xs text-white">
+                      Delete
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleApplyCode}
+                      className="rounded-2xl bg-secondary !p-3 text-xs text-highlight">
+                      Apply
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
@@ -258,14 +341,18 @@ const Orders = () => {
             </div>
             <div className="mt-1 mb-8 flex justify-between">
               <p className="font-semibold">Coupon Discount</p>
-              <p className="font-semibold">{FormatCurrency(0, "PHP")}</p>
+              <p className="font-semibold">
+                {FormatCurrency(couponDiscount, "PHP")}
+              </p>
             </div>
             <div>
               <hr />
             </div>
             <div className="flex justify-between pt-4 text-lg text-highlight">
               <p className="font-semibold ">Total</p>
-              <p className="font-semibold">{FormatCurrency(total, "PHP")}</p>
+              <p className="font-semibold">
+                {FormatCurrency(total + couponDiscount, "PHP")}
+              </p>
             </div>
           </div>
           {data?.status !== "Bill Out" && (

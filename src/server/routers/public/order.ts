@@ -1,6 +1,6 @@
 import { router, procedure } from "@/server/trpc"
-import { billOutSchema, createOrderSchema, getOrderSchema } from "@/server/schema/public/order";
-import { groupBy, chain, mapValues, } from "lodash";
+import { billOutSchema, createOrderSchema, deleteCouponCodeSchema, getCouponCodeSchema, getOrderSchema } from "@/server/schema/public/order";
+import { groupBy, chain, mapValues } from "lodash";
 import { sendEmail } from "@/server/lib/SendInBlue";
 import { formatDate } from "@/client/lib/TextFormatter";
 import ReceiptEmailTemplate, { CustomerOrderType } from "@/server/lib/EmailTemplate/receipt";
@@ -83,6 +83,24 @@ export const orderRouter = router({
                 }
             }
         })
+        const tableOrder = await ctx.prisma.tableOrder.findUnique({
+            where: {
+                id: input.id,
+            },
+            include: {
+                discount: {
+                    select: {
+                        code: true,
+                        discount: true,
+                        registrant: {
+                            select: {
+                                name: true,
+                            }
+                        }
+                    }
+                }
+            }
+        })
         const data = groupBy(orders, "menu.category.registrant.name")
         
         const result = mapValues(data, (value) => {
@@ -110,6 +128,7 @@ export const orderRouter = router({
             id: orders ? orders[0].tableOrder.id : null,
             tableNumber: orders ? orders[0].tableOrder.tableNumber : null,
             status: orders ? orders[0].tableOrder.status : null,
+            tableOrder: tableOrder,
             data: result
         }
     }),
@@ -139,5 +158,49 @@ export const orderRouter = router({
                 email: input.email,
             }
         })
-    })
+    }),
+    redeemCode:procedure.input(getCouponCodeSchema).mutation(async ({ctx,input}) => {
+       let redeemCode
+        try {
+            redeemCode = await ctx.prisma.discount.update({
+                where: {
+                    code: input.code,
+                },
+                data: {
+                    used: {
+                        increment: 1,
+                    }
+                }
+            })
+        } catch (error) {
+            throw new Error("Invalid Code")
+        }
+        if(["Expired","Used"].includes(redeemCode.status) || redeemCode.used > redeemCode.quantity 
+        || (redeemCode.validUntil && new Date() > redeemCode?.validUntil)){ 
+            throw new Error("Invalid Code")
+        }
+        await ctx.prisma.tableOrder.update({
+            where: {
+                id: input.orderId,
+            },
+            data: {
+                discount: {
+                    connect: { id: redeemCode.id },
+                }
+            }
+        })
+        return redeemCode
+    }),
+    deleteCode: procedure.input(deleteCouponCodeSchema).mutation(async ({ctx,input}) => {
+        return await ctx.prisma.tableOrder.update({
+            where: {
+                id: input.orderId,
+            },
+            data: {
+                discount: {
+                    disconnect: true,
+                }
+            }
+        })
+    }),
 })
