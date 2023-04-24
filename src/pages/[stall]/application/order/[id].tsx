@@ -50,6 +50,9 @@ const OrderDetails = () => {
       text: "Bill Out",
     },
     {
+      text: "Completed",
+    },
+    {
       text: "Cancelled",
     },
   ];
@@ -82,7 +85,11 @@ const OrderDetails = () => {
       setSubmitIsLoading(false);
       setIsStatusModalOpen(false);
       refetch();
-      push(`/${query.stall}/application/order`);
+      push(
+        `/${query.stall}/application/order#${statusGetValues(
+          "status"
+        ).toLowerCase()}`
+      );
       setTimeout(() => {
         toast.success("Order updated successfully", {
           id: "order-update",
@@ -113,6 +120,7 @@ const OrderDetails = () => {
     register: statusRegister,
     handleSubmit: statusHandleSubmit,
     setValue: statusSetValue,
+    getValues: statusGetValues,
     formState: { errors: statusErrors },
     reset: statusReset,
     watch: statusWatch,

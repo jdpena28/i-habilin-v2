@@ -51,7 +51,7 @@ h6 {
 }
 
 button {
-  @apply flex items-center justify-center gap-x-5 rounded-lg p-4 font-poppins font-medium tracking-wider text-white;
+  @apply flex items-center justify-center gap-x-5 rounded-lg p-2 font-poppins font-medium tracking-wider text-white lg:p-4;
 }
 
 .category-button {
@@ -78,7 +78,7 @@ button {
 }
 
 .nav-links {
-  @apply border-b-4 border-transparent p-4 font-brocha text-lg font-bold tracking-wide transition-colors duration-500 hover:border-secondary;
+  @apply border-b-4 border-transparent p-2 font-brocha text-lg font-bold tracking-wide text-white transition-colors duration-500 hover:border-secondary md:p-4 md:text-xl md:text-black;
 }
 
 .active-link {
@@ -148,6 +148,9 @@ strong {
 }
 .badge-blue {
   @apply w-full max-w-[100px] rounded-md  bg-blue-400 px-2 py-1 text-center font-poppins text-xs font-medium text-white;
+}
+.badge-green {
+  @apply w-full max-w-[100px] rounded-md  bg-green-400 px-2 py-1 text-center font-poppins text-xs font-medium text-green-800;
 }
 
 /* Upload Care */

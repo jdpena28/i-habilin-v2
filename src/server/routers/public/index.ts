@@ -3,7 +3,7 @@ import { sendEmail } from "@/server/lib/SendInBlue";
 import { openai } from "@/server/lib/openai";
 import { slugify } from "@/server/lib/slugify";
 import { getRegistrantSchema } from "@/server/schema/application/registrant";
-import { createAccountSchema, createRegistrantSchema, createSurveySchema, generateRecommendationSchema, getAllCategorySchema, getSuperAdminPassword } from "@/server/schema/public";
+import { createAccountSchema, createRegistrantSchema, createSurveySchema, forgotPasswordSchema, generateRecommendationSchema, getAllCategorySchema, getSuperAdminPassword, updatePasswordSchema } from "@/server/schema/public";
 import { getAllMenuSchema } from "@/server/schema/stall/menu";
 import { router, procedure } from "@/server/trpc";
 import { omit } from "lodash";
@@ -279,6 +279,7 @@ export const registerRouter = router({
 
         const recommended = await openai.createChatCompletion({
             model: "gpt-3.5-turbo",
+            max_tokens: 1500,
             messages: [
               {
                 role: "system",
@@ -313,7 +314,7 @@ export const registerRouter = router({
                  ${JSON.stringify(menu,null,2)}
         
         
-                  Return it as JSON with a key of "recommended_food" note that you are only allowed to return your recommended food that are only in the menu JSON Data
+                  Return it as JSON with a key of "recommended_food" note that you are only allowed to return your recommended food that are only in the menu JSON Data and limit recommended food up to 8.
                 `
               }
             ],
@@ -323,6 +324,50 @@ export const registerRouter = router({
             return null
         }
         return JSON.parse(recommended.data.choices[0].message.content)
+    }),
+    forgotPasswordEmail: procedure.input(forgotPasswordSchema).mutation(async ({ctx,input}) => {
+        const findUserAccount = await ctx.prisma.account.findUnique({
+            where: {
+                email: input.email
+            },
+            include: {
+                person: true
+            }
+        }
+        )
+        if(!findUserAccount) {
+            throw new Error("Email not found")
+        }
+        sendEmail.sendTransacEmail({
+            to: [{"email":`${input.email}`,"name":`${findUserAccount.person ? findUserAccount.person.firstName + " " + findUserAccount.person.lastName : input.email }`}],
+            templateId: 3,
+            params: {
+                token: findUserAccount.id,
+                slug: input.slug,
+                pageFrom: input.pageFrom
+            }
+           
+          })
+        return findUserAccount
+    }),
+    updatePassword: procedure.input(updatePasswordSchema).mutation(async ({ctx,input}) => {
+      const isAccountExist = await ctx.prisma.account.findUnique({
+            where: {
+                id: input.id
+            }
+      })
+        if(!isAccountExist) {
+            throw new Error("Invalid token")
+        }
+        input.password = await encrypt(input.password)
+        return await ctx.prisma.account.update({
+            where: {
+                id: input.id
+            },
+            data: {
+                password: input.password
+            }
+        })
     }),
     order: orderRouter
 })

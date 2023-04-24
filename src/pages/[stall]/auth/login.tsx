@@ -126,7 +126,7 @@ const Login = (
               </p>
               <Link
                 className="text-right underline underline-offset-2"
-                href="/">
+                href={`/${slug}/auth/forgot-password`}>
                 <p className="mt-5">Forgot Password?</p>
               </Link>
               <SubmitButton className="!w-full" isLoading={submitIsLoading} />

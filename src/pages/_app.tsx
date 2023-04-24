@@ -6,6 +6,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { trpc } from "@/server/utils/trpc";
 import localFont from "next/font/local";
 import { Poppins } from "next/font/google";
+import { Analytics } from "@vercel/analytics/react";
 import { DefaultSeo } from "next-seo";
 import DEFAULT_SEO from "../../next-seo.config";
 
@@ -51,6 +52,7 @@ function App({ Component, pageProps }: AppProps<{ session: Session | null }>) {
         <Component {...pageProps} />
         <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
       </main>
+      <Analytics />
     </SessionProvider>
   );
 }

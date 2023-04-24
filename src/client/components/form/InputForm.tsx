@@ -15,10 +15,11 @@ const InputForm: FC<InputFormProps> = ({
   sideEffect,
   step,
   defaultValue,
+  parentClassName,
 }) => {
   const errorMessage: string = get(error, id)?.message;
   return (
-    <div>
+    <div className={parentClassName}>
       <p className="label-text mb-1">{aboveLabel}</p>
       <label
         htmlFor={id}
@@ -46,6 +47,7 @@ const InputForm: FC<InputFormProps> = ({
             className="label-text peer h-8 w-full border-none bg-transparent p-0 !font-normal placeholder-transparent focus:border-transparent focus:outline-none focus:ring-0"
             {...register(id, {
               valueAsNumber: type === "number",
+              valueAsDate: type === "date" || type === "datetime-local",
               onChange: sideEffect,
             })}
             defaultValue={defaultValue}
@@ -60,7 +62,7 @@ const InputForm: FC<InputFormProps> = ({
         )}
         {icon && <span className="absolute right-3">{icon}</span>}
       </label>
-      {helperText && <p className="helper-text">{helperText}</p>}
+      {helperText && <p className="helper-text mt-1">{helperText}</p>}
       {errorMessage && (
         <p className="helper-text mt-1 font-medium !text-red-400">
           {errorMessage}

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 const PublicFooter = () => {
   return (
@@ -26,10 +27,13 @@ const PublicFooter = () => {
 
         <div className="lg:flex lg:items-end lg:justify-between">
           <div>
-            <div className="decorated-underline mx-auto lg:mx-0">
-              <h3>I-Habilin</h3>
-              <div />
-            </div>
+            <Image
+              className="mx-auto lg:mx-0"
+              src="/i-habilin-logo.png"
+              width={200.4}
+              height={50.46}
+              alt="I-Habilin logo"
+            />
             <p className="mx-auto mt-6 max-w-md text-center leading-relaxed text-gray-500 lg:text-left">
               Lorem ipsum dolor, sit amet consectetur adipisicing eLinkt.
               Incidunt consequuntur amet culpa cum itaque neque.

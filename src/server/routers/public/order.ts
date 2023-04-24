@@ -1,6 +1,9 @@
 import { router, procedure } from "@/server/trpc"
-import { createOrderSchema, getOrderSchema } from "@/server/schema/public/order";
-import { groupBy, chain, mapValues, } from "lodash";
+import { billOutSchema, createOrderSchema, deleteCouponCodeSchema, getCouponCodeSchema, getOrderSchema } from "@/server/schema/public/order";
+import { groupBy, chain, mapValues } from "lodash";
+import { sendEmail } from "@/server/lib/SendInBlue";
+import { formatDate } from "@/client/lib/TextFormatter";
+import ReceiptEmailTemplate, { CustomerOrderType } from "@/server/lib/EmailTemplate/receipt";
 
 export const orderRouter = router({
     createOrder: procedure.input(createOrderSchema).mutation(async ({ctx,input}) => {
@@ -73,7 +76,27 @@ export const orderRouter = router({
                 },
                 tableOrder: {
                     select: {
+                        id: true,
                         tableNumber: true,
+                        status: true,
+                    }
+                }
+            }
+        })
+        const tableOrder = await ctx.prisma.tableOrder.findUnique({
+            where: {
+                id: input.id,
+            },
+            include: {
+                discount: {
+                    select: {
+                        code: true,
+                        discount: true,
+                        registrant: {
+                            select: {
+                                name: true,
+                            }
+                        }
                     }
                 }
             }
@@ -102,8 +125,82 @@ export const orderRouter = router({
                 .value()
         })
         return {
+            id: orders ? orders[0].tableOrder.id : null,
             tableNumber: orders ? orders[0].tableOrder.tableNumber : null,
+            status: orders ? orders[0].tableOrder.status : null,
+            tableOrder: tableOrder,
             data: result
         }
-    })
+    }),
+    billOut: procedure.input(billOutSchema).mutation(async ({ctx,input}) => {
+        const updateToBillOutEachOrder = await ctx.prisma.order.updateMany({
+            where: {
+                id: {
+                    in: input.menuIds,
+                }
+            },
+            data: {
+                status: "Bill Out",
+            }
+        })
+        sendEmail.sendTransacEmail({
+            to: [{"email":`${input.email}`,"name":`${input.email}`}],
+            subject: `Order Receipt - ${formatDate(new Date())}`,
+            sender: {"email":"noreply@ihabilin.tech","name":"I-Habilin"},
+            htmlContent: ReceiptEmailTemplate(input.orderData as CustomerOrderType)
+          })
+        return await ctx.prisma.tableOrder.update({
+            where: {
+                id: input.id,
+            },
+            data: {
+                status: "Bill Out",
+                email: input.email,
+            }
+        })
+    }),
+    redeemCode:procedure.input(getCouponCodeSchema).mutation(async ({ctx,input}) => {
+       let redeemCode
+        try {
+            redeemCode = await ctx.prisma.discount.update({
+                where: {
+                    code: input.code,
+                },
+                data: {
+                    used: {
+                        increment: 1,
+                    }
+                }
+            })
+        } catch (error) {
+            throw new Error("Invalid Code")
+        }
+        if(["Expired","Used"].includes(redeemCode.status) || redeemCode.used > redeemCode.quantity 
+        || (redeemCode.validUntil && new Date() > redeemCode?.validUntil)){ 
+            throw new Error("Invalid Code")
+        }
+        await ctx.prisma.tableOrder.update({
+            where: {
+                id: input.orderId,
+            },
+            data: {
+                discount: {
+                    connect: { id: redeemCode.id },
+                }
+            }
+        })
+        return redeemCode
+    }),
+    deleteCode: procedure.input(deleteCouponCodeSchema).mutation(async ({ctx,input}) => {
+        return await ctx.prisma.tableOrder.update({
+            where: {
+                id: input.orderId,
+            },
+            data: {
+                discount: {
+                    disconnect: true,
+                }
+            }
+        })
+    }),
 })

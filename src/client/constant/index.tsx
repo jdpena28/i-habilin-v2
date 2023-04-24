@@ -26,3 +26,41 @@ export const INCLUDED_ADDRESS = {
     },
   },
 };
+export const animateVariants = {
+  mobileHidden: {
+    x: "-100vw",
+    opacity: 0,
+  },
+  mobileVisible: {
+    x: 0,
+    opacity: 1,
+    transition: {
+      type: "spring",
+      duration: 0.8,
+      ease: "easeInOut",
+      bounce: 0.14,
+    },
+  },
+  mobileExit: {
+    x: "-100vw",
+    opacity: 0,
+  },
+  cartHidden: {
+    x: "200vw",
+    opacity: 0,
+  },
+  cartVisible: {
+    x: 0,
+    opacity: 1,
+    transition: {
+      type: "spring",
+      duration: 0.8,
+      ease: "easeInOut",
+      bounce: 0.14,
+    },
+  },
+  cartExit: {
+    x: "200vw",
+    opacity: 0,
+  },
+};
