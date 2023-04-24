@@ -1,6 +1,9 @@
 import { router, procedure } from "@/server/trpc"
 import { billOutSchema, createOrderSchema, getOrderSchema } from "@/server/schema/public/order";
 import { groupBy, chain, mapValues, } from "lodash";
+import { sendEmail } from "@/server/lib/SendInBlue";
+import { formatDate } from "@/client/lib/TextFormatter";
+import ReceiptEmailTemplate, { CustomerOrderType } from "@/server/lib/EmailTemplate/receipt";
 
 export const orderRouter = router({
     createOrder: procedure.input(createOrderSchema).mutation(async ({ctx,input}) => {
@@ -121,6 +124,12 @@ export const orderRouter = router({
                 status: "Bill Out",
             }
         })
+        sendEmail.sendTransacEmail({
+            to: [{"email":`${input.email}`,"name":`${input.email}`}],
+            subject: `Order Receipt - ${formatDate(new Date())}`,
+            sender: {"email":"noreply@ihabilin.tech","name":"I-Habilin"},
+            htmlContent: ReceiptEmailTemplate(input.orderData as CustomerOrderType)
+          })
         return await ctx.prisma.tableOrder.update({
             where: {
                 id: input.id,

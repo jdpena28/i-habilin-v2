@@ -85,7 +85,10 @@ const Orders = () => {
 
   const onSubmit = (values: BillOutSchema) => {
     setSubmitIsLoading(true);
-    billOut(values);
+    billOut({
+      ...values,
+      orderData: data,
+    });
   };
 
   const handleBillOut = () => {
