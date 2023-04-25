@@ -5,6 +5,7 @@ import {
   deleteOrderSchema,
   updateOrderById,
   updateOrders,
+  createTransactionSchema,
 } from "@/server/schema/stall/order";
 import { protectedProcedure, router } from "@/server/trpc";
 import { openai } from "@/server/lib/openai";
@@ -173,6 +174,15 @@ export const orderRouter = router({
         where: {
           id: input.id,
         },
+        include: {
+          discount: {
+            select: {
+              code: true,
+              discount: true,
+              registrantId: true,
+            },
+          },
+        },
       });
       const order = await ctx.prisma.order.findMany({
         where: {
@@ -229,7 +239,28 @@ export const orderRouter = router({
   updateOrders: protectedProcedure
     .input(updateOrders)
     .mutation(async ({ ctx, input }) => {
-      return await ctx.prisma.order.updateMany({
+      let total = 0;
+      if (input.status === "Completed") {
+        const orders = await ctx.prisma.order.findMany({
+          where: {
+            id: {
+              in: input.id,
+            },
+          },
+          include: {
+            menu: {
+              select: {
+                total: true,
+              },
+            },
+          },
+        });
+
+        total = orders.reduce((acc, curr) => {
+          return acc + (curr.menu.total as unknown as number) * curr.quantity;
+        }, 0);
+      }
+      await ctx.prisma.order.updateMany({
         where: {
           id: {
             in: input.id,
@@ -237,6 +268,35 @@ export const orderRouter = router({
         },
         data: {
           status: input.status,
+        },
+      });
+      return {
+        total,
+        cashTendered: input.cashTendered,
+      };
+    }),
+  createTransaction: protectedProcedure
+    .input(createTransactionSchema)
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.prisma.transaction.create({
+        data: {
+          cashTendered: input.cashTendered,
+          total: input.total,
+          tableOrder: {
+            connect: {
+              id: input.tableOrderId,
+            },
+          },
+          registrant: {
+            connect: {
+              id: input.registrantId,
+            },
+          },
+          account: {
+            connect: {
+              id: input.accountId,
+            },
+          },
         },
       });
     }),

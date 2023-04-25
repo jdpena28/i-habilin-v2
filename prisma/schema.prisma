@@ -29,8 +29,10 @@ model Account {
   registrantId String?      @unique
   registrant   Registrants? @relation(fields: [registrantId], references: [id], onDelete: Cascade)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  
+  Transaction Transaction[]
 
   @@unique([email])
   @@index([registrantId])
@@ -69,9 +71,10 @@ model Registrants {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  Account  Account?
-  Category Category[]
-  Discount Discount[]
+  Account     Account?
+  Category    Category[]
+  Discount    Discount[]
+  Transaction Transaction[]
 }
 
 model Category {
@@ -159,8 +162,7 @@ model TableOrder {
   tableNumber Int
   status      String @default("Ordered") // if status is Ordered or Bill Out
 
-  total        Decimal? @db.Decimal(6, 2) // total will be inputed after bill out computed by Orders
-  cashTendered Decimal? @db.Decimal(6, 2) // yung binayad ng customer
+  total Decimal? @db.Decimal(6, 2) // total will be inputed after bill out computed by Orders
 
   email String? // when billout receipt will be sent to this email
 
@@ -171,6 +173,8 @@ model TableOrder {
 
   createdAt DateTime @default(now())
   updateAt  DateTime @updatedAt
+
+  Transaction Transaction[]
 
   @@index([createdAt(sort: Asc)])
 }
@@ -191,6 +195,25 @@ model Discount {
 
   registrantId String
   registrant   Registrants @relation(fields: [registrantId], references: [id], onDelete: Cascade)
+}
+
+model Transaction {
+  id           String  @id @default(cuid())
+  cashTendered Decimal @db.Decimal(6, 2)
+  total        Decimal @db.Decimal(6, 2)
+
+  tableOrderId String
+  tableOrder   TableOrder @relation(fields: [tableOrderId], references: [id], onDelete: Cascade)
+
+  registrantId String
+  registrant   Registrants @relation(fields: [registrantId], references: [id], onDelete: Cascade)
+
+  accountId String
+  account   Account? @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@index([accountId])
+  @@index([registrantId])
+  @@index([tableOrderId])
 }
 
 model Person {
