@@ -124,6 +124,7 @@ const Orders = () => {
     });
     setValue("id", data.id as string);
     setValue("menuIds", flattenDeep(getAllMenuIds));
+    setValue("total", total + couponDiscount);
     setEmailReceiptModalOpen(true);
   };
 
@@ -282,48 +283,49 @@ const Orders = () => {
             <p className="lg:mb-3">No data available</p>
           )}
         </div>
-        {data?.status === "Ordered" && (
-          <div className="space-y-3 rounded-lg bg-white p-2 lg:p-5">
-            <p className="font-brocha text-sm font-bold ">Have a promo code?</p>
-            <div>
-              <div className="flex">
-                <div
-                  className={`relative flex w-full rounded-lg p-2 ring-1 ring-primary ${
-                    data.tableOrder && "justify-between gap-x-3"
-                  }`}>
-                  {!isEmpty(data?.tableOrder?.discount) ? (
-                    <p className="flex max-w-full items-center  truncate rounded-lg bg-secondary/60 p-1.5 text-xs font-semibold text-black ring-2 ring-secondary ring-offset-2 lg:text-base">
-                      {data?.tableOrder?.discount?.registrant?.name}-
-                      {data?.tableOrder?.discount?.code}
-                    </p>
-                  ) : (
-                    <input
-                      type="text"
-                      className="w-full appearance-none border-none text-sm outline-none ring-0 focus:outline-none focus:ring-0"
-                      onChange={(e) => setCode(e.target.value)}
-                      placeholder="Enter promo code here"
-                    />
-                  )}
-                  {!isEmpty(data?.tableOrder?.discount) ? (
-                    <button
-                      type="button"
-                      onClick={handleDeleteCode}
-                      className="rounded-2xl bg-red-500 !p-3 text-xs text-white">
-                      Delete
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={handleApplyCode}
-                      className="rounded-2xl bg-secondary !p-3 text-xs text-highlight">
-                      Apply
-                    </button>
-                  )}
-                </div>
+        <div className="space-y-3 rounded-lg bg-white p-2 lg:p-5">
+          <p className="font-brocha text-sm font-bold ">Have a promo code?</p>
+          <div>
+            <div className="flex">
+              <div
+                className={`relative flex w-full rounded-lg p-2 ring-1 ring-primary ${
+                  data?.tableOrder && "justify-between gap-x-3"
+                }`}>
+                {!isEmpty(data?.tableOrder?.discount) ? (
+                  <p className="flex max-w-full items-center  truncate rounded-lg bg-secondary/60 p-1.5 text-xs font-semibold text-black ring-2 ring-secondary ring-offset-2 lg:text-base">
+                    {data?.tableOrder?.discount?.registrant?.name}-
+                    {data?.tableOrder?.discount?.code}
+                  </p>
+                ) : (
+                  <input
+                    type="text"
+                    className="w-full appearance-none border-none text-sm outline-none ring-0 focus:outline-none focus:ring-0"
+                    onChange={(e) => setCode(e.target.value)}
+                    placeholder="Enter promo code here"
+                  />
+                )}
+                {!isEmpty(data?.tableOrder?.discount) ? (
+                  <button
+                    type="button"
+                    onClick={
+                      data?.status === "Bill Out" ? undefined : handleDeleteCode
+                    }
+                    disabled={data?.status === "Bill Out"}
+                    className="rounded-2xl bg-red-500 !p-3 text-xs text-white disabled:bg-red-500/70">
+                    Delete
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleApplyCode}
+                    className="rounded-2xl bg-secondary !p-3 text-xs text-highlight">
+                    Apply
+                  </button>
+                )}
               </div>
             </div>
           </div>
-        )}
+        </div>
         <div className="space-y-3 rounded-lg bg-white p-2 lg:p-5">
           <p className="font-brocha text-sm font-bold">Order Summary</p>
           <div className="items-between flex w-full flex-col rounded-3xl bg-gray-50 px-6 py-4 text-sm text-gray-500">

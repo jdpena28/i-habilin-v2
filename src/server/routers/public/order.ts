@@ -156,6 +156,7 @@ export const orderRouter = router({
             data: {
                 status: "Bill Out",
                 email: input.email,
+                total: input.total,
             }
         })
     }),

@@ -18,6 +18,7 @@ export const getOrderSchema = yup.object({
 export const billOutSchema = yup.object({
     id: yup.string().required("ID is required"),
     menuIds: yup.array(yup.string().required("Menu ID is required")).required("Menu IDs is required").min(1, "Menu IDs is required"),
+    total: yup.number().required("Total is required"),
     email: yup.string().required("Email is required").email("Invalid Email"),
     orderData: yup.object().optional(),
 })
