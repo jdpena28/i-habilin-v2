@@ -1,7 +1,7 @@
 import { format } from "date-fns";
 
 const FormatCurrency = (
-  value: number | undefined,
+  value: number | undefined | null,
   currency?: string,
   isShorcut?: boolean
 ) => {

@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useRouter } from "next/router";
 import { isEmpty } from "lodash";
 import { toast } from "react-hot-toast";
@@ -22,14 +22,24 @@ import { Spinner } from "@/client/components/loader";
 import { SubmitButton } from "@/client/components/buttons";
 import ModalTemplate from "@/client/components/modal/ModalTemplate";
 import { InputForm, SelectForm } from "@/client/components/form";
+import { FormatCurrency } from "@/client/lib/TextFormatter";
 
 const OrderDetails = () => {
+  interface PaymentDetailsType {
+    total: number;
+    cashTendered: number | undefined | null;
+  }
   const { stall } = useStallConfigurationStore();
   const { query, push } = useRouter();
   const [submitIsLoading, setSubmitIsLoading] = useState(false);
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isPaymentDetailsModalOpen, setIsPaymentDetailsModalOpen] =
+    useState(false);
+  const [paymentDetails, setPaymentDetails] = useState<
+    PaymentDetailsType | undefined
+  >();
   const [ids, setIds] = useState<string[] | undefined>([]);
   const { data, isLoading, refetch } = trpc.stall.order.getOrder.useQuery({
     id: query.id as string,
@@ -81,9 +91,25 @@ const OrderDetails = () => {
     },
   });
   const { mutate: updateStatus } = trpc.stall.order.updateOrders.useMutation({
-    onSuccess: () => {
+    onSuccess: (updateStatusData) => {
       setSubmitIsLoading(false);
       setIsStatusModalOpen(false);
+      if (statusGetValues("status") === "Completed") {
+        setTimeout(() => {
+          toast.success("Order updated successfully", {
+            id: "order-update",
+          });
+        }, 500);
+        setTimeout(() => {
+          toast.remove("order-update");
+        }, 2000);
+        setPaymentDetails({
+          total: updateStatusData.total,
+          cashTendered: updateStatusData?.cashTendered,
+        });
+        setIsPaymentDetailsModalOpen(true);
+        return;
+      }
       refetch();
       push(
         `/${query.stall}/application/order#${statusGetValues(
@@ -170,10 +196,40 @@ const OrderDetails = () => {
     );
   };
 
+  const onClosePaymentDetailsModal = () => {
+    push(
+      `/${query.stall}/application/order#${statusGetValues(
+        "status"
+      ).toLowerCase()}`
+    );
+    setIsPaymentDetailsModalOpen(false);
+  };
+
   const onSubmitUpdateStatus = (value: UpdateOrders) => {
     setSubmitIsLoading(true);
     updateStatus(value);
   };
+
+  const discount = useMemo(() => {
+    if (
+      data?.discount?.registrantId === stall.id &&
+      paymentDetails?.total &&
+      data?.discount?.discount
+    ) {
+      return (
+        Math.abs(
+          ((data.discount.discount as unknown as number) / 100) *
+            paymentDetails.total
+        ) * -1
+      );
+    }
+    return 0;
+  }, [
+    data?.discount?.discount,
+    data?.discount?.registrantId,
+    paymentDetails?.total,
+    stall.id,
+  ]);
 
   return (
     <StallLayout>
@@ -351,7 +407,7 @@ const OrderDetails = () => {
         title="Update Status"
         isOpenModal={isStatusModalOpen}
         setIsOpenModal={setIsStatusModalOpen}
-        bodyClassName="max-w-2xl h-[36vh]">
+        bodyClassName="max-w-2xl min-h-[36vh]">
         <form
           className="space-y-3"
           onSubmit={statusHandleSubmit(onSubmitUpdateStatus)}>
@@ -367,6 +423,18 @@ const OrderDetails = () => {
             setValue={statusSetValue}
             watch={statusWatch}
           />
+          {statusWatch("status") === "Completed" ? (
+            <InputForm
+              id="cashTendered"
+              name="cashTendered"
+              type="number"
+              labelText="Cash Tendered*"
+              error={statusErrors}
+              register={statusRegister}
+              step=".01"
+              aboveLabel="Cash Tendered*"
+            />
+          ) : null}
           <div className="flex justify-end gap-x-2 pt-14">
             <button
               type="reset"
@@ -380,6 +448,47 @@ const OrderDetails = () => {
             <SubmitButton isLoading={submitIsLoading} />
           </div>
         </form>
+      </ModalTemplate>
+      <ModalTemplate
+        title="Exchange"
+        isOpenModal={isPaymentDetailsModalOpen}
+        setIsOpenModal={setIsPaymentDetailsModalOpen}
+        onClose={onClosePaymentDetailsModal}
+        bodyClassName="max-w-2xl space-y-2 min-h-[20vh] text-xl">
+        <pre>
+          <strong className="font-bold">Total:</strong>
+          &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+          {FormatCurrency(paymentDetails?.total)}
+        </pre>
+        <pre>
+          <strong className="font-bold">Discount:</strong>
+          &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+          {FormatCurrency(discount)}
+          {data?.discount?.registrantId === stall.id &&
+            ` - Code: ${data?.discount?.code}`}
+        </pre>
+        <pre>
+          <strong className="font-bold">Cash Tendered:</strong>
+          &emsp;&emsp;&emsp;
+          {FormatCurrency(paymentDetails?.cashTendered)}
+        </pre>
+        <pre className="border-t-2 border-gray-400 pt-2">
+          <strong className="font-bold">Exchange:</strong>
+          &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+          {paymentDetails?.cashTendered &&
+            paymentDetails?.total &&
+            FormatCurrency(
+              paymentDetails.cashTendered - (paymentDetails.total + discount)
+            )}
+        </pre>
+        <div className="flex justify-end gap-x-2 pt-8">
+          <button
+            type="button"
+            className="bg-primary text-white"
+            onClick={onClosePaymentDetailsModal}>
+            Okey
+          </button>
+        </div>
       </ModalTemplate>
     </StallLayout>
   );
