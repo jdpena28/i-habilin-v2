@@ -18,7 +18,7 @@ const CountCard: FC<CountCardProps> = ({
   isLoading,
 }) => {
   return (
-    <div className="w-max space-y-2">
+    <div className="w-max space-y-2 rounded-lg bg-white p-4">
       <p className="heading text-center">{title}</p>
       <div className="flex gap-x-2">
         <p className="w-full text-center font-bold">
