@@ -1,4 +1,6 @@
+/* eslint-disable no-underscore-dangle */
 import { useStallConfigurationStore } from "@/client/store";
+import { trpc } from "@/server/utils/trpc";
 
 import DashboardIcon from "@public/dashboard-icon";
 
@@ -11,6 +13,9 @@ import type { ReactEChartsProps } from "@/client/components/charts/EChart";
 
 const Dashboard = () => {
   const { stall } = useStallConfigurationStore();
+  const { data, isLoading } = trpc.stall.dashboard.getDashboardCount.useQuery({
+    registrantId: stall.id as string,
+  });
   const option: ReactEChartsProps["option"] = {
     tooltip: {
       trigger: "item",
@@ -57,6 +62,11 @@ const Dashboard = () => {
 
   const barOption: ReactEChartsProps["option"] = {
     animation: true,
+    title: {
+      text: "Weekly Sales",
+      left: "center",
+      padding: 10,
+    },
     xAxis: {
       type: "category",
       data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
@@ -94,23 +104,24 @@ const Dashboard = () => {
         <div className="col-span-12 flex w-full flex-wrap justify-evenly">
           <CountCard
             title="Sales"
-            count={999999}
-            trend={12500}
+            count={data?.totalSales}
+            trend={data?.totalTrendSales}
             isCurrency
-            isLoading={false}
+            isLoading={isLoading}
+            className=""
           />
           <CountCard
             title="Food Ordered"
-            count={999999}
-            trend={12500}
-            isLoading={false}
+            count={data?.totalOrders._sum.quantity as unknown as number}
+            trend={data?.totalTrendOrders}
+            isLoading={isLoading}
+            className=""
           />
           <CountCard
             title="Survey Responses"
-            count={999999}
-            trend={12500}
-            isCurrency
-            isLoading={false}
+            count={data?.surveyResponses}
+            isLoading={isLoading}
+            className=""
           />
         </div>
         <div className="col-span-12 h-96 w-full rounded-lg bg-white">

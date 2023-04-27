@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { FormatCurrency } from "@/client/lib/TextFormatter";
-import { FiTrendingUp } from "react-icons/fi";
+import { FiTrendingUp, FiTrendingDown } from "react-icons/fi";
 
 interface CountCardProps {
   title: string;
@@ -8,6 +8,7 @@ interface CountCardProps {
   isCurrency?: boolean;
   trend?: number;
   isLoading: boolean;
+  className?: string;
 }
 
 const CountCard: FC<CountCardProps> = ({
@@ -16,9 +17,10 @@ const CountCard: FC<CountCardProps> = ({
   trend,
   isCurrency,
   isLoading,
+  className,
 }) => {
   return (
-    <div className="w-max space-y-2 rounded-lg bg-white p-4">
+    <div className={`w-max space-y-2 rounded-lg bg-white p-4 ${className}`}>
       <p className="heading text-center">{title}</p>
       <div className="flex gap-x-2">
         <p className="w-full text-center font-bold">
@@ -26,16 +28,32 @@ const CountCard: FC<CountCardProps> = ({
             ? "-"
             : isCurrency
             ? FormatCurrency(count)
-            : count?.toLocaleString("en-US", {
+            : count
+            ? count?.toLocaleString("en-US", {
                 style: "decimal",
-              })}
+              })
+            : 0}
         </p>
-        {trend && trend > 0 && (
+        {isLoading ? (
+          <div className="badge-lime flex items-center gap-x-1">
+            <FiTrendingUp className="h-5 w-5" />- today
+          </div>
+        ) : null}
+        {typeof trend !== "undefined" && trend >= 0 && (
           <div className="badge-lime flex items-center gap-x-1">
             <FiTrendingUp className="h-5 w-5" />
-            {isLoading
-              ? "-"
-              : isCurrency
+            {isCurrency
+              ? FormatCurrency(trend, "PHP", true)
+              : trend.toLocaleString("en-US", {
+                  style: "decimal",
+                })}{" "}
+            today
+          </div>
+        )}
+        {typeof trend !== "undefined" && trend < 0 && (
+          <div className="badge-red flex items-center gap-x-1">
+            <FiTrendingDown className="h-5 w-5" />
+            {isCurrency
               ? FormatCurrency(trend, "PHP", true)
               : trend.toLocaleString("en-US", {
                   style: "decimal",
