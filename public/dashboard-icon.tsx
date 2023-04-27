@@ -2,7 +2,7 @@
 
 const DashboardIcon = () => {
   return (
-    <svg className="h-auto max-h-52 w-full max-w-lg" viewBox="0 0 256 178" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg className="h-auto max-h-44 w-full max-w-lg" viewBox="0 0 256 178" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M256 156.544H0V156.425H256V156.544Z" fill="#E7E8E5"/>
 <path d="M26.8589 161.094H43.8175V160.974H26.8589V161.094Z" fill="#E7E8E5"/>
 <path d="M115.997 159.797H87.6235V159.677H115.997V159.797Z" fill="#E7E8E5"/>

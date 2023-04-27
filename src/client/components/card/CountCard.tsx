@@ -22,12 +22,25 @@ const CountCard: FC<CountCardProps> = ({
       <p className="heading text-center">{title}</p>
       <div className="flex gap-x-2">
         <p className="w-full text-center font-bold">
-          {isLoading ? "-" : isCurrency ? FormatCurrency(count) : count}
+          {isLoading
+            ? "-"
+            : isCurrency
+            ? FormatCurrency(count)
+            : count?.toLocaleString("en-US", {
+                style: "decimal",
+              })}
         </p>
         {trend && trend > 0 && (
           <div className="badge-lime flex items-center gap-x-1">
             <FiTrendingUp className="h-5 w-5" />
-            {FormatCurrency(trend, "PHP", true)} today
+            {isLoading
+              ? "-"
+              : isCurrency
+              ? FormatCurrency(trend, "PHP", true)
+              : trend.toLocaleString("en-US", {
+                  style: "decimal",
+                })}{" "}
+            today
           </div>
         )}
       </div>

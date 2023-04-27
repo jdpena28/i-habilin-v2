@@ -1,3 +1,3 @@
-import PieChart from "./PieChart";
+import EChart from "./EChart";
 
-export { PieChart };
+export { EChart };
