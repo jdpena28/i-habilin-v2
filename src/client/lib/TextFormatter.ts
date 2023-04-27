@@ -5,7 +5,7 @@ const FormatCurrency = (
   currency?: string,
   isShorcut?: boolean
 ) => {
-  if (!value) return "0.00";
+  if (!value || value === 0) return "0";
   if (value > 1000000 && isShorcut) {
     const formattedValue = value / 1000000;
     return `${new Intl.NumberFormat("en-US", {
