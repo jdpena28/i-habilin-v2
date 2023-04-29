@@ -198,11 +198,23 @@ const Menu = () => {
                       total={i.total as unknown as number}
                       price={i.price as unknown as number}
                       description={i.description}
-                      imageUrl={i?.media?.cdnUrl}
+                      imageUrl={i.media.cdnUrl}
                       discount={i.discount as unknown as number}
                       status={i.status}
                       onClick={() => {
-                        setMenuDescription(i);
+                        setMenuDescription({
+                          ...i,
+                          quantity:
+                            customerOrder.orders.length === 0
+                              ? 1
+                              : customerOrder.orders
+                                  .find(
+                                    (j) => j.id === i.category.registrant.id
+                                  )
+                                  ?.menuOrders?.find(
+                                    (k: GetAllMenuType) => k.id === i.id
+                                  )?.quantity || 1,
+                        });
                         setIsMenuDescriptionModalOpen(true);
                       }}
                     />
