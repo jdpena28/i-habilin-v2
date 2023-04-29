@@ -61,7 +61,7 @@ const FeaturedSlide: FC<FeaturedSlideProps> = ({ url, title, description }) => {
         <p className="heading text-sm">{title}</p>
       </div>
       <div className="mr-0.5 flex-[.6] p-2">
-        <Image src={url} alt="Mang Inasal" height={576} width={720} />
+        <Image src={url} alt={title} height={576} width={720} />
       </div>
     </div>
   );
