@@ -249,8 +249,15 @@ const CustomerNav = () => {
                 </div>
                 <button
                   type="button"
-                  onClick={submitIsLoading ? undefined : placeOrder}
-                  className="my-12 w-full bg-secondary font-brocha text-highlight sm:max-w-md">
+                  disabled={
+                    submitIsLoading || customerOrder?.orders?.length === 0
+                  }
+                  onClick={
+                    submitIsLoading || customerOrder?.orders?.length === 0
+                      ? undefined
+                      : placeOrder
+                  }
+                  className="my-12 w-full bg-secondary font-brocha text-highlight disabled:cursor-not-allowed disabled:bg-secondary/60 sm:max-w-md">
                   Place Order
                 </button>
               </div>
