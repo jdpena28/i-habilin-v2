@@ -22,8 +22,8 @@ const FeaturedMenu = ({
         bulletClass: "swiper-pagination-bullet",
       }}
       direction="vertical"
-      onSlideChange={() => console.log("slide change")}
-      onSwiper={(swiper) => console.log(swiper)}
+      /*       onSlideChange={() => console.log("slide change")}
+      onSwiper={(swiper) => console.log(swiper)} */
       autoplay={{
         delay: 5000,
         disableOnInteraction: false,

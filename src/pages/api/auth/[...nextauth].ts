@@ -47,7 +47,7 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
     // eslint-disable-next-line no-unused-vars
-    async signIn({ user, credentials }) {
+    async signIn({ user }) {
       if (user) {
         return true;
       }
