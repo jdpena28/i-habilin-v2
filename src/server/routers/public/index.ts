@@ -260,7 +260,16 @@ export const registerRouter = router({
                     select: {
                         cdnUrl: true,
                     }
-                }
+                },
+                category: {
+                    select: {
+                        registrant: {
+                            select: {
+                                id: true,
+                            }
+                        }
+                    }
+                  }
             },
             take: 20,
         })
