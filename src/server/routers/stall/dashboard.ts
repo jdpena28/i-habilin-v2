@@ -1,6 +1,17 @@
 /* eslint-disable no-underscore-dangle */
 import { getDashboardCountSchema } from "@/server/schema/stall/dashboard";
 import { protectedProcedure, router } from "@/server/trpc";
+import { Prisma } from "@prisma/client";
+
+export type ReturnAgeGroupItemsType = Prisma.PickArray<
+  Prisma.OrderGroupByOutputType,
+  "menuId"[]
+> & {
+  _sum: {
+    quantity: number | null;
+  };
+  name?: string;
+};
 
 export const dashboardRouter = router({
   getDashboardCount: protectedProcedure
@@ -191,6 +202,281 @@ export const dashboardRouter = router({
         totalOrders,
         totalTrendOrders,
         surveyResponses,
+      };
+    }),
+  getAgeGroupOrderCount: protectedProcedure
+    .input(getDashboardCountSchema)
+    .query(async ({ ctx, input }) => {
+      const findMenu = async (menuId: string[]) => {
+        return await ctx.prisma.menu.findMany({
+          where: {
+            id: {
+              in: menuId,
+            },
+          },
+          select: {
+            id: true,
+            name: true,
+          },
+        });
+      };
+      // #region 17 - Below
+      let data17Below = await ctx.prisma.order.groupBy({
+        by: ["menuId"],
+        where: {
+          menu: {
+            category: {
+              registrantId: input.registrantId,
+            },
+          },
+          tableOrder: {
+            status: "Bill Out",
+          },
+          customer: {
+            ageGroup: "17 and Below",
+          },
+        },
+        _sum: {
+          quantity: true,
+        },
+        orderBy: {
+          _sum: {
+            quantity: "desc",
+          },
+        },
+        take: 5,
+      });
+      const findMenuFor17Below = await findMenu(
+        data17Below.map((i) => i.menuId)
+      );
+      data17Below = data17Below.map((i) => {
+        const menu = findMenuFor17Below.find((j) => j.id === i.menuId);
+        return {
+          ...i,
+          name: menu?.name,
+        };
+      });
+      // #endregion
+      // #region 18 - 24
+      let data18to24 = await ctx.prisma.order.groupBy({
+        by: ["menuId"],
+        where: {
+          menu: {
+            category: {
+              registrantId: input.registrantId,
+            },
+          },
+          tableOrder: {
+            status: "Bill Out",
+          },
+          customer: {
+            ageGroup: "18-24",
+          },
+        },
+        _sum: {
+          quantity: true,
+        },
+        orderBy: {
+          _sum: {
+            quantity: "desc",
+          },
+        },
+        take: 5,
+      });
+      const findMenuFor18to24 = await findMenu(data18to24.map((i) => i.menuId));
+      data18to24 = data18to24.map((i) => {
+        const menu = findMenuFor18to24.find((j) => j.id === i.menuId);
+        return {
+          ...i,
+          name: menu?.name,
+        };
+      });
+      // #endregion
+      // #region 25 - 34
+      let data25to34 = await ctx.prisma.order.groupBy({
+        by: ["menuId"],
+        where: {
+          menu: {
+            category: {
+              registrantId: input.registrantId,
+            },
+          },
+          tableOrder: {
+            status: "Bill Out",
+          },
+          customer: {
+            ageGroup: "25-34",
+          },
+        },
+        _sum: {
+          quantity: true,
+        },
+        orderBy: {
+          _sum: {
+            quantity: "desc",
+          },
+        },
+        take: 5,
+      });
+      const findMenuFor25to34 = await findMenu(data25to34.map((i) => i.menuId));
+      data25to34 = data25to34.map((i) => {
+        const menu = findMenuFor25to34.find((j) => j.id === i.menuId);
+        return {
+          ...i,
+          name: menu?.name,
+        };
+      });
+      // #endregion
+      // #region 35 - 44
+      let data35to44 = await ctx.prisma.order.groupBy({
+        by: ["menuId"],
+        where: {
+          menu: {
+            category: {
+              registrantId: input.registrantId,
+            },
+          },
+          tableOrder: {
+            status: "Bill Out",
+          },
+          customer: {
+            ageGroup: "35-44",
+          },
+        },
+        _sum: {
+          quantity: true,
+        },
+        orderBy: {
+          _sum: {
+            quantity: "desc",
+          },
+        },
+        take: 5,
+      });
+      const findMenuFor35to44 = await findMenu(data35to44.map((i) => i.menuId));
+      data35to44 = data35to44.map((i) => {
+        const menu = findMenuFor35to44.find((j) => j.id === i.menuId);
+        return {
+          ...i,
+          name: menu?.name,
+        };
+      });
+      // #endregion
+      // #region 45 - 54
+      let data45to54 = await ctx.prisma.order.groupBy({
+        by: ["menuId"],
+        where: {
+          menu: {
+            category: {
+              registrantId: input.registrantId,
+            },
+          },
+          tableOrder: {
+            status: "Bill Out",
+          },
+          customer: {
+            ageGroup: "45-54",
+          },
+        },
+        _sum: {
+          quantity: true,
+        },
+        orderBy: {
+          _sum: {
+            quantity: "desc",
+          },
+        },
+        take: 5,
+      });
+      const findMenuFor45to54 = await findMenu(data45to54.map((i) => i.menuId));
+      data45to54 = data45to54.map((i) => {
+        const menu = findMenuFor45to54.find((j) => j.id === i.menuId);
+        return {
+          ...i,
+          name: menu?.name,
+        };
+      });
+      // #endregion
+      // #region 55 - 64
+      let data55to64 = await ctx.prisma.order.groupBy({
+        by: ["menuId"],
+        where: {
+          menu: {
+            category: {
+              registrantId: input.registrantId,
+            },
+          },
+          tableOrder: {
+            status: "Bill Out",
+          },
+          customer: {
+            ageGroup: "55-64",
+          },
+        },
+        _sum: {
+          quantity: true,
+        },
+        orderBy: {
+          _sum: {
+            quantity: "desc",
+          },
+        },
+        take: 5,
+      });
+      const findMenuFor55to64 = await findMenu(data55to64.map((i) => i.menuId));
+      data55to64 = data55to64.map((i) => {
+        const menu = findMenuFor55to64.find((j) => j.id === i.menuId);
+        return {
+          ...i,
+          name: menu?.name,
+        };
+      });
+      // #endregion
+      // #region 65 - Aboce
+      let data65Above = await ctx.prisma.order.groupBy({
+        by: ["menuId"],
+        where: {
+          menu: {
+            category: {
+              registrantId: input.registrantId,
+            },
+          },
+          tableOrder: {
+            status: "Bill Out",
+          },
+          customer: {
+            ageGroup: "65 and Above",
+          },
+        },
+        _sum: {
+          quantity: true,
+        },
+        orderBy: {
+          _sum: {
+            quantity: "desc",
+          },
+        },
+        take: 5,
+      });
+      const findMenuFor65Above = await findMenu(
+        data65Above.map((i) => i.menuId)
+      );
+      data65Above = data65Above.map((i) => {
+        const menu = findMenuFor65Above.find((j) => j.id === i.menuId);
+        return {
+          ...i,
+          name: menu?.name,
+        };
+      });
+      // #endregion
+      return {
+        "17 an Below": data17Below,
+        "18 - 24": data18to24,
+        "25 - 34": data25to34,
+        "35 - 44": data35to44,
+        "45 - 44": data45to54,
+        "55 - 64": data55to64,
+        "65 - Above": data65Above,
       };
     }),
 });
