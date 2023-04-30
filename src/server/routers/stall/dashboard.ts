@@ -479,4 +479,71 @@ export const dashboardRouter = router({
         "65 - Above": data65Above,
       };
     }),
+  getWeeklySales: protectedProcedure
+    .input(getDashboardCountSchema)
+    .query(async ({ ctx, input }) => {
+      const findTotalSales = async (dayCount: number) => {
+        const totalStallOrders = await ctx.prisma.order.groupBy({
+          by: ["menuId"],
+          where: {
+            menu: {
+              category: {
+                registrantId: input.registrantId,
+              },
+            },
+            tableOrder: {
+              status: "Bill Out",
+            },
+            createdAt: {
+              lt: new Date(
+                new Date().setHours(24, 0, 0, 0) -
+                  dayCount * 24 * 60 * 60 * 1000
+              ),
+              gte: new Date(
+                new Date().setHours(0, 0, 0, 0) - dayCount * 24 * 60 * 60 * 1000
+              ),
+            },
+          },
+          _sum: {
+            quantity: true,
+          },
+        });
+        const allMenuId = totalStallOrders.map((order) => order.menuId);
+        const findAllMenu = await ctx.prisma.menu.findMany({
+          where: {
+            id: {
+              in: allMenuId,
+            },
+          },
+          select: {
+            id: true,
+            total: true,
+          },
+        });
+        console.log("##-----------------------##");
+        console.log(totalStallOrders);
+        const totalSales = totalStallOrders.reduce((acc, order) => {
+          const menu = findAllMenu.find((i) => i.id === order.menuId);
+          if (menu && order._sum.quantity) {
+            return (
+              acc + (menu.total as unknown as number) * order._sum.quantity
+            );
+          }
+          return acc;
+        }, 0);
+        return {
+          day: dayCount,
+          totalSales,
+        };
+      };
+      return Promise.all([
+        findTotalSales(6),
+        findTotalSales(5),
+        findTotalSales(4),
+        findTotalSales(3),
+        findTotalSales(2),
+        findTotalSales(1),
+        findTotalSales(0),
+      ]);
+    }),
 });

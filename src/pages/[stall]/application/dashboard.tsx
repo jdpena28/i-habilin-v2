@@ -1,6 +1,9 @@
 /* eslint-disable no-underscore-dangle */
+import { format } from "date-fns";
+
 import { useStallConfigurationStore } from "@/client/store";
 import { trpc } from "@/server/utils/trpc";
+import { FormatCurrency } from "@/client/lib/TextFormatter";
 
 import DashboardIcon from "@public/dashboard-icon";
 
@@ -9,8 +12,6 @@ import { StallLayout } from "@/client/components/layout";
 import { CountCard } from "@/client/components/card";
 import { EChart } from "@/client/components/charts";
 import { AgeGroupPieChart } from "@/client/components/swiper";
-
-import type { ReactEChartsProps } from "@/client/components/charts/EChart";
 
 const Dashboard = () => {
   const { stall } = useStallConfigurationStore();
@@ -21,27 +22,10 @@ const Dashboard = () => {
     trpc.stall.dashboard.getAgeGroupOrderCount.useQuery({
       registrantId: stall.id as string,
     });
-  const barOption: ReactEChartsProps["option"] = {
-    animation: true,
-    title: {
-      text: "Weekly Sales",
-      left: "center",
-      padding: 10,
-    },
-    xAxis: {
-      type: "category",
-      data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-    },
-    yAxis: {
-      type: "value",
-    },
-    series: [
-      {
-        data: [120, 200, 150, 80, 70, 110, 130],
-        type: "bar",
-      },
-    ],
-  };
+  const { data: weeklySalesData, isLoading: weeklySalesIsLoading } =
+    trpc.stall.dashboard.getWeeklySales.useQuery({
+      registrantId: stall.id as string,
+    });
   return (
     <StallLayout>
       <StallHeader title="Dashboard" />
@@ -84,9 +68,50 @@ const Dashboard = () => {
           />
         </div>
         <div className="col-span-12 h-96 w-full rounded-lg bg-white">
-          <EChart option={barOption} className="!max-h-[384px]" />
+          <EChart
+            loading={weeklySalesIsLoading}
+            option={{
+              animation: true,
+              title: {
+                text: "Weekly Sales",
+                left: "center",
+                padding: 10,
+              },
+              xAxis: {
+                type: "category",
+                data: weeklySalesData?.map((item) =>
+                  format(
+                    new Date(
+                      new Date().setHours(0, 0, 0, 0) -
+                        item.day * 24 * 60 * 60 * 1000
+                    ),
+                    "E"
+                  )
+                ),
+              },
+              yAxis: {
+                type: "value",
+                axisLabel: {
+                  formatter: (value: number) => FormatCurrency(value),
+                },
+              },
+              tooltip: {
+                trigger: "axis",
+                formatter: (params: any) => {
+                  const { name, value } = params[0];
+                  return `${name}: ${FormatCurrency(value)}`;
+                },
+              },
+              series: [
+                {
+                  data: weeklySalesData?.map((item) => item.totalSales),
+                  type: "bar",
+                },
+              ],
+            }}
+            className="!max-h-[384px]"
+          />
         </div>
-        <pre>{JSON.stringify(ageGroupData, null, 1)}</pre>
       </section>
     </StallLayout>
   );
