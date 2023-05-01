@@ -520,8 +520,6 @@ export const dashboardRouter = router({
             total: true,
           },
         });
-        console.log("##-----------------------##");
-        console.log(totalStallOrders);
         const totalSales = totalStallOrders.reduce((acc, order) => {
           const menu = findAllMenu.find((i) => i.id === order.menuId);
           if (menu && order._sum.quantity) {

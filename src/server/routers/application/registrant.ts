@@ -56,36 +56,6 @@ export const registrantRouter = router({
       include: includedQuery,
     });
   }),
-  getRegistrantCount: protectedProcedure.query(async ({ ctx }) => {
-    const total = await ctx.prisma.registrants.count();
-    const active = await ctx.prisma.registrants.count({
-      where: {
-        status: "Active",
-      },
-    });
-    const pending = await ctx.prisma.registrants.count({
-      where: {
-        status: "Pending",
-      },
-    });
-    const denied = await ctx.prisma.registrants.count({
-      where: {
-        status: "Denied",
-      },
-    });
-    const expired = await ctx.prisma.registrants.count({
-      where: {
-        status: "Expired",
-      },
-    });
-    return {
-      total,
-      active,
-      pending,
-      denied,
-      expired,
-    };
-  }),
   updateRegistrant: protectedProcedure
     .input(updateRegistrantSchema)
     .mutation(async ({ ctx, input }) => {

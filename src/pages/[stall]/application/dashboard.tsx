@@ -44,7 +44,7 @@ const Dashboard = () => {
           </div>
         </div>
         <AgeGroupPieChart data={ageGroupData} isLoading={ageGroupIsLoading} />
-        <div className="col-span-12 flex w-full flex-wrap justify-evenly">
+        <div className="col-span-12 flex w-full flex-wrap justify-evenly rounded-xl bg-white">
           <CountCard
             title="Sales"
             count={data?.totalSales}
