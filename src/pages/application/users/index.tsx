@@ -38,7 +38,7 @@ const User = () => {
   };
   return (
     <AppLayout>
-      <ApplicationHeader title="Users" search tabs filter />
+      <ApplicationHeader title="Users" search filter />
       {ids && ids?.length > 1 ? (
         <button
           className="my-1 ml-1 bg-red-500 !p-1 text-sm text-white"

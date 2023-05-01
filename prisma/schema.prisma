@@ -75,6 +75,8 @@ model Registrants {
   Category    Category[]
   Discount    Discount[]
   Transaction Transaction[]
+
+  @@fulltext([name, email])
 }
 
 model Category {

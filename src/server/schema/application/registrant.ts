@@ -5,6 +5,12 @@ export const getRegistrantSchema = yup.object({
   slug: yup.string().optional(),
 });
 
+export const getAllRegistrantSchema = yup.object({
+  status: yup.string().optional(),
+  orderBy: yup.string().optional(),
+  search: yup.string().optional(),
+});
+
 export const deleteRegistrantSchema = yup.object({
   id: yup.lazy((value) => {
     if (Array.isArray(value)) {

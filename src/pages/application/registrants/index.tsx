@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { trpc } from "@/server/utils/trpc";
 import Link from "next/link";
 import { isEmpty } from "lodash";
@@ -13,9 +14,14 @@ import { Spinner } from "@/client/components/loader";
 import { formatDate } from "@/client/lib/TextFormatter";
 
 const Registrants = () => {
+  const { query } = useRouter();
   const [ids, setIds] = useState<string[] | undefined>([]);
   const { data, isLoading, refetch } =
-    trpc.application.registrant.getAllRegistrant.useQuery();
+    trpc.application.registrant.getAllRegistrant.useQuery({
+      status: query.status as string,
+      orderBy: query.orderBy as string,
+      search: query.search as string,
+    });
   const { mutate } = trpc.application.registrant.deleteRegistrant.useMutation({
     onSuccess: () => {
       toast.success("Successfully deleted registrant.");
@@ -40,7 +46,22 @@ const Registrants = () => {
 
   return (
     <AppLayout>
-      <ApplicationHeader title="Registrants" search tabs filter />
+      <ApplicationHeader
+        title="Registrants"
+        search
+        tabs
+        filter
+        filterData={[
+          {
+            label: "Stall Name",
+            value: "name",
+          },
+          {
+            label: "Date Applied (Desc)",
+            value: "createdAt_desc",
+          },
+        ]}
+      />
       {ids && ids?.length > 1 ? (
         <button
           className="my-1 ml-1 bg-red-500 !p-1 text-sm text-white"

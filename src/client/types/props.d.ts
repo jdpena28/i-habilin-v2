@@ -37,12 +37,18 @@ interface SelectFormProps {
   isLoading?: boolean;
 }
 
+type filterDataType = {
+  label: string;
+  value: string;
+};
+
 interface ApplicationHeaderProps {
   title: string;
   goBack?: boolean;
   search?: boolean;
   tabs?: boolean;
   filter?: boolean;
+  filterData?: filterDataType[];
   buttonText?: string;
   onClickButton?: () => void;
 }
