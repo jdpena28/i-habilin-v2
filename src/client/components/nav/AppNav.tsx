@@ -10,7 +10,7 @@ import { useSession } from "next-auth/react";
 const AppNav = () => {
   const { data } = useSession();
   return (
-    <nav className="sticky left-0 h-screen w-[15%] bg-primary">
+    <nav className="sticky left-0 top-0 h-screen w-[15%] bg-primary">
       <IHabilinLogo className="my-10 mx-auto w-10/12" />
       <div className="flex flex-col">
         {APPLICATION_MODULES.map((module: AppModules) => {
