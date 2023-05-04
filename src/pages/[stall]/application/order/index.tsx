@@ -34,12 +34,12 @@ const Index = () => {
       },
       {
         refetchInterval:
-          query?.sortPreparingBy === "Preparing Time"
+          query?.sortPreparingBy === "Preparation Time"
             ? 1000 * 60 * 10
             : 1000 * 15, // 10 minutes or 15 seconds
         cacheTime: 1000 * 60 * 15, // 15 minutes
         staleTime:
-          query?.sortPreparingBy === "Preparing Time" ? 1000 * 60 * 10 : 0, // 10 minutes or 0 seconds
+          query?.sortPreparingBy === "Preparation Time" ? 1000 * 60 * 10 : 0, // 10 minutes or 0 seconds
       }
     );
   const { data: readyData, isLoading: readyIsLoading } =
@@ -182,7 +182,8 @@ const Index = () => {
                 <Notes
                   key={preparingData[key].id}
                   id={preparingData[key].id}
-                  tableNo={key.replace("Table Number:", "")}
+                  tableNo={preparingData[key].tableNumber}
+                  estimatedTime={preparingData[key].estimated_time}
                   status="Preparing">
                   {preparingData[key].orders.map((order) => {
                     return (

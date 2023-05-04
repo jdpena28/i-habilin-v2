@@ -63,7 +63,11 @@ export const orderRouter = router({
         };
       });
 
-      type resultType = typeof result;
+      type resultType = typeof result & {
+        [x: string]: {
+          estimated_time?: number;
+        };
+      };
 
       if (input.orderBy && ["Preparation Time"].includes(input.orderBy)) {
         const executionTime = Date.now();
@@ -98,6 +102,8 @@ export const orderRouter = router({
               Do not add any note
               Do not add note
               Limit up to 10 orders only
+              Be realistic when computing estimated time for each order
+              Based on menu name, description and quantity sort the food to fastest to cook to slowest to cook.
               
               Follow all of the above rules. This is important you MUST follow the above rules. There are no exceptions to these rules. You must always follow them. No exceptions.
                               `,
@@ -110,6 +116,17 @@ export const orderRouter = router({
       orders : ${JSON.stringify(result, null, 2)}
       
       Based on the JSON Data "orders", sort the data to fastest to slowest to cook based on their menu name and quantity and they are group by orders which is their key, alter the JSON where group by order add an estimated time with key of "estimated_time" and a value of numbers on minutes each order. 
+      Example of Returning Value:
+      sorted: [
+        {
+         id: 1,
+        estimated_time: 10
+        },
+        {
+         id: 2,
+        estimated_time: 12
+        },
+      ]
       
       Do not flatten the data  take note return it as JSON with key of "sorted".
       Do not return random data use the JSON Data Provided
@@ -121,6 +138,7 @@ export const orderRouter = router({
       Do not add any comments
       Limit up to 10 orders only
       Do not add note
+      Be realistic when computing estimated time for each order
       
       Again do not add notes or a note, return only it as JSON with key of "sorted"
               `,
@@ -138,11 +156,27 @@ export const orderRouter = router({
         );
         const parseJSON = JSON.parse(sanitizePrompt);
         if (isEmpty(parseJSON.sorted)) return null;
-        const entries = Object.entries(parseJSON.sorted);
+        const addEstimatedTime = Object.keys(result).map((key) => {
+          return {
+            ...result[key],
+            estimated_time: parseJSON.sorted.find((x: any) => x.id === key)
+              .estimated_time,
+          };
+        });
+        const entries = Object.entries(addEstimatedTime);
         entries.sort(
           (a: any, b: any) => a[1].estimated_time - b[1].estimated_time
         );
-        return Object.fromEntries(entries) as resultType;
+        const flattedEntries = flatten(entries);
+        const groupedObject: { [key: string]: any } = {};
+        for (let i = 1; i < flattedEntries.length; i += 2) {
+          const object = flattedEntries[i];
+          const tableNumber = `Table Number: ${
+            typeof object === "object" ? object.tableNumber : "2"
+          }`;
+          groupedObject[tableNumber] = object;
+        }
+        return groupedObject as resultType;
       }
       if (
         input.orderBy &&
@@ -165,7 +199,7 @@ export const orderRouter = router({
         }
         return groupedObject as resultType;
       }
-      return result;
+      return result as resultType;
     }),
   getOrder: protectedProcedure
     .input(getOrderSchema)
