@@ -1,4 +1,5 @@
-import { FC, ReactNode } from "react";
+import { FC, ReactNode, KeyboardEvent } from "react";
+import { omit } from "lodash";
 import { useRouter } from "next/router";
 import { BsArrowLeft, BsSearch } from "react-icons/bs";
 import { Filter } from "../filtering-sorting";
@@ -26,7 +27,27 @@ const StallHeader: FC<StallHeaderProps> = ({
   children,
   filterQuery,
 }) => {
-  const { back } = useRouter();
+  const { back, query, pathname, push } = useRouter();
+  const handleSearch = (e: KeyboardEvent<HTMLInputElement>) => {
+    const { value } = e.target as HTMLInputElement;
+    if (e.key === "Enter") {
+      if (!value)
+        return push({
+          pathname,
+          query: {
+            ...omit(query, ["search"]),
+          },
+        });
+      return push({
+        pathname,
+        query: {
+          ...query,
+          search: value,
+        },
+      });
+    }
+    return null;
+  };
   return (
     <header className="sticky top-0 mb-5 w-full space-y-3 border-b-2 border-gray-200 py-5">
       <div className="flex w-full justify-between">
@@ -61,6 +82,8 @@ const StallHeader: FC<StallHeaderProps> = ({
                 className="border-none font-poppins outline-none focus:border-transparent focus:outline-none focus:ring-0"
                 type="text"
                 placeholder="Search"
+                defaultValue={query.search as string}
+                onKeyDown={handleSearch}
               />
             </div>
           )}
