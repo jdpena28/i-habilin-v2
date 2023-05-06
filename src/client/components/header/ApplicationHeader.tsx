@@ -16,13 +16,13 @@ const ApplicationHeader: FC<ApplicationHeaderProps> = ({
   buttonText,
   filterData,
 }) => {
-  const { back, query, push } = useRouter();
+  const { back, query, push, pathname } = useRouter();
   const statusOption = ["All", "Active", "Pending", "Denied", "Expired"];
   const handleFilter = (e: ChangeEvent<HTMLSelectElement>) => {
     const { value } = e.target;
     if (value) {
       return push({
-        pathname: "/application/registrants",
+        pathname,
         query: {
           ...query,
           orderBy: value,
@@ -30,7 +30,7 @@ const ApplicationHeader: FC<ApplicationHeaderProps> = ({
       });
     }
     return push({
-      pathname: "/application/registrants",
+      pathname,
       query: {
         ...omit(query, ["orderBy"]),
       },
@@ -41,13 +41,13 @@ const ApplicationHeader: FC<ApplicationHeaderProps> = ({
     if (e.key === "Enter") {
       if (!value)
         return push({
-          pathname: "/application/registrants",
+          pathname,
           query: {
             ...omit(query, ["search"]),
           },
         });
       return push({
-        pathname: "/application/registrants",
+        pathname,
         query: {
           ...query,
           search: value,
@@ -137,6 +137,7 @@ const ApplicationHeader: FC<ApplicationHeaderProps> = ({
               className="border-none font-poppins outline-none focus:border-transparent focus:outline-none focus:ring-0"
               name="filter"
               id="filter"
+              defaultValue={query.orderBy as string}
               onChange={handleFilter}>
               <option value="" selected>
                 Sort By

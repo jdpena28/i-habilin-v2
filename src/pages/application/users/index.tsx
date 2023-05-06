@@ -4,6 +4,7 @@ import { trpc } from "@/server/utils/trpc";
 import Link from "next/link";
 import { isEmpty } from "lodash";
 import { toast } from "react-hot-toast";
+import { useRouter } from "next/router";
 
 import { AppLayout } from "@/client/components/layout";
 import { ApplicationHeader } from "@/client/components/header";
@@ -12,9 +13,13 @@ import { Spinner } from "@/client/components/loader";
 import { formatDate } from "@/client/lib/TextFormatter";
 
 const User = () => {
+  const { query } = useRouter();
   const [ids, setIds] = useState<string[] | undefined>([]);
   const { data, isLoading, refetch } =
-    trpc.application.user.getAllUser.useQuery();
+    trpc.application.user.getAllUser.useQuery({
+      orderBy: query.orderBy as string,
+      search: query.search as string,
+    });
   const { mutate } = trpc.application.user.deleteUser.useMutation({
     onSuccess: () => {
       toast.success("Successfully deleted user.");
@@ -38,7 +43,21 @@ const User = () => {
   };
   return (
     <AppLayout>
-      <ApplicationHeader title="Users" search filter />
+      <ApplicationHeader
+        title="Users"
+        search
+        filter
+        filterData={[
+          {
+            label: "Name (Asc)",
+            value: "name_asc",
+          },
+          {
+            label: "Name (Desc)",
+            value: "name_desc",
+          },
+        ]}
+      />
       {ids && ids?.length > 1 ? (
         <button
           className="my-1 ml-1 bg-red-500 !p-1 text-sm text-white"
