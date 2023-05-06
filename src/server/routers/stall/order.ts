@@ -73,7 +73,7 @@ export const orderRouter = router({
         const executionTime = Date.now();
         const prompt = await openai.createChatCompletion({
           model: "gpt-3.5-turbo",
-          max_tokens: 1500,
+          max_tokens: 1000,
           temperature: 0,
           top_p: 0.2,
           messages: [

@@ -285,33 +285,34 @@ export const registerRouter = router({
 
         /* console.log(JSON.stringify(menu,null,2))
         console.log(JSON.stringify(JSON.parse(surveyAnswer?.surveyAnswer),null,2)) */
-
         const recommended = await openai.createChatCompletion({
             model: "gpt-3.5-turbo",
-            max_tokens: 1500,
+            max_tokens: 1000,
+            temperature: .02,
+            top_p:  .2,
             messages: [
               {
                 role: "system",
                 content: `
-        Act as a natural language for Data Analytics.
-        You are an expert in Data Analytics, you are tasked to recommend food based on the user output JSON data.
-        
-        Follow these rules:
-        Be concise
-        Even if there is a lack of details, attempt to find the most logical solution by going about it step by step
-        Do not show html, styled, colored formatting or any code.
-        Do not add unnecessary text in the response
-        Do not add notes or intro sentences
-        Do not show multiple distinct solutions to the question
-        Do not add explanations 
-        Do not return what the question was
-        Do not repeat or paraphrase the question in your response
-        Do not add any random JSON Data
-        Use only the JSON Data provided
-        Return the data in JSON format
-        
-        
-        Follow all of the above rules. This is important you MUST follow the above rules. There are no exceptions to these rules. You must always follow them. No exceptions.`,
+                Act as a natural language for Data Analytics.
+                You are an expert in Data Analytics, you are tasked to recommend food based on the user output JSON data.
+                
+                Follow these rules:
+                Be concise
+                Even if there is a lack of details, attempt to find the most logical solution by going about it step by step
+                Do not show html, styled, colored formatting or any code.
+                Do not add unnecessary text in the response
+                Do not add notes or intro sentences
+                Do not show multiple distinct solutions to the question
+                Do not add explanations 
+                Do not return what the question was
+                Do not repeat or paraphrase the question in your response
+                Do not add any random JSON Data
+                Use only the JSON Data provided
+                Return the data in JSON format
+                
+                
+                Follow all of the above rules. This is important you MUST follow the above rules. There are no exceptions to these rules. You must always follow them. No exceptions.`,
               },
               {
                 role: "user",
@@ -319,20 +320,31 @@ export const registerRouter = router({
                 Based on this customer preference data: 
                 ${JSON.stringify(JSON.parse(surveyAnswer?.surveyAnswer ? surveyAnswer?.surveyAnswer : "{}"),null,2)}
         
-                 As Expert on Data Analyst, return all recommended food based on customer preference data that are in this menu JSON Data:
+                As Expert on Data Analyst, return all recommended food based on customer preference data make sure that the menu or recommended food does not contain any allergens of the customer that are in this menu JSON Data:
                  ${JSON.stringify(menu,null,2)}
         
         
-                  Return it as JSON with a key of "recommended_food" note that you are only allowed to return your recommended food that are only in the menu JSON Data and limit recommended food up to 8.
+                 Return it as JSON with a key of "recommended_food" note that you are only allowed to return your recommended food that are only in the menu JSON Data and limit recommended food up to 10, also in JSON add a confidence rate of recommended food based on their preference.
+
+                 Again make sure that all recommended food including the ingredients of the food does not contain any of the allergens that are in the customer preference data.
+                 
+                 Return only the id of the menu here is an example of returning response:
+                 {
+                    recommended_food:  ["clgg7w1234hd","clsdf123","cl123hf"],
+                    confidence: 85,
+                 }
                 `
               }
             ],
           });
-        /* console.log(recommended.data.choices) */
         if (recommended.data.choices[0]?.message?.content === undefined) {
             return null
         }
-        return JSON.parse(recommended.data.choices[0].message.content)
+        const parseJSON = JSON.parse(recommended.data.choices[0].message.content)
+        return {
+            recommended_food: menu.filter((menu) => parseJSON.recommended_food.includes(menu.id)),
+            confidence: parseJSON.confidence as number
+        }
     }),
     forgotPasswordEmail: procedure.input(forgotPasswordSchema).mutation(async ({ctx,input}) => {
         const findUserAccount = await ctx.prisma.account.findUnique({

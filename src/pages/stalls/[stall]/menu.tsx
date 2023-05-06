@@ -186,9 +186,13 @@ const Menu = () => {
         ) : (
           !isEmpty(foodRecommendationData) && (
             <>
-              <p className="font-semibold uppercase">For you</p>
+              <p className="font-semibold uppercase">
+                For you
+                {query.confidence === "true" &&
+                  ` | CONFIDENCE LEVEL: ${foodRecommendationData.confidence}`}
+              </p>
               <section
-                id="category"
+                id="foodRecommended"
                 className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
                 {foodRecommendationData?.recommended_food.map((i: any) => {
                   return (
@@ -226,7 +230,7 @@ const Menu = () => {
         )}
         <p className="font-semibold uppercase">Menu</p>
         <section
-          id="category"
+          id="menu"
           className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
           {menuIsLoading ? (
             <Spinner />
