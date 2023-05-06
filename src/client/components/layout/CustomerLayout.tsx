@@ -24,7 +24,7 @@ interface CustomerLayoutProps {
 }
 
 const CustomerLayout: FC<CustomerLayoutProps> = ({ children, isLoading }) => {
-  const { push } = useRouter();
+  const { push, pathname } = useRouter();
   const { customerReference } = useCustomerReferenceStore();
   const { customerOrder, updateCustomerOrder } = useCustomerOrderStore();
   const { data, status: maintenanceStatus } =
@@ -56,6 +56,7 @@ const CustomerLayout: FC<CustomerLayoutProps> = ({ children, isLoading }) => {
 
   useEffect(() => {
     if (maintenanceStatus === "success" && data?.value === "true") return;
+    if (pathname === "/stalls/survey") return;
     if (!customerReference.isSurveyed) {
       setIsOpenSurveyModal(true);
     } else if (!customerOrder.tableNumber) {
@@ -105,7 +106,8 @@ const CustomerLayout: FC<CustomerLayoutProps> = ({ children, isLoading }) => {
           />
         </div>
         <p className="font-tertiary tracking-wide">
-          Hello &#128075;, <br /> Let&apos;s have a quick survey about your food
+          Hello &#128075;, <br /> Let&apos;s have a quick survey about your food{" "}
+          {pathname}
           preferences.{" "}
         </p>
         <div className="mt-4 flex justify-end gap-x-2">
