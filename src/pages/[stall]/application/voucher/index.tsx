@@ -6,6 +6,7 @@ import { toast } from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { format } from "date-fns";
+import { useRouter } from "next/router";
 
 import { formatDate } from "@/client/lib/TextFormatter";
 import {
@@ -25,6 +26,7 @@ import { SubmitButton } from "@/client/components/buttons";
 import { BiSync } from "react-icons/bi";
 
 const Voucher = () => {
+  const { query } = useRouter();
   const { stall } = useStallConfigurationStore();
   const [ids, setIds] = useState<string[] | undefined>([]);
   const [isVoucherModalOpen, setIsVoucherModalOpen] = useState(false);
@@ -34,6 +36,7 @@ const Voucher = () => {
   const { data, isLoading, refetch } =
     trpc.stall.voucher.getAllVoucher.useQuery({
       registrantId: stall.id as string,
+      status: query?.status as string,
     });
 
   const { mutate: createVoucher } =

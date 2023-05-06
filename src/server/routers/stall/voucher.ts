@@ -37,6 +37,7 @@ export const voucherRouter = router({
       return await ctx.prisma.discount.findMany({
         where: {
           registrantId: input.registrantId,
+          status: input.status,
         },
       });
     }),

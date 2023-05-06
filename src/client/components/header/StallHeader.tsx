@@ -1,6 +1,7 @@
 import { FC, ReactNode, KeyboardEvent } from "react";
 import { omit } from "lodash";
 import { useRouter } from "next/router";
+import Link from "next/link";
 import { BsArrowLeft, BsSearch } from "react-icons/bs";
 import { Filter } from "../filtering-sorting";
 
@@ -27,6 +28,7 @@ const StallHeader: FC<StallHeaderProps> = ({
   children,
   filterQuery,
 }) => {
+  const FILTER_OPTION = ["Active", "Used", "Expired"];
   const { back, query, pathname, push } = useRouter();
   const handleSearch = (e: KeyboardEvent<HTMLInputElement>) => {
     const { value } = e.target as HTMLInputElement;
@@ -92,12 +94,35 @@ const StallHeader: FC<StallHeaderProps> = ({
       <div className="flex  w-full justify-between">
         {tabs && (
           <div className="flex w-full font-brocha">
-            <div className="border-b-2 border-secondary p-2 text-secondary">
+            <Link
+              href={{
+                pathname,
+                query: {
+                  ...omit(query, ["status"]),
+                },
+              }}
+              className={`border-b-2 p-2 ${
+                !query.status && "border-secondary text-secondary"
+              }`}>
               All
-            </div>
-            <div className="border-b-2 border-transparent p-2">Approved</div>
-            <div className="border-b-2 border-transparent p-2">Pending</div>
-            <div className="border-b-2 border-transparent p-2">Expired</div>
+            </Link>
+            {FILTER_OPTION.map((item) => {
+              return (
+                <Link
+                  className={`border-b-2 p-2 ${
+                    query.status === item && "border-secondary text-secondary"
+                  }`}
+                  href={{
+                    pathname,
+                    query: {
+                      ...query,
+                      status: item,
+                    },
+                  }}>
+                  {item}
+                </Link>
+              );
+            })}
           </div>
         )}
         {!tabs && filter && <div className="invisible" />}

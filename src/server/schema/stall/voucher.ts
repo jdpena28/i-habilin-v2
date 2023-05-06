@@ -28,6 +28,7 @@ export const getAllVoucherSchema = yup
   .object()
   .shape({
     registrantId: yup.string().required("Registrant ID is required"),
+    status: yup.string().optional(),
   })
   .required();
 
