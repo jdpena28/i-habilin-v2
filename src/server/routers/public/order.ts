@@ -161,25 +161,26 @@ export const orderRouter = router({
         })
     }),
     redeemCode:procedure.input(getCouponCodeSchema).mutation(async ({ctx,input}) => {
-       let redeemCode
-        try {
-            redeemCode = await ctx.prisma.discount.update({
-                where: {
-                    code: input.code,
-                },
-                data: {
-                    used: {
-                        increment: 1,
-                    }
+       const isValid = await ctx.prisma.discount.findUnique({
+            where: {
+                code: input.code,
+            }
+       })
+        if(!isValid || ["Expired","Used"].includes(isValid.status) 
+        || isValid.used >= isValid.quantity 
+        || (isValid.validUntil && new Date() > isValid?.validUntil)){
+            throw new Error("Invalid Code")
+        } 
+        const redeemCode = await ctx.prisma.discount.update({
+            where: {
+                code: input.code,
+            },
+            data: {
+                used: {
+                    increment: 1,
                 }
-            })
-        } catch (error) {
-            throw new Error("Invalid Code")
-        }
-        if(["Expired","Used"].includes(redeemCode.status) || redeemCode.used > redeemCode.quantity 
-        || (redeemCode.validUntil && new Date() > redeemCode?.validUntil)){ 
-            throw new Error("Invalid Code")
-        }
+            }
+        })
         await ctx.prisma.tableOrder.update({
             where: {
                 id: input.orderId,
@@ -193,6 +194,16 @@ export const orderRouter = router({
         return redeemCode
     }),
     deleteCode: procedure.input(deleteCouponCodeSchema).mutation(async ({ctx,input}) => {
+        await ctx.prisma.discount.update({
+            where: {
+                code: input.code,
+            },
+            data: {
+                used: {
+                    decrement: 1,
+                }
+            }
+        })
         return await ctx.prisma.tableOrder.update({
             where: {
                 id: input.orderId,

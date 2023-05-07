@@ -32,4 +32,5 @@ export const getCouponCodeSchema = yup.object({
 
 export const deleteCouponCodeSchema = yup.object({
     orderId: yup.string().required("Order ID is required"),
+    code: yup.string().trim().required("Code is required"),
 })

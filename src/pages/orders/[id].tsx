@@ -234,6 +234,7 @@ const Orders = () => {
   const handleDeleteCode = () => {
     deleteCode({
       orderId: query.id as string,
+      code: data?.tableOrder?.discount?.code as string,
     });
   };
 
