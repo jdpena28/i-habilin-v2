@@ -16,6 +16,7 @@ export const createVoucherSchema = yup.object().shape({
     .string()
     .required("Status is required")
     .oneOf(["Active", "Expired", "Used"], "Invalid Option"),
+  validFrom: yup.string().optional(), // #TODO: validate date
   validUntil: yup.string().optional(),
   quantity: yup
     .number()

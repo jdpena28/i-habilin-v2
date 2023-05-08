@@ -167,7 +167,8 @@ export const orderRouter = router({
             }
        })
         if(!isValid || ["Expired","Used"].includes(isValid.status) 
-        || isValid.used >= isValid.quantity 
+        || isValid.used >= isValid.quantity
+        || (isValid.validFrom && new Date() < isValid?.validFrom)
         || (isValid.validUntil && new Date() > isValid?.validUntil)){
             throw new Error("Invalid Code")
         } 
