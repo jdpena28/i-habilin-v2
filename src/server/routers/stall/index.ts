@@ -4,6 +4,7 @@ import { userRouter } from "./user";
 import { orderRouter } from "./order";
 import { voucherRouter } from "./voucher";
 import { dashboardRouter } from "./dashboard";
+import { settingsRouter } from "./settings";
 
 export const stallRouter = router({
   menu: categoryRouter,
@@ -11,4 +12,5 @@ export const stallRouter = router({
   order: orderRouter,
   voucher: voucherRouter,
   dashboard: dashboardRouter,
+  settings: settingsRouter,
 });
