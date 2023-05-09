@@ -406,7 +406,6 @@ const User = () => {
               <SubmitButton isLoading={submitIsLoading} />
             </div>
           </div>
-          <pre>{JSON.stringify(errors.registrantId, null, 1)}</pre>
         </form>
       </ModalTemplate>
     </StallLayout>

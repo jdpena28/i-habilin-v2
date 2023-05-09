@@ -8,6 +8,7 @@ const operationHours = yup.object({
 });
 
 export const createStallSettingsSchema = yup.object().shape({
+  id: yup.string().optional(),
   type: yup
     .string()
     .required("Operation Type is required")
@@ -37,14 +38,13 @@ export const createStallSettingsSchema = yup.object().shape({
       }
       return schema;
     }),
-  reason: yup.string().when("status", ([status], schema) => {
-    if (status === "Denied") {
-      return schema.required("The reason is required");
-    }
-    return schema;
-  }),
 });
 
 export type CreateStallSettingsSchema = yup.InferType<
   typeof createStallSettingsSchema
 >;
+
+export const getStallClosedSchema = yup.object().shape({
+  id: yup.string().required("ID is required"),
+  isClosed: yup.boolean().optional(),
+});
