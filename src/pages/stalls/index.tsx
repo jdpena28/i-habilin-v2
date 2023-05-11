@@ -18,8 +18,10 @@ const Stalls: FC<NextPage> = () => {
       switch (parseJSON.type) {
         case "Everyday":
           if (
-            parseJSON.startTime < format(new Date(), "HH:mm") &&
-            parseJSON.endTime < format(new Date(), "HH:mm")
+            (parseJSON?.endTime &&
+              format(new Date(), "HH:mm") > parseJSON?.endTime) ||
+            (parseJSON?.startTime &&
+              format(new Date(), "HH:mm") < parseJSON?.startTime)
           ) {
             return true;
           }
@@ -27,17 +29,23 @@ const Stalls: FC<NextPage> = () => {
         case "Weekdays":
           if (
             ["Saturday", "Sunday"].includes(format(new Date(), "EEEE")) ||
-            (format(new Date(), "HH:mm") > parseJSON.endTime &&
-              format(new Date(), "HH:mm") < parseJSON.startTime)
+            (parseJSON?.endTime &&
+              format(new Date(), "HH:mm") > parseJSON?.endTime) ||
+            (parseJSON?.startTime &&
+              format(new Date(), "HH:mm") < parseJSON?.startTime)
           ) {
             return true;
           }
           break;
         case "Weekends":
           if (
-            !["Saturday", "Sunday"].includes(format(new Date(), "EEEE")) ||
-            (format(new Date(), "HH:mm") > parseJSON.endTime &&
-              format(new Date(), "HH:mm") < parseJSON.startTime)
+            (parseJSON?.startTime &&
+              parseJSON?.endTime &&
+              !["Saturday", "Sunday"].includes(format(new Date(), "EEEE"))) ||
+            (parseJSON?.endTime &&
+              format(new Date(), "HH:mm") > parseJSON?.endTime) ||
+            (parseJSON?.startTime &&
+              format(new Date(), "HH:mm") < parseJSON?.startTime)
           ) {
             return true;
           }
@@ -45,20 +53,16 @@ const Stalls: FC<NextPage> = () => {
         case "Custom":
           if (parseJSON?.operationHours) {
             const findIndex = parseJSON?.operationHours?.findIndex(
-              (i) => i.day === format(new Date(), "EEEE")
+              (i) => i?.day === format(new Date(), "EEEE")
             );
             if (findIndex === -1) {
               return true;
             }
+            const operatingHours = parseJSON?.operationHours[findIndex];
+            if (operatingHours === null) return true;
             if (
-              format(new Date(), "HH:mm") >
-              parseJSON.operationHours[findIndex].endTime
-            ) {
-              return true;
-            }
-            if (
-              format(new Date(), "HH:mm") <
-              parseJSON.operationHours[findIndex].startTime
+              format(new Date(), "HH:mm") > operatingHours.endTime ||
+              format(new Date(), "HH:mm") < operatingHours.startTime
             ) {
               return true;
             }

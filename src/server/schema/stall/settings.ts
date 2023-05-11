@@ -13,8 +13,24 @@ export const createStallSettingsSchema = yup.object().shape({
     .string()
     .required("Operation Type is required")
     .oneOf(OPERATION_TYPE.map((type) => type.text)),
-  startTime: yup.string().required("Start Time is required"),
-  endTime: yup.string().required("End Time is required"),
+  startTime: yup
+    .string()
+    .optional()
+    .when("type", ([type], schema) => {
+      if (type !== "Custom") {
+        return schema.required("Start Time is required");
+      }
+      return schema;
+    }),
+  endTime: yup
+    .string()
+    .optional()
+    .when("type", ([type], schema) => {
+      if (type !== "Custom") {
+        return schema.required("End Time is required");
+      }
+      return schema;
+    }),
   days: yup
     .array()
     .of(yup.string())
@@ -29,7 +45,7 @@ export const createStallSettingsSchema = yup.object().shape({
     .typeError("Please select a day"),
   operationHours: yup
     .array()
-    .of(operationHours)
+    .of(operationHours.nullable())
     .when("type", ([type], schema) => {
       if (type === "Custom") {
         return schema

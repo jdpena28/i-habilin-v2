@@ -171,7 +171,7 @@ const OperatingHours = () => {
                 <div>
                   <p className="label-text">Days</p>
                   <fieldset className="flex flex-wrap gap-3">
-                    {DAYS.map((day) => {
+                    {DAYS.map((day, indexes) => {
                       return (
                         <label className="font-poppins" htmlFor={day}>
                           <input
@@ -179,24 +179,19 @@ const OperatingHours = () => {
                             type="checkbox"
                             id={day}
                             value={day}
-                            {...register("days", {
-                              onChange: (e) => {
-                                if (!e.target.checked) {
-                                  const findIndex = watch("days")?.findIndex(
-                                    (i) => i === day
-                                  );
-                                  if (findIndex) {
-                                    setValue(
-                                      "operationHours",
-                                      watch("operationHours")?.splice(
-                                        findIndex,
-                                        1
-                                      )
-                                    );
-                                  }
-                                }
-                              },
-                            })}
+                            checked={watch("days")?.includes(day)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setValue("days", watch("days")?.concat(day));
+                                setValue(`operationHours.${indexes}.day`, day);
+                              } else {
+                                setValue(
+                                  `days`,
+                                  watch("days")?.filter((i) => i !== day)
+                                );
+                                setValue(`operationHours.${indexes}`, null);
+                              }
+                            }}
                           />
                           &nbsp;{day}
                         </label>
@@ -212,7 +207,8 @@ const OperatingHours = () => {
               )}
               {!isEmpty(watch("days")) &&
                 watch("type") === "Custom" &&
-                watch("days")?.map((i, index) => {
+                DAYS?.map((i, index) => {
+                  if (!watch("days")?.includes(i)) return null;
                   return (
                     <div className="flex items-center gap-x-10">
                       <p className="label-text flex-[.4]">{i}</p>
@@ -224,12 +220,6 @@ const OperatingHours = () => {
                           labelText="Start Time*"
                           error={errors}
                           register={register}
-                          sideEffect={() => {
-                            setValue(
-                              `operationHours.${index}.day`,
-                              i as string
-                            );
-                          }}
                         />
                         <div className="h-[1px] w-7 bg-highlight" />
                         <InputForm
@@ -239,17 +229,12 @@ const OperatingHours = () => {
                           labelText="End Time*"
                           error={errors}
                           register={register}
-                          sideEffect={() => {
-                            setValue(
-                              `operationHours.${index}.day`,
-                              i as string
-                            );
-                          }}
                         />
                       </div>
                     </div>
                   );
                 })}
+              <pre>{JSON.stringify(watch(), null, 1)}</pre>
               <SubmitButton isLoading={submitIsLoading} />
             </form>
           )}
