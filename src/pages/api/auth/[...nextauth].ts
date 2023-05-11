@@ -53,6 +53,11 @@ export const authOptions: NextAuthOptions = {
       }
       throw new Error("User not found");
     },
+    async redirect({ baseUrl, url }) {
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      if (new URL(url).origin === baseUrl) return url;
+      return baseUrl;
+    },
   },
   adapter: PrismaAdapter(prisma),
   providers: [
