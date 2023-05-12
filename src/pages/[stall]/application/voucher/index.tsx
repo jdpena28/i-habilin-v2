@@ -337,6 +337,7 @@ const Voucher = () => {
               error={errors}
               register={register}
               aboveLabel="Date From"
+              min={format(new Date(), "yyyy-MM-dd'T'HH:mm")}
             />
             <div className="h-[1px] w-7 bg-highlight" />
             <InputForm
@@ -347,6 +348,7 @@ const Voucher = () => {
               error={errors}
               register={register}
               aboveLabel="Date To"
+              min={format(new Date(), "yyyy-MM-dd'T'HH:mm")}
             />
           </div>
           <InputForm

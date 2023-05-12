@@ -20,6 +20,7 @@ interface InputFormProps {
   step?: string;
   defaultValue?: string | number | string[] | number[] | Date | null;
   parentClassName?: string;
+  min?: string | number;
 }
 
 interface SelectFormProps {
