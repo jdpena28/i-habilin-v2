@@ -234,7 +234,6 @@ const OperatingHours = () => {
                     </div>
                   );
                 })}
-              <pre>{JSON.stringify(watch(), null, 1)}</pre>
               <SubmitButton isLoading={submitIsLoading} />
             </form>
           )}
