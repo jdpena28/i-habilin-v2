@@ -473,7 +473,7 @@ const OrderDetails = () => {
           {FormatCurrency(paymentDetails?.cashTendered)}
         </pre>
         <pre className="border-t-2 border-gray-400 pt-2">
-          <strong className="font-bold">Exchange:</strong>
+          <strong className="font-bold">Change:</strong>
           &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
           {paymentDetails?.cashTendered &&
             paymentDetails?.total &&
@@ -486,7 +486,7 @@ const OrderDetails = () => {
             type="button"
             className="bg-primary text-white"
             onClick={onClosePaymentDetailsModal}>
-            Okey
+            Okay
           </button>
         </div>
       </ModalTemplate>

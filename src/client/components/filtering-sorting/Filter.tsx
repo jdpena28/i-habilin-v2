@@ -11,9 +11,9 @@ interface FilterProps {
 const Filter: FC<FilterProps> = ({ children, sortQuery }) => {
   const { query, push, pathname } = useRouter();
   const handleSortBy = (e: ChangeEvent<HTMLSelectElement>) => {
-    const sortBy = e.target.value;
-    query[sortQuery] = sortBy;
-    if (sortBy === "default") {
+    const orderBy = e.target.value;
+    query[sortQuery] = orderBy;
+    if (orderBy === "default") {
       delete query[sortQuery];
     }
     push({

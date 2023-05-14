@@ -234,6 +234,7 @@ const Orders = () => {
   const handleDeleteCode = () => {
     deleteCode({
       orderId: query.id as string,
+      code: data?.tableOrder?.discount?.code as string,
     });
   };
 
@@ -276,6 +277,22 @@ const Orders = () => {
                       </>
                     );
                   })}
+                  <p className="text-right font-brocha lg:px-32 xl:px-40">
+                    Total :&nbsp;{" "}
+                    {FormatCurrency(
+                      data.data[key].reduce((acc, item) => {
+                        const eachTotal = item.data.reduce((acc, item) => {
+                          if (item.status === "Cancelled") return acc;
+                          return (
+                            acc +
+                            parseFloat(item.menu.total as unknown as string) *
+                              item.quantity
+                          );
+                        }, 0);
+                        return acc + eachTotal;
+                      }, 0)
+                    )}
+                  </p>
                 </div>
               );
             })

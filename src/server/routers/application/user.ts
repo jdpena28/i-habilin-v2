@@ -4,6 +4,7 @@ import {
   getUserSchema,
 } from "@/server/schema/application/user";
 import { router, protectedProcedure } from "@/server/trpc";
+import { Prisma } from "@prisma/client";
 
 const includedQuery = {
   person: {
@@ -43,14 +44,47 @@ export const userRouter = router({
   getAllUser: protectedProcedure
     .input(getAllUserSchema)
     .query(async ({ ctx, input }) => {
-      return await ctx.prisma.account.findMany({
-        where: {
-          registrantId: input?.registrantId ? input.registrantId : null,
-          NOT: {
-            personId: null,
-          },
+      let orderByQuery:
+        | {
+            person: {
+              firstName: "asc" | "desc";
+            };
+          }
+        | undefined;
+      let whereQuery: Prisma.AccountWhereInput | undefined = {
+        registrantId: input?.registrantId ? input.registrantId : null,
+        NOT: {
+          personId: null,
         },
+      };
+      if (input?.orderBy) {
+        const [, arr] = input.orderBy.split("_");
+        orderByQuery = {
+          person: {
+            firstName: arr as "asc" | "desc",
+          },
+        };
+      }
+      if (input?.search) {
+        whereQuery = {
+          ...whereQuery,
+          person: {
+            firstName: {
+              search: input.search,
+            },
+            lastName: {
+              search: input.search,
+            },
+            middleName: {
+              search: input.search,
+            },
+          },
+        };
+      }
+      return await ctx.prisma.account.findMany({
+        where: whereQuery,
         include: includedQuery,
+        orderBy: orderByQuery,
       });
     }),
   getUser: protectedProcedure

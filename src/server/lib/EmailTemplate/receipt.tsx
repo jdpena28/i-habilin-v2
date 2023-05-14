@@ -200,7 +200,7 @@ const ReceiptEmailTemplate = (data: CustomerOrderType) => {
                       if (i.status === "Cancelled") return ``;
                       return i.data.map((item) => {
                         return `
-                          <tr class="${item}">
+                          <tr>
                             <td>
                               ${item.quantity} x ${item.menu.name}
                             </td>
@@ -214,18 +214,29 @@ const ReceiptEmailTemplate = (data: CustomerOrderType) => {
                         `;
                       });
                     })}
+                    <tr class="total">
+                      <td></td>
+                      <td><strong>Total: </strong>${FormatCurrency(
+                        data.data[key].reduce((acc, item) => {
+                          const eachTotal = item.data.reduce((acc, item) => {
+                            if (item.status === "Cancelled") return acc;
+                            return (
+                              acc +
+                              parseFloat(item.menu.total as unknown as string) *
+                                item.quantity
+                            );
+                          }, 0);
+                          return acc + eachTotal;
+                        }, 0)
+                      )}</td>
+                    </tr>
                `;
             })}
-            <tr class="total">
-              <td></td>
-              <td><strong>Sub Total:</strong> ${FormatCurrency(SUB_TOTAL)}</td>
-            </tr>
-    
             <!-- discount row -->
             <tr class="heading">
-              <td>Discount</td>
+              <td>Discount Code</td>
     
-              <td>Discount (%)</td>
+              <td>Discount</td>
             </tr>
     
             <tr class="item">
@@ -246,8 +257,12 @@ const ReceiptEmailTemplate = (data: CustomerOrderType) => {
               )}</td>
             </tr>
             <tr class="total">
+            <td></td>
+            <td><strong>VAT: </strong>${FormatCurrency(SUB_TOTAL * 0.12)}</td>
+          </tr>
+            <tr class="total">
               <td></td>
-              <td><strong>Total:</strong>${
+              <td><strong>Total: </strong>${
                 data?.tableOrder?.discount?.code
                   ? `${FormatCurrency(
                       SUB_TOTAL +

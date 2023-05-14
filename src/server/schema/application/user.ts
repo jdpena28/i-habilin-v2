@@ -8,6 +8,8 @@ export const getUserSchema = yup.object({
 export const getAllUserSchema = yup
   .object({
     registrantId: yup.string().optional(),
+    orderBy: yup.string().optional(),
+    search: yup.string().optional(),
   })
   .optional();
 

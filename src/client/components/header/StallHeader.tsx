@@ -1,5 +1,7 @@
-import { FC, ReactNode } from "react";
+import { FC, ReactNode, KeyboardEvent } from "react";
+import { omit } from "lodash";
 import { useRouter } from "next/router";
+import Link from "next/link";
 import { BsArrowLeft, BsSearch } from "react-icons/bs";
 import { Filter } from "../filtering-sorting";
 
@@ -26,7 +28,28 @@ const StallHeader: FC<StallHeaderProps> = ({
   children,
   filterQuery,
 }) => {
-  const { back } = useRouter();
+  const FILTER_OPTION = ["Active", "Used", "Expired"];
+  const { back, query, pathname, push } = useRouter();
+  const handleSearch = (e: KeyboardEvent<HTMLInputElement>) => {
+    const { value } = e.target as HTMLInputElement;
+    if (e.key === "Enter") {
+      if (!value)
+        return push({
+          pathname,
+          query: {
+            ...omit(query, ["search"]),
+          },
+        });
+      return push({
+        pathname,
+        query: {
+          ...query,
+          search: value,
+        },
+      });
+    }
+    return null;
+  };
   return (
     <header className="sticky top-0 mb-5 w-full space-y-3 border-b-2 border-gray-200 py-5">
       <div className="flex w-full justify-between">
@@ -61,6 +84,8 @@ const StallHeader: FC<StallHeaderProps> = ({
                 className="border-none font-poppins outline-none focus:border-transparent focus:outline-none focus:ring-0"
                 type="text"
                 placeholder="Search"
+                defaultValue={query.search as string}
+                onKeyDown={handleSearch}
               />
             </div>
           )}
@@ -69,12 +94,35 @@ const StallHeader: FC<StallHeaderProps> = ({
       <div className="flex  w-full justify-between">
         {tabs && (
           <div className="flex w-full font-brocha">
-            <div className="border-b-2 border-secondary p-2 text-secondary">
+            <Link
+              href={{
+                pathname,
+                query: {
+                  ...omit(query, ["status"]),
+                },
+              }}
+              className={`border-b-2 p-2 ${
+                !query.status && "border-secondary text-secondary"
+              }`}>
               All
-            </div>
-            <div className="border-b-2 border-transparent p-2">Approved</div>
-            <div className="border-b-2 border-transparent p-2">Pending</div>
-            <div className="border-b-2 border-transparent p-2">Expired</div>
+            </Link>
+            {FILTER_OPTION.map((item) => {
+              return (
+                <Link
+                  className={`border-b-2 p-2 ${
+                    query.status === item && "border-secondary text-secondary"
+                  }`}
+                  href={{
+                    pathname,
+                    query: {
+                      ...query,
+                      status: item,
+                    },
+                  }}>
+                  {item}
+                </Link>
+              );
+            })}
           </div>
         )}
         {!tabs && filter && <div className="invisible" />}

@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { trpc } from "@/server/utils/trpc";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { isEmpty } from "lodash";
 import { toast } from "react-hot-toast";
 import { useForm } from "react-hook-form";
@@ -24,9 +25,20 @@ import { SubmitButton } from "@/client/components/buttons";
 
 const User = () => {
   const { stall } = useStallConfigurationStore();
+  const { query } = useRouter();
   const [ids, setIds] = useState<string[] | undefined>([]);
   const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
   const [submitIsLoading, setSubmitIsLoading] = useState(false);
+  const ORDER_BY_OPTION = [
+    {
+      label: "Name (Asc)",
+      value: "name_asc",
+    },
+    {
+      label: "Name (Desc)",
+      value: "name_desc",
+    },
+  ];
   const {
     register,
     handleSubmit,
@@ -41,6 +53,8 @@ const User = () => {
   const { data, isLoading, refetch } =
     trpc.application.user.getAllUser.useQuery({
       registrantId: stall.id,
+      orderBy: query.orderBy as string,
+      search: query.search as string,
     });
 
   const { data: provData, isFetching: provIsFetching } =
@@ -113,8 +127,21 @@ const User = () => {
     <StallLayout>
       <StallHeader
         title="Users"
-        filter
-        tabs
+        filterQuery="orderBy"
+        filter={
+          <>
+            <option value="default" selected>
+              Sort By
+            </option>
+            {ORDER_BY_OPTION.map((value) => {
+              return (
+                <option key={value.value} value={value.value}>
+                  {value.label}
+                </option>
+              );
+            })}
+          </>
+        }
         search
         buttonText="Add User"
         onClickButton={() => {
@@ -379,7 +406,6 @@ const User = () => {
               <SubmitButton isLoading={submitIsLoading} />
             </div>
           </div>
-          <pre>{JSON.stringify(errors.registrantId, null, 1)}</pre>
         </form>
       </ModalTemplate>
     </StallLayout>

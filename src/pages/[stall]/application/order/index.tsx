@@ -17,7 +17,7 @@ const Index = () => {
     {
       id: stall.id as string,
       status: "Order",
-      orderBy: query.sortBy as string,
+      orderBy: query.orderBy as string,
     },
     {
       refetchInterval: 1000 * 15, // 15 seconds
@@ -30,16 +30,16 @@ const Index = () => {
         status: "Preparing",
         orderBy: query.sortPreparingBy
           ? (query.sortPreparingBy as string)
-          : (query.sortBy as string),
+          : (query.orderBy as string),
       },
       {
         refetchInterval:
-          query?.sortPreparingBy === "Preparing Time"
+          query?.sortPreparingBy === "Preparation Time"
             ? 1000 * 60 * 10
             : 1000 * 15, // 10 minutes or 15 seconds
         cacheTime: 1000 * 60 * 15, // 15 minutes
         staleTime:
-          query?.sortPreparingBy === "Preparing Time" ? 1000 * 60 * 10 : 0, // 10 minutes or 0 seconds
+          query?.sortPreparingBy === "Preparation Time" ? 1000 * 60 * 10 : 0, // 10 minutes or 0 seconds
       }
     );
   const { data: readyData, isLoading: readyIsLoading } =
@@ -47,7 +47,7 @@ const Index = () => {
       {
         id: stall.id as string,
         status: "Ready",
-        orderBy: query.sortBy as string,
+        orderBy: query.orderBy as string,
       },
       {
         refetchInterval: 1000 * 15, // 15 seconds
@@ -58,7 +58,7 @@ const Index = () => {
       {
         id: stall.id as string,
         status: "Bill Out",
-        orderBy: query.sortBy as string,
+        orderBy: query.orderBy as string,
       },
       {
         refetchInterval: 1000 * 15, // 15 seconds
@@ -69,7 +69,7 @@ const Index = () => {
       {
         id: stall.id as string,
         status: "Completed",
-        orderBy: query.sortBy as string,
+        orderBy: query.orderBy as string,
       },
       {
         refetchInterval: 1000 * 15, // 15 seconds
@@ -80,7 +80,7 @@ const Index = () => {
       {
         id: stall.id as string,
         status: "Cancelled",
-        orderBy: query.sortBy as string,
+        orderBy: query.orderBy as string,
       },
       {
         refetchInterval: 1000 * 15, // 15 seconds
@@ -96,7 +96,7 @@ const Index = () => {
     <StallLayout>
       <StallHeader
         title="Orders"
-        filterQuery="sortBy"
+        filterQuery="orderBy"
         filter={
           <>
             <option value="default" selected>
@@ -182,7 +182,8 @@ const Index = () => {
                 <Notes
                   key={preparingData[key].id}
                   id={preparingData[key].id}
-                  tableNo={key.replace("Table Number:", "")}
+                  tableNo={preparingData[key].tableNumber}
+                  estimatedTime={preparingData[key].estimated_time}
                   status="Preparing">
                   {preparingData[key].orders.map((order) => {
                     return (

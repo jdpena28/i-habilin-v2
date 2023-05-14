@@ -6,6 +6,7 @@ import { toast } from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { format } from "date-fns";
+import { useRouter } from "next/router";
 
 import { formatDate } from "@/client/lib/TextFormatter";
 import {
@@ -25,6 +26,7 @@ import { SubmitButton } from "@/client/components/buttons";
 import { BiSync } from "react-icons/bi";
 
 const Voucher = () => {
+  const { query } = useRouter();
   const { stall } = useStallConfigurationStore();
   const [ids, setIds] = useState<string[] | undefined>([]);
   const [isVoucherModalOpen, setIsVoucherModalOpen] = useState(false);
@@ -34,6 +36,7 @@ const Voucher = () => {
   const { data, isLoading, refetch } =
     trpc.stall.voucher.getAllVoucher.useQuery({
       registrantId: stall.id as string,
+      status: query?.status as string,
     });
 
   const { mutate: createVoucher } =
@@ -134,11 +137,16 @@ const Voucher = () => {
     setValue("code", findData.code);
     setValue("discount", findData.discount as unknown as number);
     setValue(
+      "validFrom",
+      findData.validFrom
+        ? format(findData.validFrom, "yyyy-MM-dd HH:mm:ss")
+        : undefined
+    );
+    setValue(
       "validUntil",
-      format(
-        findData.validUntil ? findData.validUntil : new Date(),
-        "yyyy-MM-dd HH:mm:ss"
-      )
+      findData.validUntil
+        ? format(findData.validUntil, "yyyy-MM-dd HH:mm:ss")
+        : undefined
     );
     setValue("status", findData.status);
     setValue("quantity", findData.quantity);
@@ -232,7 +240,13 @@ const Voucher = () => {
                         </div>
                       </td>
                       <td>{i.discount as unknown as number}%</td>
-                      <td>{i.validUntil ? formatDate(i.validUntil) : "N/A"}</td>
+                      <td>
+                        {i.validUntil && i.validFrom
+                          ? `${formatDate(i.validFrom)} - ${formatDate(
+                              i.validUntil
+                            )}`
+                          : "N/A"}
+                      </td>
                       <td>
                         {i.used}/{i.quantity}
                       </td>
@@ -313,15 +327,30 @@ const Voucher = () => {
             setValue={setValue}
             watch={watch}
           />
-          <InputForm
-            id="validUntil"
-            name="validUntil"
-            type="datetime-local"
-            labelText="Validity Date"
-            error={errors}
-            register={register}
-            aboveLabel="Validity Date"
-          />
+          <p className="label-text text-lg">Validity Date</p>
+          <div className="flex items-center justify-between">
+            <InputForm
+              id="validFrom"
+              name="validFrom"
+              type="datetime-local"
+              labelText="Date From"
+              error={errors}
+              register={register}
+              aboveLabel="Date From"
+              min={format(new Date(), "yyyy-MM-dd'T'HH:mm")}
+            />
+            <div className="h-[1px] w-7 bg-highlight" />
+            <InputForm
+              id="validUntil"
+              name="validUntil"
+              type="datetime-local"
+              labelText="Date To"
+              error={errors}
+              register={register}
+              aboveLabel="Date To"
+              min={format(new Date(), "yyyy-MM-dd'T'HH:mm")}
+            />
+          </div>
           <InputForm
             id="quantity"
             name="quantity"

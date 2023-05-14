@@ -22,7 +22,14 @@ export const voucherRouter = router({
       return await ctx.prisma.discount.create({
         data: {
           ...omit(input, ["registrantId"]),
-          validUntil: input.validUntil ? new Date(input.validUntil) : null,
+          validUntil:
+            input.validUntil && input.validFrom
+              ? new Date(input.validUntil)
+              : null,
+          validFrom:
+            input.validFrom && input.validUntil
+              ? new Date(input.validFrom)
+              : null,
           registrant: {
             connect: {
               id: input.registrantId,
@@ -37,6 +44,7 @@ export const voucherRouter = router({
       return await ctx.prisma.discount.findMany({
         where: {
           registrantId: input.registrantId,
+          status: input.status,
         },
       });
     }),
@@ -68,7 +76,14 @@ export const voucherRouter = router({
         },
         data: {
           ...omit(input, ["registrantId", "id"]),
-          validUntil: input.validUntil ? new Date(input.validUntil) : null,
+          validUntil:
+            input.validUntil && input.validFrom
+              ? new Date(input.validUntil)
+              : null,
+          validFrom:
+            input.validFrom && input.validFrom
+              ? new Date(input.validFrom)
+              : null,
         },
       });
     }),

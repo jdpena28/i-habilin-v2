@@ -177,8 +177,5 @@ export const STALL_APPLICATION_MODULES: AppModules[] = [
         />
       </svg>
     ),
-    action: () => {
-      signOut();
-    },
   },
 ];

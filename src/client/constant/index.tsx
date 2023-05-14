@@ -64,3 +64,18 @@ export const animateVariants = {
     opacity: 0,
   },
 };
+
+export const OPERATION_TYPE = [
+  {
+    text: "Everyday",
+  },
+  {
+    text: "Weekdays",
+  },
+  {
+    text: "Weekends",
+  },
+  {
+    text: "Custom",
+  },
+];

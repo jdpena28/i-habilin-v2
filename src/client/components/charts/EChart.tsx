@@ -1,12 +1,10 @@
 /* eslint-disable no-unused-expressions */
 import { useRef, useEffect } from "react";
 import { init, getInstanceByDom } from "echarts";
-import type { CSSProperties } from "react";
 import type { EChartsOption, ECharts, SetOptionOpts } from "echarts";
 
 export interface ReactEChartsProps {
   option: EChartsOption;
-  style?: CSSProperties;
   settings?: SetOptionOpts;
   loading?: boolean;
   theme?: "light" | "dark";
@@ -15,7 +13,6 @@ export interface ReactEChartsProps {
 
 export default function ReactECharts({
   option,
-  style,
   settings,
   loading,
   theme,
@@ -63,9 +60,8 @@ export default function ReactECharts({
 
   return (
     <div
-      className={`h-auto w-full ${className}`}
+      className={`h-full max-h-[13rem] w-full ${className}`}
       ref={chartRef}
-      style={{ width: "100%", height: "100%", maxHeight: "11rem", ...style }}
     />
   );
 }

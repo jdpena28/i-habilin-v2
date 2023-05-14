@@ -16,6 +16,7 @@ const InputForm: FC<InputFormProps> = ({
   step,
   defaultValue,
   parentClassName,
+  min = 0,
 }) => {
   const errorMessage: string = get(error, id)?.message;
   return (
@@ -51,7 +52,7 @@ const InputForm: FC<InputFormProps> = ({
               onChange: sideEffect,
             })}
             defaultValue={defaultValue}
-            min={type === "number" ? 0 : undefined}
+            min={["number", "datetime-local"].includes(type) ? min : undefined}
             step={step}
           />
         )}

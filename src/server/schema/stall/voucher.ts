@@ -16,7 +16,26 @@ export const createVoucherSchema = yup.object().shape({
     .string()
     .required("Status is required")
     .oneOf(["Active", "Expired", "Used"], "Invalid Option"),
-  validUntil: yup.string().optional(),
+  validFrom: yup.string().optional(), // #TODO: validate date
+  validUntil: yup
+    .string()
+    .optional()
+    .test(
+      "validUntilShouldBeGreaterThanValidFrom",
+      "Date to must be greater than date from",
+      function (value) {
+        const { validFrom } = this.parent;
+        if (
+          validFrom &&
+          value &&
+          validFrom !== "Invalid Date" &&
+          value !== "Invalid Date"
+        ) {
+          return new Date(value) > new Date(validFrom);
+        }
+        return true;
+      }
+    ),
   quantity: yup
     .number()
     .required("Quantity is required")
@@ -28,6 +47,7 @@ export const getAllVoucherSchema = yup
   .object()
   .shape({
     registrantId: yup.string().required("Registrant ID is required"),
+    status: yup.string().optional(),
   })
   .required();
 

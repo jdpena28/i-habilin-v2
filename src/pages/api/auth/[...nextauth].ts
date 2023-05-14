@@ -47,11 +47,16 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
     // eslint-disable-next-line no-unused-vars
-    async signIn({ user, credentials }) {
+    async signIn({ user }) {
       if (user) {
         return true;
       }
       throw new Error("User not found");
+    },
+    async redirect({ baseUrl, url }) {
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      if (new URL(url).origin === baseUrl) return url;
+      return baseUrl;
     },
   },
   adapter: PrismaAdapter(prisma),
