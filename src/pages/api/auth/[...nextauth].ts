@@ -42,16 +42,21 @@ export const authOptions: NextAuthOptions = {
         session.user
           ? (session.user.name = token.name)
           : (session.user = { name: token.name });
-        session.user.email = token.slug as unknown as string;
+        session.user.image = token.slug as unknown as string;
       }
       return session;
     },
     // eslint-disable-next-line no-unused-vars
-    async signIn({ user, credentials }) {
+    async signIn({ user }) {
       if (user) {
         return true;
       }
       throw new Error("User not found");
+    },
+    async redirect({ baseUrl, url }) {
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      if (new URL(url).origin === baseUrl) return url;
+      return baseUrl;
     },
   },
   adapter: PrismaAdapter(prisma),
@@ -81,6 +86,7 @@ export const authOptions: NextAuthOptions = {
           (credentials?.loginFrom === "Super Admin" &&
             user.registrantId !== null) ||
           (credentials?.loginFrom !== "Super Admin" &&
+            user.scope !== "SUPER ADMIN" &&
             user.registrant?.slug !== credentials?.loginFrom)
         ) {
           throw new Error("No account found");

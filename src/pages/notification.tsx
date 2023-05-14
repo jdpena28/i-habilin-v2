@@ -20,7 +20,7 @@ const Notification = () => {
             If you have any questions or concerns, please do not hesitate to
             contact us at{" "}
             <a href="mailto:help@ihabilin.com" className="underline">
-              help@ihabilin.com
+              help@ihabilin.tech
             </a>
           </p>
         </div>

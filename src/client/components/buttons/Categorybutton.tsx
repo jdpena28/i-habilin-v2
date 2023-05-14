@@ -16,9 +16,10 @@ const CategoryButton: FC<CategoryButtonProps> = ({ icon, text, id }) => {
         push({
           pathname,
           query: {
+            ...query,
             category: id,
-            stall: query.stall,
           },
+          hash: "menu",
         })
       }
       role="button"

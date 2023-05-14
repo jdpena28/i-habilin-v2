@@ -29,11 +29,14 @@ model Account {
   registrantId String?      @unique
   registrant   Registrants? @relation(fields: [registrantId], references: [id], onDelete: Cascade)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  
+  Transaction Transaction[]
 
   @@unique([email])
   @@index([registrantId])
+  @@fulltext([email])
 }
 
 model Registrants {
@@ -44,6 +47,10 @@ model Registrants {
   email        String
   status       String    @default("Pending") @db.VarChar(20)
   approvedDate DateTime?
+
+  // settings
+  isClosed Boolean @default(false)
+  operatingHours String? @db.MediumText
 
   personId String
   owner    Person @relation(fields: [personId], references: [id], onDelete: Cascade)
@@ -69,8 +76,12 @@ model Registrants {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  Account  Account?
-  Category Category[]
+  Account     Account?
+  Category    Category[]
+  Discount    Discount[]
+  Transaction Transaction[]
+
+  @@fulltext([name, email])
 }
 
 model Category {
@@ -96,7 +107,7 @@ model Category {
 
 model Menu {
   id          String @id @default(cuid())
-  name        String @unique @db.VarChar(100)
+  name        String  @db.VarChar(100)
   order       Int
   description String @db.VarChar(500)
 
@@ -135,7 +146,7 @@ model Order {
   status   String @default("Order") // this is used to edit by the stalls [Order, Cancelled, Prepairing, Ready, Bill Out]
 
   createdAt DateTime @default(now())
-  updateAt  DateTime @updatedAt
+  updatedAt DateTime @updatedAt
 
   menuId String
   menu   Menu   @relation(fields: [menuId], references: [id], onDelete: Cascade)
@@ -145,8 +156,8 @@ model Order {
 
   batchNo String
 
-  tableId String
-  tableOrder  TableOrder @relation(fields: [tableId], references: [id], onDelete: Cascade)
+  tableId    String
+  tableOrder TableOrder @relation(fields: [tableId], references: [id], onDelete: Cascade)
 
   @@index([menuId])
   @@index([customerId])
@@ -155,36 +166,62 @@ model Order {
 
 model TableOrder {
   id          String @id @default(cuid())
-  tableNumber Int    
+  tableNumber Int
   status      String @default("Ordered") // if status is Ordered or Bill Out
 
-  total        Decimal? @db.Decimal(6, 2) // total will be inputed after bill out computed by Orders
-  cashTendered Decimal? @db.Decimal(6, 2) // yung binayad ng customer
+  total Decimal? @db.Decimal(6, 2) // total will be inputed after bill out computed by Orders
+
+  email String? // when billout receipt will be sent to this email
 
   order Order[]
 
-  discountId String?   @unique // this will be inputed when billout
+  discountId String? // this will be inputed when billout
   discount   Discount? @relation(fields: [discountId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updateAt  DateTime @updatedAt
 
+  Transaction Transaction[]
+
   @@index([createdAt(sort: Asc)])
 }
 
 model Discount {
-  id         String   @id @default(cuid())
-  code       String   @unique @db.VarChar(300) // this will be the code for example: #IhabilnLangMalakas
-  discount   Decimal  @db.Decimal(6, 2) // this will be the discount for example: 10% of
-  status     String   @default("Active") // this will be the status of the code for example: Active, Expired, Used
-  validUntil DateTime // this will be the valid from date of the code for example: 2021-01-01
+  id         String    @id @default(cuid())
+  code       String    @unique @db.VarChar(255) // this will be the code for example: #IhabilnLangMalakas
+  discount   Decimal   @db.Decimal(6, 2) // this will be the discount for example: 10% of
+  status     String    @default("Active") // this will be the status of the code for example: Active, Expired, Used
+  validFrom DateTime? 
+  validUntil DateTime? // this will be the valid from date of the code for example: 2021-01-01
   quantity   Int // this will be the quantity of the code for example: 10
-  used       Int      @default(0) // this will be the quantity of the code that is used for example: 10
+  used       Int       @default(0) // this will be the quantity of the code that is used for example: 10
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   TableOrder TableOrder[]
+
+  registrantId String
+  registrant   Registrants @relation(fields: [registrantId], references: [id], onDelete: Cascade)
+}
+
+model Transaction {
+  id           String  @id @default(cuid())
+  cashTendered Decimal @db.Decimal(6, 2)
+  total        Decimal @db.Decimal(6, 2)
+
+  tableOrderId String
+  tableOrder   TableOrder @relation(fields: [tableOrderId], references: [id], onDelete: Cascade)
+
+  registrantId String
+  registrant   Registrants @relation(fields: [registrantId], references: [id], onDelete: Cascade)
+
+  accountId String
+  account   Account? @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@index([accountId])
+  @@index([registrantId])
+  @@index([tableOrderId])
 }
 
 model Person {
@@ -207,6 +244,8 @@ model Person {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@fulltext([firstName, middleName, lastName])
 }
 
 model Address {

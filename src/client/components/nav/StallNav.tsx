@@ -2,7 +2,7 @@ import Link from "next/link";
 import { FC } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 
 import { STALL_APPLICATION_MODULES } from "@/client/constant/application";
 import { useStallConfigurationStore } from "@/client/store";
@@ -38,10 +38,20 @@ const StallNav = () => {
   );
 };
 
-const NavLinks: FC<AppModules> = ({ path, action, logo, name }) => {
-  const { pathname, query } = useRouter();
+const NavLinks: FC<AppModules> = ({ path, logo, name }) => {
+  const { pathname, query, push } = useRouter();
   return (
-    <Link href={`/${query.stall}${path}`} onClick={action}>
+    <Link
+      href={`/${query.stall}${path}`}
+      onClick={async () => {
+        if (name === "Logout") {
+          const data = await signOut({
+            redirect: false,
+            callbackUrl: `/${query.stall}/auth/login`,
+          });
+          push(data.url);
+        }
+      }}>
       <div
         className={`flex items-center gap-x-4 p-3 ${
           pathname.split("/")[3].includes(name.toLowerCase())

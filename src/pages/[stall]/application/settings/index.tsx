@@ -25,6 +25,19 @@ const Index = () => {
             View
           </Link>
         </div>
+        <div className="flex w-full max-w-md items-center gap-x-20">
+          <p className="subheading flex-[.8]">Operating Hours</p>
+          <Link
+            href={{
+              pathname: `${pathname}/operating-hours`,
+              query: {
+                stall: query.stall,
+              },
+            }}
+            className="flex-[.3] rounded-lg bg-primary p-3 text-center font-poppins font-medium tracking-wider text-white">
+            View
+          </Link>
+        </div>
       </section>
     </StallLayout>
   );

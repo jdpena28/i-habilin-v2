@@ -2,7 +2,6 @@
 /* eslint-disable no-unused-vars */
 import { FC, useEffect } from "react";
 import { Widget } from "@uploadcare/react-widget";
-import Image from "next/image";
 import { isEmpty, get } from "lodash";
 
 import { deleteMedia } from "@/client/lib/UploadCare";

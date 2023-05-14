@@ -18,7 +18,9 @@ interface InputFormProps {
   register: any;
   sideEffect?: (e: ChangeEvent<HTMLInputElement>) => void;
   step?: string;
-  defaultValue?: string | number | string[] | number[] | Date;
+  defaultValue?: string | number | string[] | number[] | Date | null;
+  parentClassName?: string;
+  min?: string | number;
 }
 
 interface SelectFormProps {
@@ -36,12 +38,18 @@ interface SelectFormProps {
   isLoading?: boolean;
 }
 
+type filterDataType = {
+  label: string;
+  value: string;
+};
+
 interface ApplicationHeaderProps {
   title: string;
   goBack?: boolean;
   search?: boolean;
   tabs?: boolean;
   filter?: boolean;
+  filterData?: filterDataType[];
   buttonText?: string;
   onClickButton?: () => void;
 }

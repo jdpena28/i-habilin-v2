@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "next/router";
@@ -8,6 +9,7 @@ import Image from "next/image";
 
 import { InputForm } from "@/client/components/form";
 import { HomeLayout } from "@/client/components/layout";
+import { SubmitButton } from "@/client/components/buttons";
 
 import { ssgHelper } from "@/server/utils/ssgHelper";
 import { trpc } from "@/server/utils/trpc";
@@ -32,6 +34,7 @@ export async function getServerSideProps(
 const Login = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
+  const [submitIsLoading, setSubmitIsLoading] = useState(false);
   const { slug } = props;
   const { push, query } = useRouter();
   const { data, status } = trpc.public.getRegistrant.useQuery({ slug });
@@ -45,6 +48,7 @@ const Login = (
   });
 
   const onSubmit = async (value: GetAccountSchema) => {
+    setSubmitIsLoading(true);
     const auth = await signIn("credentials", {
       email: value.email,
       password: value.password,
@@ -65,6 +69,7 @@ const Login = (
       });
       push(`/${slug}/application/dashboard/`);
     }
+    setSubmitIsLoading(false);
   };
   if (!data && status === "success") {
     push("/404");
@@ -121,12 +126,10 @@ const Login = (
               </p>
               <Link
                 className="text-right underline underline-offset-2"
-                href="/">
+                href={`/${slug}/auth/forgot-password`}>
                 <p className="mt-5">Forgot Password?</p>
               </Link>
-              <button className="w-full bg-primary" type="submit">
-                Login
-              </button>
+              <SubmitButton className="!w-full" isLoading={submitIsLoading} />
             </form>
           </div>
         </section>

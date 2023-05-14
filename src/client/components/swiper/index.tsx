@@ -1,3 +1,4 @@
 import FeaturedMenu from "./FeaturedMenu";
+import AgeGroupPieChart from "./AgeGroupPieChart";
 
-export { FeaturedMenu };
+export { FeaturedMenu, AgeGroupPieChart };

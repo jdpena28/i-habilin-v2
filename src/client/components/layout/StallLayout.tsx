@@ -42,11 +42,7 @@ const StallLayout = ({
   }
 
   if (!maintenanceIsLoading && data?.value === "true") {
-    return (
-      <section className="flex h-screen w-full items-center justify-center">
-        <h4>Maintenance Mode</h4>
-      </section>
-    );
+    push("/maintenance");
   }
 
   return (

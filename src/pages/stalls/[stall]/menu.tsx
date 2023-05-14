@@ -38,14 +38,19 @@ const Menu = () => {
           let queries = {
             ...query,
           };
-          if (!isEmpty(data)) {
+          let url = pathname;
+          if (!Array.isArray(data) && data.isClosed) {
+            url = "/stalls";
+            queries = {};
+          }
+          if (!isEmpty(data) && Array.isArray(data)) {
             queries = {
               ...query,
               category: data[0]?.id,
             };
           }
           push({
-            pathname,
+            pathname: url,
             query: queries,
           });
         },
@@ -84,8 +89,9 @@ const Menu = () => {
       slug: query.stall as string,
     },
     {
-      enabled: false,
+      enabled: process.env.NODE_ENV !== "development",
       staleTime: 1000 * 60 * 60 * 24,
+      cacheTime: 1000 * 60 * 60 * 24,
     }
   );
 
@@ -165,7 +171,7 @@ const Menu = () => {
         {!isEmpty(featuredMenuData) && <FeaturedMenu data={featuredMenuData} />}
         <p className="font-semibold uppercase">Categories</p>
         <section id="category" className="flex w-full gap-x-3 overflow-x-auto">
-          {!isEmpty(categoryData) ? (
+          {!isEmpty(categoryData) && Array.isArray(categoryData) ? (
             categoryData?.map((i) => {
               return (
                 <CategoryButton
@@ -185,9 +191,13 @@ const Menu = () => {
         ) : (
           !isEmpty(foodRecommendationData) && (
             <>
-              <p className="font-semibold uppercase">For you</p>
+              <p className="font-semibold uppercase">
+                For you
+                {query.confidence === "true" &&
+                  ` | CONFIDENCE LEVEL: ${foodRecommendationData.confidence}`}
+              </p>
               <section
-                id="category"
+                id="foodRecommended"
                 className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
                 {foodRecommendationData?.recommended_food.map((i: any) => {
                   return (
@@ -201,7 +211,19 @@ const Menu = () => {
                       discount={i.discount as unknown as number}
                       status={i.status}
                       onClick={() => {
-                        setMenuDescription(i);
+                        setMenuDescription({
+                          ...i,
+                          quantity:
+                            customerOrder.orders.length === 0
+                              ? 1
+                              : customerOrder.orders
+                                  .find(
+                                    (j) => j.id === i.category.registrant.id
+                                  )
+                                  ?.menuOrders?.find(
+                                    (k: GetAllMenuType) => k.id === i.id
+                                  )?.quantity || 1,
+                        });
                         setIsMenuDescriptionModalOpen(true);
                       }}
                     />
@@ -213,7 +235,7 @@ const Menu = () => {
         )}
         <p className="font-semibold uppercase">Menu</p>
         <section
-          id="category"
+          id="menu"
           className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
           {menuIsLoading ? (
             <Spinner />

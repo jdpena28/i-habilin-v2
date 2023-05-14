@@ -1,4 +1,5 @@
 import { signOut } from "next-auth/react";
+import { BsFillTicketPerforatedFill } from "react-icons/bs";
 import { AppModules } from "../types/types";
 
 export const APPLICATION_MODULES: AppModules[] = [
@@ -130,6 +131,11 @@ export const STALL_APPLICATION_MODULES: AppModules[] = [
     ),
   },
   {
+    name: "Voucher",
+    path: "/application/voucher",
+    logo: <BsFillTicketPerforatedFill className="h-6 w-6 fill-white" />,
+  },
+  {
     name: "Users",
     path: "/application/users",
     logo: (
@@ -171,8 +177,5 @@ export const STALL_APPLICATION_MODULES: AppModules[] = [
         />
       </svg>
     ),
-    action: () => {
-      signOut();
-    },
   },
 ];

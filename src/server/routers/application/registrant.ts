@@ -1,12 +1,14 @@
 import { router, protectedProcedure } from "@/server/trpc";
 import {
   getRegistrantSchema,
+  getAllRegistrantSchema,
   updateRegistrantSchema,
   deleteRegistrantSchema,
 } from "@/server/schema/application/registrant";
 import { INCLUDED_ADDRESS } from "@/client/constant";
 import { sendEmail } from "@/server/lib/SendInBlue";
 import { encrypt } from "@/client/lib/bcrypt";
+import { Prisma } from "@prisma/client";
 
 const includedQuery = {
   owner: INCLUDED_ADDRESS,
@@ -51,41 +53,50 @@ export const registrantRouter = router({
         include: includedQuery,
       });
     }),
-  getAllRegistrant: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.prisma.registrants.findMany({
-      include: includedQuery,
-    });
-  }),
-  getRegistrantCount: protectedProcedure.query(async ({ ctx }) => {
-    const total = await ctx.prisma.registrants.count();
-    const active = await ctx.prisma.registrants.count({
-      where: {
-        status: "Active",
-      },
-    });
-    const pending = await ctx.prisma.registrants.count({
-      where: {
-        status: "Pending",
-      },
-    });
-    const denied = await ctx.prisma.registrants.count({
-      where: {
-        status: "Denied",
-      },
-    });
-    const expired = await ctx.prisma.registrants.count({
-      where: {
-        status: "Expired",
-      },
-    });
-    return {
-      total,
-      active,
-      pending,
-      denied,
-      expired,
-    };
-  }),
+  getAllRegistrant: protectedProcedure
+    .input(getAllRegistrantSchema)
+    .query(async ({ ctx, input }) => {
+      type OrderByType = {
+        [key: string]: "asc" | "desc";
+      };
+      type WhereQueryType = Prisma.RegistrantsWhereInput & {
+        name?: {
+          search: string;
+        };
+        email?: {
+          search: string;
+        };
+      };
+      let orderByQuery: OrderByType = {
+        createdAt: "asc",
+      };
+      let whereQuery: WhereQueryType = {
+        status: input.status,
+      };
+      if (input.orderBy) {
+        const splice = input.orderBy.split("_");
+        orderByQuery = {
+          [splice[0]]: splice[1] ? (splice[1] as "asc" | "desc") : "asc",
+        };
+      }
+      if (input.search) {
+        const [search] = input.search.split("@");
+        whereQuery = {
+          ...whereQuery,
+          name: {
+            search,
+          },
+          email: {
+            search,
+          },
+        };
+      }
+      return await ctx.prisma.registrants.findMany({
+        include: includedQuery,
+        where: whereQuery,
+        orderBy: orderByQuery,
+      });
+    }),
   updateRegistrant: protectedProcedure
     .input(updateRegistrantSchema)
     .mutation(async ({ ctx, input }) => {
