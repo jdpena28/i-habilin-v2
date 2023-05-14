@@ -70,7 +70,6 @@ export const orderRouter = router({
       };
 
       if (input.orderBy && ["Preparation Time"].includes(input.orderBy)) {
-        const executionTime = Date.now();
         const prompt = await openai.createChatCompletion({
           model: "gpt-3.5-turbo",
           max_tokens: 1000,
@@ -145,7 +144,6 @@ export const orderRouter = router({
             },
           ],
         });
-        console.log(`Execution Time: ${Date.now() - executionTime}ms`);
         if (prompt.data.choices[0]?.message?.content === undefined) {
           return null;
         }

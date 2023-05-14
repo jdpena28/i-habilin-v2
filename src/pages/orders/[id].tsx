@@ -172,7 +172,7 @@ const Orders = () => {
           ((data?.tableOrder?.discount?.discount as unknown as number) / 100)
       ) * -1
     );
-  }, [data?.tableOrder?.discount]);
+  }, [data]);
 
   const isBillOut = useMemo(() => {
     if (isEmpty(data)) return false;
