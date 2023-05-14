@@ -5,9 +5,11 @@ import { slugify } from "@/server/lib/slugify";
 import { getRegistrantSchema } from "@/server/schema/application/registrant";
 import { createAccountSchema, createRegistrantSchema, createSurveySchema, forgotPasswordSchema, generateRecommendationSchema, getAllCategorySchema, getSuperAdminPassword, updatePasswordSchema } from "@/server/schema/public";
 import { getAllMenuSchema } from "@/server/schema/stall/menu";
+import { CreateStallSettingsSchema } from "@/server/schema/stall/settings";
 import { router, procedure } from "@/server/trpc";
 import { omit } from "lodash";
 import { orderRouter } from "./order";
+import { format } from "date-fns"
 
 export const registerRouter = router({
     createRegistrant: procedure.input(createRegistrantSchema).mutation(async ({ ctx, input }) => {
@@ -163,6 +165,93 @@ export const registerRouter = router({
         return data
     }),
     getAllCategory: procedure.input(getAllCategorySchema).query(async ({input, ctx}) => {
+       const operatingHours = await ctx.prisma.registrants.findUnique({
+          where: {
+            slug: input.slug
+          },
+          select: {
+            operatingHours: true,
+            isClosed: true,
+          }
+       })
+        if (operatingHours?.isClosed) {
+            return {
+                isClosed: true,
+            }
+        }
+        if (operatingHours?.operatingHours) {
+            const parseJSON = JSON.parse(operatingHours.operatingHours) as CreateStallSettingsSchema
+            switch (parseJSON.type) {
+                case "Everyday":
+                  if (
+                    (parseJSON?.endTime &&
+                      format(new Date(), "HH:mm") > parseJSON?.endTime) ||
+                    (parseJSON?.startTime &&
+                      format(new Date(), "HH:mm") < parseJSON?.startTime)
+                  ) {
+                    return {
+                            isClosed: true
+                           };
+                  }
+                  break;
+                case "Weekdays":
+                  if (
+                    ["Saturday", "Sunday"].includes(format(new Date(), "EEEE")) ||
+                    (parseJSON?.endTime &&
+                      format(new Date(), "HH:mm") > parseJSON?.endTime) ||
+                    (parseJSON?.startTime &&
+                      format(new Date(), "HH:mm") < parseJSON?.startTime)
+                  ) {
+                    return {
+                        isClosed: true
+                       };
+                  }
+                  break;
+                case "Weekends":
+                  if (
+                    (parseJSON?.startTime &&
+                      parseJSON?.endTime &&
+                      !["Saturday", "Sunday"].includes(format(new Date(), "EEEE"))) ||
+                    (parseJSON?.endTime &&
+                      format(new Date(), "HH:mm") > parseJSON?.endTime) ||
+                    (parseJSON?.startTime &&
+                      format(new Date(), "HH:mm") < parseJSON?.startTime)
+                  ) {
+                    return {
+                        isClosed: true
+                       };
+                  }
+                  break;
+                case "Custom":
+                  if (parseJSON?.operationHours) {
+                    const findIndex = parseJSON?.operationHours?.findIndex(
+                      (i) => i?.day === format(new Date(), "EEEE")
+                    );
+                    if (findIndex === -1) {
+                        return {
+                            isClosed: true
+                           };
+                    }
+                    const operatingHours = parseJSON?.operationHours[findIndex];
+                    if (operatingHours === null) return {
+                        isClosed: true
+                       };
+                    if (
+                      format(new Date(), "HH:mm") > operatingHours.endTime ||
+                      format(new Date(), "HH:mm") < operatingHours.startTime
+                    ) {
+                        return {
+                            isClosed: true
+                           };
+                    }
+                  }
+                  break;
+                default:
+                  return {
+                    isClosed: false
+                  };
+              }
+        }
        return await ctx.prisma.category.findMany({
             where: {
                 registrant: {

@@ -38,14 +38,19 @@ const Menu = () => {
           let queries = {
             ...query,
           };
-          if (!isEmpty(data)) {
+          let url = pathname;
+          if (!Array.isArray(data) && data.isClosed) {
+            url = "/stalls";
+            queries = {};
+          }
+          if (!isEmpty(data) && Array.isArray(data)) {
             queries = {
               ...query,
               category: data[0]?.id,
             };
           }
           push({
-            pathname,
+            pathname: url,
             query: queries,
           });
         },
@@ -166,7 +171,7 @@ const Menu = () => {
         {!isEmpty(featuredMenuData) && <FeaturedMenu data={featuredMenuData} />}
         <p className="font-semibold uppercase">Categories</p>
         <section id="category" className="flex w-full gap-x-3 overflow-x-auto">
-          {!isEmpty(categoryData) ? (
+          {!isEmpty(categoryData) && Array.isArray(categoryData) ? (
             categoryData?.map((i) => {
               return (
                 <CategoryButton
