@@ -34,3 +34,7 @@ export const deleteCouponCodeSchema = yup.object({
     orderId: yup.string().required("Order ID is required"),
     code: yup.string().trim().required("Code is required"),
 })
+
+export const getVoucherCodeSchema = yup.object({
+    stallNames: yup.array(yup.string().required("ID is required")).required("ID is required").min(1, "ID is required"),
+})

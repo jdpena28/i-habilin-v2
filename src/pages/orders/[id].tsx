@@ -1,15 +1,18 @@
 /* eslint-disable no-shadow */
 import Image from "next/image";
-import { FC, useMemo, useState } from "react";
-import { isEmpty, flattenDeep, isEqual, filter } from "lodash";
+import { FC, useMemo, useState, Fragment } from "react";
+import { isEmpty, flattenDeep, isEqual, filter, uniq } from "lodash";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { toast } from "react-hot-toast";
+import { Listbox, Transition } from "@headlessui/react";
+import { HiChevronDown } from "react-icons/hi";
 
 import { trpc } from "@/server/utils/trpc";
 import { FormatCurrency } from "@/client/lib/TextFormatter";
 import { BillOutSchema, billOutSchema } from "@/server/schema/public/order";
+import { RouterOutput } from "@/client/types/main";
 
 import { CustomerLayout } from "@/client/components/layout";
 import { Spinner } from "@/client/components/loader";
@@ -23,7 +26,6 @@ const Orders = () => {
   const [submitIsLoading, setSubmitIsLoading] = useState(false);
   const [readyFood, setReadyFood] = useState<any>();
   const [readedFood, setReadedFood] = useState<any>([]);
-  const [code, setCode] = useState<string>("");
   const { query } = useRouter();
   const { data, isLoading, refetch } = trpc.public.order.getOrder.useQuery(
     {
@@ -77,10 +79,14 @@ const Orders = () => {
   const { mutate: redeemCode } = trpc.public.order.redeemCode.useMutation({
     onSuccess: () => {
       refetch();
-      toast.success("Code Redeemed");
+      toast.success("Code Redeemed", {
+        id: "toast-voucher",
+      });
     },
     onError: (error) => {
-      toast.error(error.message);
+      toast.error(error.message, {
+        id: "toast-voucher",
+      });
     },
   });
   const { mutate: deleteCode } = trpc.public.order.deleteCode.useMutation({
@@ -92,6 +98,18 @@ const Orders = () => {
       toast.error(error.message);
     },
   });
+  const { data: voucherCodeData } = trpc.public.order.getVoucherCode.useQuery(
+    {
+      stallNames: uniq(
+        Object.keys(data?.data || {}).map((key) => {
+          return key;
+        })
+      ),
+    },
+    {
+      enabled: !isEmpty(data?.data),
+    }
+  );
 
   const {
     register,
@@ -223,8 +241,10 @@ const Orders = () => {
     setIsFoodReadyModalOpen(false);
   };
 
-  const handleApplyCode = () => {
-    if (!code) return;
+  const handleApplyCode = (code: string) => {
+    toast.loading("Redeeming code...", {
+      id: "toast-voucher",
+    });
     redeemCode({
       code,
       orderId: query.id as string,
@@ -301,9 +321,9 @@ const Orders = () => {
           )}
         </div>
         <div className="space-y-3 rounded-lg bg-white p-2 lg:p-5">
-          <p className="font-brocha text-sm font-bold ">Have a promo code?</p>
+          <p className="font-brocha text-sm font-bold ">Promo Code</p>
           <div>
-            <div className="flex">
+            <div className="flex p-1">
               <div
                 className={`relative flex w-full rounded-lg p-2 ring-1 ring-primary ${
                   data?.tableOrder && "justify-between gap-x-3"
@@ -314,14 +334,14 @@ const Orders = () => {
                     {data?.tableOrder?.discount?.code}
                   </p>
                 ) : (
-                  <input
-                    type="text"
-                    className="w-full appearance-none border-none text-sm outline-none ring-0 focus:outline-none focus:ring-0"
-                    onChange={(e) => setCode(e.target.value)}
-                    placeholder="Enter promo code here"
+                  <ListVoucherCode
+                    data={voucherCodeData}
+                    onChange={(e: string) => {
+                      handleApplyCode(e);
+                    }}
                   />
                 )}
-                {!isEmpty(data?.tableOrder?.discount) ? (
+                {!isEmpty(data?.tableOrder?.discount) && (
                   <button
                     type="button"
                     onClick={
@@ -330,13 +350,6 @@ const Orders = () => {
                     disabled={data?.status === "Bill Out"}
                     className="rounded-2xl bg-red-500 !p-3 text-xs text-white disabled:bg-red-500/70">
                     Delete
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={handleApplyCode}
-                    className="rounded-2xl bg-secondary !p-3 text-xs text-highlight">
-                    Apply
                   </button>
                 )}
               </div>
@@ -469,6 +482,81 @@ const MenuOrderCard: FC<MenuOrderCardProps> = ({
         {FormatCurrency(price, "PHP")}
       </p>
     </div>
+  );
+};
+
+interface ListVoucherCodeProps {
+  data: RouterOutput["public"]["order"]["getVoucherCode"] | undefined;
+  // eslint-disable-next-line no-unused-vars
+  onChange: (e: string) => void;
+}
+
+const ListVoucherCode: FC<ListVoucherCodeProps> = ({ data, onChange }) => {
+  return (
+    <Listbox onChange={onChange}>
+      <div className="relative w-full">
+        <Listbox.Button className="relative w-full cursor-default rounded-lg  py-2 pl-3 pr-10 text-left focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+          <span className="block w-full truncate !font-poppins text-sm text-black">
+            Select Voucher Code
+          </span>
+          <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+            <HiChevronDown
+              className="h-5 w-5 text-gray-400"
+              aria-hidden="true"
+            />
+          </span>
+        </Listbox.Button>
+        <Transition
+          as={Fragment}
+          leave="transition ease-in duration-100"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0">
+          <Listbox.Options className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md bg-tertiary py-1 text-base ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+            {isEmpty(data) ? (
+              <Listbox.Option
+                key="Empty"
+                className={({ active }) =>
+                  `relative cursor-default select-none py-2 pl-10 pr-4 font-poppins ${
+                    active ? "bg-secondary/80" : "text-gray-900"
+                  }`
+                }
+                value="">
+                {({ selected }) => (
+                  <span
+                    className={`block truncate ${
+                      selected ? "font-bold" : "font-normal"
+                    }`}>
+                    No data available
+                  </span>
+                )}
+              </Listbox.Option>
+            ) : (
+              data?.map((i) => {
+                return (
+                  <Listbox.Option
+                    key={i.id}
+                    className={({ active }) =>
+                      `relative cursor-default select-none py-2 pl-10 pr-4 font-poppins ${
+                        active ? "bg-secondary/80" : "text-gray-900"
+                      }`
+                    }
+                    value={i.code}>
+                    {() => (
+                      <span className="block truncate font-poppins text-sm font-normal lg:text-base">
+                        Discount: {i.discount as unknown as number}%
+                        <p className="text-xs font-normal">
+                          {i.registrant.name} - {i.code}
+                        </p>
+                      </span>
+                    )}
+                  </Listbox.Option>
+                );
+              })
+            )}
+          </Listbox.Options>
+        </Transition>
+      </div>
+    </Listbox>
   );
 };
 
