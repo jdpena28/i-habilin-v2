@@ -276,10 +276,13 @@ const Voucher = () => {
         </div>
       </section>
       <ModalTemplate
-        title="Generate Voucher"
+        title={`${watch("id") ? "Edit" : "Create"} Voucher`}
         isOpenModal={isVoucherModalOpen}
         setIsOpenModal={setIsVoucherModalOpen}
-        bodyClassName="max-w-2xl min-h-[30vh]">
+        bodyClassName="max-w-2xl min-h-[30vh]"
+        onClose={() => {
+          reset();
+        }}>
         <form className="space-y-3" onSubmit={handleSubmit(onSubmit)}>
           <div className="flex items-center gap-x-3">
             <InputForm
@@ -337,7 +340,11 @@ const Voucher = () => {
               error={errors}
               register={register}
               aboveLabel="Date From"
-              min={format(new Date(), "yyyy-MM-dd'T'HH:mm")}
+              min={
+                watch("validFrom")
+                  ? watch("validFrom")
+                  : format(new Date(), "yyyy-MM-dd'T'HH:mm")
+              }
             />
             <div className="h-[1px] w-7 bg-highlight" />
             <InputForm
@@ -348,7 +355,11 @@ const Voucher = () => {
               error={errors}
               register={register}
               aboveLabel="Date To"
-              min={format(new Date(), "yyyy-MM-dd'T'HH:mm")}
+              min={
+                watch("validUntil")
+                  ? watch("validUntil")
+                  : format(new Date(), "yyyy-MM-dd'T'HH:mm")
+              }
             />
           </div>
           <InputForm
