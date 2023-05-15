@@ -1,5 +1,5 @@
 import { router, procedure } from "@/server/trpc"
-import { billOutSchema, createOrderSchema, deleteCouponCodeSchema, getCouponCodeSchema, getOrderSchema } from "@/server/schema/public/order";
+import { billOutSchema, createOrderSchema, deleteCouponCodeSchema, getCouponCodeSchema, getOrderSchema, getVoucherCodeSchema } from "@/server/schema/public/order";
 import { groupBy, chain, mapValues } from "lodash";
 import { sendEmail } from "@/server/lib/SendInBlue";
 import { formatDate } from "@/client/lib/TextFormatter";
@@ -216,4 +216,40 @@ export const orderRouter = router({
             }
         })
     }),
+    getVoucherCode: procedure.input(getVoucherCodeSchema).query(async ({ctx,input}) => {
+        const voucherCode =  await ctx.prisma.discount.findMany({
+            where: {
+                registrant: {
+                    name: {
+                        in: input.stallNames,
+                    }
+                },
+                status: "Active",
+            },
+            include: {
+                registrant: {
+                    select: {
+                        name: true,
+                    }
+                }
+            },
+            orderBy: {
+                registrant: {
+                    name: "asc",
+                }
+            }
+        })
+        return voucherCode.filter((value) => {
+            if(value.validFrom !== null && new Date() < value.validFrom){
+                return false
+            }
+            if(value.validUntil !== null && new Date() > value.validUntil){
+                return false
+            }
+            if(value.used >= value.quantity){
+                return false
+            }
+            return true
+        })
+    })
 })
