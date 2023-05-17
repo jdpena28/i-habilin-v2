@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 
 interface ActionDropdownProps {
   viewOnClick: string;
+  viewOnAction?: () => void;
   options: optionType[];
   onDelete: () => void;
   onEdit?: () => void;
@@ -18,6 +19,7 @@ type optionType = "View" | "Edit" | "Delete";
 
 const ActionDropdown: FC<ActionDropdownProps> = ({
   viewOnClick,
+  viewOnAction,
   options = ["View", "Edit", "Delete"],
   onDelete,
   onEdit,
@@ -50,6 +52,10 @@ const ActionDropdown: FC<ActionDropdownProps> = ({
                       } w-full cursor-pointer gap-x-1 rounded-none p-1.5 hover:bg-orange-600`}
                       type="button"
                       onClick={() => {
+                        if (viewOnAction) {
+                          viewOnAction();
+                          return;
+                        }
                         push(viewOnClick);
                       }}>
                       <BsFillEyeFill className="h-4 w-4" />

@@ -2,11 +2,13 @@ import { QRCode } from "react-qrcode-logo";
 import * as htmlToImage from "html-to-image";
 import { saveAs } from "file-saver";
 import { toast } from "react-hot-toast";
+import { useRouter } from "next/router";
 
 import { StallLayout } from "@/client/components/layout";
 import { StallHeader } from "@/client/components/header";
 
 const QrCode = () => {
+  const { push, query } = useRouter();
   const URL = `${
     process.env.NODE_ENV === "development"
       ? "http://192.168.100.114:3000/"
@@ -31,8 +33,19 @@ const QrCode = () => {
         title="QR Code"
         goBack
         buttonText="Save QR"
-        onClickButton={handleSaveButton}
-      />
+        onClickButton={handleSaveButton}>
+        <button
+          className="bg-primary p-2 text-black"
+          type="button"
+          onClick={() => {
+            push({
+              pathname: `qr-code/generate`,
+              query,
+            });
+          }}>
+          Generate QR
+        </button>
+      </StallHeader>
       <section
         id="qr-code"
         className="flex flex-row items-center justify-center gap-x-5 rounded-md bg-white p-5">

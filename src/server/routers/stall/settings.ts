@@ -1,8 +1,12 @@
 import {
+  createQrCodeSchema,
   createStallSettingsSchema,
+  deleteQRCodeSchema,
+  getQRCodeSchema,
   getStallClosedSchema,
 } from "@/server/schema/stall/settings";
 import { router, protectedProcedure } from "@/server/trpc";
+import { Key } from "@prisma/client";
 
 export const settingsRouter = router({
   getStallOperationTime: protectedProcedure
@@ -48,6 +52,46 @@ export const settingsRouter = router({
             days: input.days,
             operationHours: input.operationHours,
           }),
+        },
+      });
+    }),
+  createQRCode: protectedProcedure
+    .input(createQrCodeSchema)
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.prisma.key.create({
+        data: input,
+      });
+    }),
+  getQRCode: protectedProcedure
+    .input(getQRCodeSchema)
+    .query(async ({ ctx, input }) => {
+      const key = (await ctx.prisma.key.findMany({
+        where: {
+          registrantId: input.registrantId,
+        },
+      })) as unknown as Key[];
+      return key;
+    }),
+  deleteQRCode: protectedProcedure
+    .input(deleteQRCodeSchema)
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.prisma.key.deleteMany({
+        where: {
+          id: {
+            in: input.id,
+          },
+        },
+      });
+    }),
+  updateQRCode: protectedProcedure
+    .input(createQrCodeSchema)
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.prisma.key.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          tableNumber: input.tableNumber,
         },
       });
     }),

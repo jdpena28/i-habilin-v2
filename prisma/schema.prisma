@@ -29,9 +29,9 @@ model Account {
   registrantId String?      @unique
   registrant   Registrants? @relation(fields: [registrantId], references: [id], onDelete: Cascade)
 
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   Transaction Transaction[]
 
   @@unique([email])
@@ -49,7 +49,7 @@ model Registrants {
   approvedDate DateTime?
 
   // settings
-  isClosed Boolean @default(false)
+  isClosed       Boolean @default(false)
   operatingHours String? @db.MediumText
 
   personId String
@@ -80,6 +80,7 @@ model Registrants {
   Category    Category[]
   Discount    Discount[]
   Transaction Transaction[]
+  Key         Key[]
 
   @@fulltext([name, email])
 }
@@ -107,7 +108,7 @@ model Category {
 
 model Menu {
   id          String @id @default(cuid())
-  name        String  @db.VarChar(100)
+  name        String @db.VarChar(100)
   order       Int
   description String @db.VarChar(500)
 
@@ -191,7 +192,7 @@ model Discount {
   code       String    @unique @db.VarChar(255) // this will be the code for example: #IhabilnLangMalakas
   discount   Decimal   @db.Decimal(6, 2) // this will be the discount for example: 10% of
   status     String    @default("Active") // this will be the status of the code for example: Active, Expired, Used
-  validFrom DateTime? 
+  validFrom  DateTime?
   validUntil DateTime? // this will be the valid from date of the code for example: 2021-01-01
   quantity   Int // this will be the quantity of the code for example: 10
   used       Int       @default(0) // this will be the quantity of the code that is used for example: 10
@@ -222,6 +223,20 @@ model Transaction {
   @@index([accountId])
   @@index([registrantId])
   @@index([tableOrderId])
+}
+
+model Key {
+  id          String @id @default(cuid())
+  type        String @default("QR-Code") // for what type the key will be used for example: QR-Code, Forgot Password, Email Verification
+  tableNumber Int
+
+  registrantId String
+  registrant   Registrants? @relation(fields: [registrantId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([registrantId])
 }
 
 model Person {
