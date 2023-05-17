@@ -79,3 +79,63 @@ export const OPERATION_TYPE = [
     text: "Custom",
   },
 ];
+
+export const sizeLimit = 5 * 1024 * 1024; // 5mb
+export const allowedFileTypes = "pdf";
+
+export function maxFileSize(limitSize: number) {
+  // eslint-disable-next-line func-names
+  return function (fileInfo: { size: number }) {
+    if (fileInfo.size > limitSize) {
+      throw new Error("maxFileLimit");
+    }
+  };
+}
+
+export const fileTypeLimit = (fileTypes: string) => {
+  const types = fileTypes.split(",");
+
+  // eslint-disable-next-line func-names
+  return function (fileInfo: { name: string | null }) {
+    if (fileInfo.name === null) {
+      return;
+    }
+    const extension = fileInfo.name.split(".").pop();
+
+    if (extension && !types.includes(extension)) {
+      throw new Error("fileType");
+    }
+  };
+};
+
+export const validators = [
+  maxFileSize(sizeLimit),
+  fileTypeLimit(allowedFileTypes),
+];
+export const localeError = {
+  errors: {
+    maxFileLimit: "File is too big. Max file size is 5mb",
+    fileType: "Please upload a pdf file",
+  },
+  dialog: {
+    tabs: {
+      preview: {
+        error: {
+          maxFileLimit: {
+            title: "Error.",
+            text: "Max File is 5mb.",
+            back: "Back",
+          },
+          fileType: {
+            title: "Error",
+            text: "Please upload a pdf file",
+            back: "Back",
+          },
+        },
+      },
+    },
+  },
+};
+
+export type ValidatorType = typeof validators;
+export type LocaleErrorType = typeof localeError;

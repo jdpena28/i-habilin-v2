@@ -23,7 +23,7 @@ export const createVoucherSchema = yup.object().shape({
     .test(
       "validUntilShouldBeGreaterThanValidFrom",
       "Date to must be greater than date from",
-      function (value) {
+      function test(value) {
         const { validFrom } = this.parent;
         if (
           validFrom &&

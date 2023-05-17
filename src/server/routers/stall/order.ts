@@ -157,14 +157,13 @@ export const orderRouter = router({
         const addEstimatedTime = Object.keys(result).map((key) => {
           return {
             ...result[key],
-            estimated_time: parseJSON.sorted.find((x: any) => x.id === key)
-              .estimated_time,
+            estimated_time: parseJSON.sorted.find(
+              (x: { id: string }) => x.id === key
+            ).estimated_time,
           };
         });
         const entries = Object.entries(addEstimatedTime);
-        entries.sort(
-          (a: any, b: any) => a[1].estimated_time - b[1].estimated_time
-        );
+        entries.sort((a, b) => a[1].estimated_time - b[1].estimated_time);
         const flattedEntries = flatten(entries);
         const groupedObject: { [key: string]: any } = {};
         for (let i = 1; i < flattedEntries.length; i += 2) {
@@ -182,9 +181,13 @@ export const orderRouter = router({
       ) {
         const entries = Object.entries(result);
         if (input.orderBy === "Order Time (Asc.)") {
-          entries.sort((a: any, b: any) => a[1].createdAt - b[1].createdAt);
+          entries.sort(
+            (a, b) => a[1].createdAt.getTime() - b[1].createdAt.getTime()
+          );
         } else {
-          entries.sort((a: any, b: any) => b[1].createdAt - a[1].createdAt);
+          entries.sort(
+            (a, b) => b[1].createdAt.getTime() - a[1].createdAt.getTime()
+          );
         }
         const flattedEntries = flatten(entries);
         const groupedObject: { [key: string]: any } = {};

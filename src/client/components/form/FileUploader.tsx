@@ -5,6 +5,7 @@ import { Widget } from "@uploadcare/react-widget";
 import { isEmpty, get } from "lodash";
 
 import { deleteMedia } from "@/client/lib/UploadCare";
+import { ValidatorType, LocaleErrorType } from "@/client/constant";
 
 interface InputFormProps {
   setValue: any;
@@ -21,6 +22,8 @@ interface InputFormProps {
   getValues: (value: string) => any;
   watch: (value: string) => any;
   register: any;
+  validator?: ValidatorType;
+  localeError?: LocaleErrorType;
 }
 
 const FileUploader: FC<InputFormProps> = ({
@@ -33,6 +36,8 @@ const FileUploader: FC<InputFormProps> = ({
   setValue,
   defaultValue,
   label,
+  validator,
+  localeError,
 }) => {
   const errorMessage: {
     uuid: {
@@ -75,6 +80,8 @@ const FileUploader: FC<InputFormProps> = ({
         value={watch(id)?.cdnUrl ? watch(id)?.cdnUrl : ""}
         {...register(id)}
         onChange={(e: any) => handleOnChange(e)}
+        validators={validator}
+        localeTranslations={localeError}
       />
       {!isEmpty(errorMessage) && (
         <p className="helper-text mt-1 font-medium !text-red-400">
