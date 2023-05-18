@@ -333,13 +333,17 @@ const Orders = () => {
                     {data?.tableOrder?.discount?.registrant?.name}-
                     {data?.tableOrder?.discount?.code}
                   </p>
-                ) : (
+                ) : data?.tableOrder?.status !== "Bill Out" ? (
                   <ListVoucherCode
                     data={voucherCodeData}
                     onChange={(e: string) => {
                       handleApplyCode(e);
                     }}
                   />
+                ) : (
+                  <p className="flex max-w-full items-center  truncate rounded-lg bg-secondary/60 p-1.5 text-xs font-semibold text-black ring-2 ring-secondary ring-offset-2 lg:text-base">
+                    No Voucher Code
+                  </p>
                 )}
                 {!isEmpty(data?.tableOrder?.discount) && (
                   <button

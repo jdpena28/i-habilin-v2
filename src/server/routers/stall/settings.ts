@@ -13,15 +13,12 @@ export const settingsRouter = router({
   getStallOperationTime: protectedProcedure
     .input(getStallClosedSchema)
     .query(async ({ ctx, input }) => {
-      return await ctx.prisma.registrants.findUnique({
+      const registrant = await ctx.prisma.registrants.findUnique({
         where: {
           id: input.id,
         },
-        select: {
-          isClosed: true,
-          operatingHours: true,
-        },
       });
+      return registrant;
     }),
   updateStallClosed: protectedProcedure
     .input(getStallClosedSchema)
