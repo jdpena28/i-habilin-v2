@@ -64,3 +64,38 @@ export const getStallClosedSchema = yup.object().shape({
   id: yup.string().required("ID is required"),
   isClosed: yup.boolean().optional(),
 });
+
+export const createQrCodeSchema = yup.object().shape({
+  id: yup.string().optional(),
+  registrantId: yup.string().required("Registrant ID is required"),
+  tableNumber: yup
+    .number()
+    .required("Table Number is required")
+    .min(1, "Table Number must be greater than 0")
+    .typeError("Table Number is required"),
+  type: yup
+    .string()
+    .required("Type is required")
+    .oneOf(["QR-Code", "Forgot-Password"])
+    .default("QR-Code"),
+});
+
+export type CreateQrCodeSchema = yup.InferType<typeof createQrCodeSchema>;
+
+export const getQRCodeSchema = yup.object().shape({
+  registrantId: yup.string().optional(),
+  orderBy: yup.string().optional(),
+  search: yup.string().optional(),
+});
+
+export const getQRCodeByIdSchema = yup.object().shape({
+  id: yup.string().required("ID is required"),
+});
+
+export const deleteQRCodeSchema = yup.object().shape({
+  id: yup
+    .array()
+    .of(yup.string().required("ID is required"))
+    .required("ID is required")
+    .min(1, "ID is required"),
+});

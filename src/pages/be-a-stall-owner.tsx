@@ -2,12 +2,14 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { trpc } from "@/server/utils/trpc";
+import { toast } from "react-hot-toast";
+import { useRouter } from "next/router";
+
 import {
   CreateRegistrantSchema,
   createRegistrantSchema,
 } from "@/server/schema/public";
-import { toast } from "react-hot-toast";
-import { useRouter } from "next/router";
+import { validators, localeError } from "@/client/constant";
 
 import { FileUploader, InputForm, SelectForm } from "@/client/components/form";
 import { HomeLayout } from "@/client/components/layout";
@@ -241,6 +243,8 @@ const BeAStallOwner = () => {
             getValues={getValues}
             watch={watch}
             register={register}
+            localeError={localeError}
+            validator={validators}
           />
           <FileUploader
             crop={["16:9", "9:16"]}
@@ -255,6 +259,8 @@ const BeAStallOwner = () => {
             getValues={getValues}
             watch={watch}
             register={register}
+            localeError={localeError}
+            validator={validators}
           />
           <FileUploader
             crop={["16:9", "9:16"]}
@@ -269,6 +275,8 @@ const BeAStallOwner = () => {
             getValues={getValues}
             watch={watch}
             register={register}
+            localeError={localeError}
+            validator={validators}
           />
         </div>
         <div className="flex lg:w-1/2 lg:justify-between lg:pr-6 lg:pt-8">
