@@ -224,7 +224,7 @@ const User = () => {
                       <td>
                         <p>
                           {value.person?.address?.addressLine &&
-                            `${value.person?.address} `}
+                            `${value.person?.address?.addressLine} `}
                           {value.person?.address?.province.prov_name}{" "}
                           {value.person?.address?.city.city_name}
                           {value.person?.address?.Brgy?.brgy_loc &&
