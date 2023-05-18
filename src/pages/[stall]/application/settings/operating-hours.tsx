@@ -52,6 +52,7 @@ const OperatingHours = () => {
           const parseJSON = JSON.parse(
             data.operatingHours
           ) as CreateStallSettingsSchema;
+          setValue("id", data.id);
           setValue("type", parseJSON.type);
           setValue("startTime", parseJSON.startTime);
           setValue("endTime", parseJSON.endTime);
@@ -182,12 +183,15 @@ const OperatingHours = () => {
                             checked={watch("days")?.includes(day)}
                             onChange={(e) => {
                               if (e.target.checked) {
-                                setValue("days", watch("days")?.concat(day));
+                                const value = [watch("days"), day].flat(1);
+                                setValue(`days`, value);
                                 setValue(`operationHours.${indexes}.day`, day);
                               } else {
                                 setValue(
                                   `days`,
-                                  watch("days")?.filter((i) => i !== day)
+                                  watch("days")?.filter(
+                                    (i) => i !== day && i !== null
+                                  )
                                 );
                                 setValue(`operationHours.${indexes}`, null);
                               }

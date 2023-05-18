@@ -341,7 +341,7 @@ const Voucher = () => {
               register={register}
               aboveLabel="Date From"
               min={
-                watch("validFrom")
+                watch("validFrom") && watch("id")
                   ? watch("validFrom")
                   : format(new Date(), "yyyy-MM-dd'T'HH:mm")
               }
@@ -356,7 +356,7 @@ const Voucher = () => {
               register={register}
               aboveLabel="Date To"
               min={
-                watch("validUntil")
+                watch("validUntil") && watch("id")
                   ? watch("validUntil")
                   : format(new Date(), "yyyy-MM-dd'T'HH:mm")
               }
