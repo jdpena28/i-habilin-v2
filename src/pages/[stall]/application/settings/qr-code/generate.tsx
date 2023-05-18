@@ -55,11 +55,12 @@ const GenerateQR = () => {
     resolver: yupResolver(createQrCodeSchema),
   });
 
-  const { data, isLoading, refetch } = trpc.stall.settings.getQRCode.useQuery({
-    registrantId: stall.id,
-    orderBy: query.orderBy as string,
-    search: query.search as string,
-  });
+  const { data, isLoading, refetch } =
+    trpc.stall.settings.getAllQRCode.useQuery({
+      registrantId: stall.id,
+      orderBy: query.orderBy as string,
+      search: query.search as string,
+    });
 
   const { mutate: createQRCode } = trpc.stall.settings.createQRCode.useMutation(
     {
@@ -288,7 +289,7 @@ const GenerateQR = () => {
         }}>
         <div id="qr-code-image" className="mx-auto h-max w-max">
           <QRCode
-            value={`${URL}/stalls/${getValues("id")}`}
+            value={`${URL}/stalls/v2/${getValues("id")}`}
             size={200}
             logoWidth={198 * 0.35}
             logoHeight={124 * 0.35}

@@ -88,6 +88,10 @@ export const getQRCodeSchema = yup.object().shape({
   search: yup.string().optional(),
 });
 
+export const getQRCodeByIdSchema = yup.object().shape({
+  id: yup.string().required("ID is required"),
+});
+
 export const deleteQRCodeSchema = yup.object().shape({
   id: yup
     .array()

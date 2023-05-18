@@ -2,10 +2,11 @@ import {
   createQrCodeSchema,
   createStallSettingsSchema,
   deleteQRCodeSchema,
+  getQRCodeByIdSchema,
   getQRCodeSchema,
   getStallClosedSchema,
 } from "@/server/schema/stall/settings";
-import { router, protectedProcedure } from "@/server/trpc";
+import { router, protectedProcedure, procedure } from "@/server/trpc";
 import { Key } from "@prisma/client";
 
 export const settingsRouter = router({
@@ -62,7 +63,7 @@ export const settingsRouter = router({
         data: input,
       });
     }),
-  getQRCode: protectedProcedure
+  getAllQRCode: protectedProcedure
     .input(getQRCodeSchema)
     .query(async ({ ctx, input }) => {
       const key = (await ctx.prisma.key.findMany({
@@ -71,6 +72,15 @@ export const settingsRouter = router({
         },
       })) as unknown as Key[];
       return key;
+    }),
+  getQRCode: procedure
+    .input(getQRCodeByIdSchema)
+    .query(async ({ ctx, input }) => {
+      return (await ctx.prisma.key.findUnique({
+        where: {
+          id: input.id,
+        },
+      })) as unknown as Key;
     }),
   deleteQRCode: protectedProcedure
     .input(deleteQRCodeSchema)
