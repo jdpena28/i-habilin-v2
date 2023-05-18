@@ -107,7 +107,6 @@ const CustomerLayout: FC<CustomerLayoutProps> = ({ children, isLoading }) => {
         </div>
         <p className="font-tertiary tracking-wide">
           Hello &#128075;, <br /> Let&apos;s have a quick survey about your food{" "}
-          {pathname}
           preferences.{" "}
         </p>
         <div className="mt-4 flex justify-end gap-x-2">
