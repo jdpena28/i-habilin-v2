@@ -35,8 +35,8 @@ const PublicFooter = () => {
               alt="I-Habilin logo"
             />
             <p className="mx-auto mt-6 max-w-md text-center leading-relaxed text-gray-500 lg:text-left">
-              Lorem ipsum dolor, sit amet consectetur adipisicing eLinkt.
-              Incidunt consequuntur amet culpa cum itaque neque.
+              A revolutionize ordering system. An innovative solution that
+              transforms the traditional way of ordering in food stalls.
             </p>
           </div>
 
