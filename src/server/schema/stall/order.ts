@@ -72,3 +72,28 @@ export const createTransactionSchema = yup.object({
   registrantId: yup.string().required("Registrant id is required"),
   accountId: yup.string().required("Account id is required"),
 });
+
+export const createOrderSchema = yup.object({
+  tableNumber: yup
+    .number()
+    .required("Table number is required")
+    .min(1, "Table number must be greater than 0")
+    .typeError("Table number is required"),
+  orders: yup
+    .array(
+      yup
+        .object({
+          quantity: yup
+            .number()
+            .required("Quantity is required")
+            .min(1, "Quantity must be greater than 0")
+            .typeError("Quantity is required"),
+          menuId: yup.string().required("Menu is required"),
+        })
+        .required()
+    )
+    .required("Order is required")
+    .min(1, "Order is required"),
+});
+
+export type CreateOrderSchema = yup.InferType<typeof createOrderSchema>;

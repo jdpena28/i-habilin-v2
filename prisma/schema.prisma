@@ -152,8 +152,8 @@ model Order {
   menuId String
   menu   Menu   @relation(fields: [menuId], references: [id], onDelete: Cascade)
 
-  customerId String
-  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  customerId String?
+  customer   Customer? @relation(fields: [customerId], references: [id], onDelete: Cascade)
 
   batchNo String
 

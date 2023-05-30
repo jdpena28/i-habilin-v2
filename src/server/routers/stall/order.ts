@@ -6,6 +6,7 @@ import {
   updateOrderById,
   updateOrders,
   createTransactionSchema,
+  createOrderSchema,
 } from "@/server/schema/stall/order";
 import { protectedProcedure, router } from "@/server/trpc";
 import { openai } from "@/server/lib/openai";
@@ -309,6 +310,36 @@ export const orderRouter = router({
         total,
         cashTendered: input.cashTendered,
       };
+    }),
+  createOrder: protectedProcedure
+    .input(createOrderSchema)
+    .mutation(async ({ ctx, input }) => {
+      const batchNo = Math.random().toString(36).slice(-8);
+      let isTableNumberExist = await ctx.prisma.tableOrder.findFirst({
+        where: {
+          tableNumber: input.tableNumber,
+          AND: {
+            status: "Ordered",
+          },
+        },
+      });
+      if (!isTableNumberExist) {
+        isTableNumberExist = await ctx.prisma.tableOrder.create({
+          data: {
+            tableNumber: input.tableNumber,
+          },
+        });
+      }
+      return await ctx.prisma.order.createMany({
+        data: input.orders.map((order) => {
+          return {
+            quantity: order.quantity,
+            batchNo,
+            menuId: order.menuId,
+            tableId: isTableNumberExist?.id as string,
+          };
+        }),
+      });
     }),
   createTransaction: protectedProcedure
     .input(createTransactionSchema)

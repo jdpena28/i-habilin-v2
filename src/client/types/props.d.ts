@@ -36,6 +36,7 @@ interface SelectFormProps {
   id: string;
   helperText?: string;
   isLoading?: boolean;
+  parentClassName?: string;
 }
 
 type filterDataType = {

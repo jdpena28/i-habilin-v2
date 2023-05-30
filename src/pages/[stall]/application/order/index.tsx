@@ -1,18 +1,42 @@
+import { useState } from "react";
 import { isEmpty } from "lodash";
 import { useRouter } from "next/router";
+import { toast } from "react-hot-toast";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 import { trpc } from "@/server/utils/trpc";
 import { useStallConfigurationStore } from "@/client/store";
+import {
+  createOrderSchema,
+  CreateOrderSchema,
+} from "@/server/schema/stall/order";
 
 import { StallLayout } from "@/client/components/layout";
 import { StallHeader } from "@/client/components/header";
 import { Spinner } from "@/client/components/loader";
 import { Notes } from "@/client/components/card";
 import { Filter } from "@/client/components/filtering-sorting";
+import ModalTemplate from "@/client/components/modal/ModalTemplate";
+import { InputForm, SelectForm } from "@/client/components/form";
+import { SubmitButton } from "@/client/components/buttons";
 
 const Index = () => {
   const { query } = useRouter();
   const { stall } = useStallConfigurationStore();
+  const [isAddOrderModalOpen, setIsAddOrderModalOpen] = useState(false);
+  const [submitIsLoading, setSubmitIsLoading] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    getValues,
+    formState: { errors },
+    reset,
+    watch,
+  } = useForm<CreateOrderSchema>({
+    resolver: yupResolver(createOrderSchema),
+  });
   const { data, isLoading } = trpc.stall.order.getAllOrders.useQuery(
     {
       id: stall.id as string,
@@ -86,17 +110,42 @@ const Index = () => {
         refetchInterval: 1000 * 15, // 15 seconds
       }
     );
+  const { data: menuData, isLoading: menuIsLoading } =
+    trpc.stall.menu.getAllMenu.useQuery({
+      stallId: stall.id as string,
+    });
+  const { mutate } = trpc.stall.order.createOrder.useMutation({
+    onSuccess: () => {
+      setIsAddOrderModalOpen(false);
+      setSubmitIsLoading(false);
+      reset();
+      toast.success("Order has been added");
+    },
+    onError: (error) => {
+      setSubmitIsLoading(false);
+      toast.error(error.message);
+    },
+  });
 
   const sortByOptions = [
     "Order Time (Asc.)",
     "Order Time (Desc.)",
     "Preparation Time",
   ];
+
+  const onSubmit = (values: CreateOrderSchema) => {
+    setSubmitIsLoading(true);
+    mutate(values);
+  };
   return (
     <StallLayout>
       <StallHeader
         title="Orders"
         filterQuery="orderBy"
+        buttonText="Add Order"
+        onClickButton={() => {
+          setIsAddOrderModalOpen(true);
+        }}
         filter={
           <>
             <option value="default" selected>
@@ -324,6 +373,106 @@ const Index = () => {
           )}
         </section>
       </section>
+      <ModalTemplate
+        title="Add Order"
+        isOpenModal={isAddOrderModalOpen}
+        setIsOpenModal={setIsAddOrderModalOpen}
+        bodyClassName="max-w-2xl"
+        onClose={() => {
+          reset();
+        }}>
+        <form className="space-y-3" onSubmit={handleSubmit(onSubmit)}>
+          <InputForm
+            id="tableNumber"
+            name="tableNumber"
+            type="number"
+            labelText="Table Number*"
+            error={errors}
+            register={register}
+            aboveLabel="Table Number*"
+          />
+          <div className="flex gap-x-5">
+            <InputForm
+              parentClassName="flex-[.2]"
+              id="orders[0].quantity"
+              name="orders[0].quantity"
+              type="number"
+              labelText="Quantity*"
+              error={errors}
+              register={register}
+              aboveLabel="Quantity*"
+            />
+            <SelectForm
+              parentClassName="flex-[.8]"
+              register={register}
+              error={errors}
+              id="orders[0].menuId"
+              aboveLabel="Menu"
+              placeholder="Select menu"
+              data={menuData}
+              filterBy="name"
+              selectedBy="id"
+              setValue={setValue}
+              watch={watch}
+              isLoading={menuIsLoading}
+            />
+          </div>
+          {watch("orders")?.length > 1 &&
+            watch("orders").map((orders, index) => {
+              if (index === 0) return null;
+              return (
+                // eslint-disable-next-line react/no-array-index-key
+                <div key={index} className="flex gap-x-5">
+                  <InputForm
+                    parentClassName="flex-[.2]"
+                    id={`orders[${index}].quantity`}
+                    name={`orders[${index}].quantity`}
+                    type="number"
+                    labelText="Quantity*"
+                    error={errors}
+                    register={register}
+                    aboveLabel="Quantity*"
+                  />
+                  <SelectForm
+                    parentClassName="flex-[.8]"
+                    register={register}
+                    error={errors}
+                    id={`orders[${index}].menuId`}
+                    aboveLabel="Menu"
+                    placeholder="Select menu"
+                    data={menuData}
+                    filterBy="name"
+                    selectedBy="id"
+                    setValue={setValue}
+                    watch={watch}
+                    isLoading={menuIsLoading}
+                  />
+                </div>
+              );
+            })}
+          <button
+            className="mx-auto bg-primary p-2 text-white"
+            onClick={() => {
+              const index = getValues("orders").length;
+              setValue(`orders.${index}.quantity`, 1);
+              setValue(`orders.${index}.menuId`, "");
+            }}>
+            Add Orders
+          </button>
+          <div className="flex justify-end gap-x-2 pt-8">
+            <button
+              type="reset"
+              className="bg-yellow-400 text-black"
+              onClick={() => {
+                setIsAddOrderModalOpen(false);
+                reset();
+              }}>
+              Cancel
+            </button>
+            <SubmitButton isLoading={submitIsLoading} />
+          </div>
+        </form>
+      </ModalTemplate>
     </StallLayout>
   );
 };
