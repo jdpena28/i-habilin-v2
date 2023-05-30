@@ -409,7 +409,12 @@ const Index = () => {
               id="orders[0].menuId"
               aboveLabel="Menu"
               placeholder="Select menu"
-              data={menuData}
+              data={menuData?.map((menu) => {
+                return {
+                  id: menu.id,
+                  name: menu.name,
+                };
+              })}
               filterBy="name"
               selectedBy="id"
               setValue={setValue}
@@ -440,7 +445,12 @@ const Index = () => {
                     id={`orders[${index}].menuId`}
                     aboveLabel="Menu"
                     placeholder="Select menu"
-                    data={menuData}
+                    data={menuData?.map((menu) => {
+                      return {
+                        id: menu.id,
+                        name: menu.name,
+                      };
+                    })}
                     filterBy="name"
                     selectedBy="id"
                     setValue={setValue}

@@ -267,12 +267,11 @@ export const categoryRouter = router({
               registrantId: input.stallId,
             },
           },
+          include: {
+            media: true,
+          },
           orderBy: {
             name: "asc",
-          },
-          select: {
-            name: true,
-            id: true,
           },
         });
       }
