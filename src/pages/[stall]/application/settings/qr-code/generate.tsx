@@ -217,6 +217,7 @@ const GenerateQR = () => {
                           viewOnAction={() => {
                             setValue("id", value.id);
                             setValue("tableNumber", value.tableNumber);
+                            setValue("slug", value.registrant.slug);
                             setIsViewQROpen(true);
                           }}
                           options={["View", "Edit", "Delete"]}
@@ -289,7 +290,7 @@ const GenerateQR = () => {
         }}>
         <div id="qr-code-image" className="mx-auto h-max w-max">
           <QRCode
-            value={`${URL}/stalls/v2/${getValues("id")}`}
+            value={`${URL}/stalls/v2/${getValues("slug")}/${getValues("id")}`}
             size={200}
             logoWidth={198 * 0.35}
             logoHeight={124 * 0.35}

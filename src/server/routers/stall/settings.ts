@@ -9,6 +9,8 @@ import {
 import { router, protectedProcedure, procedure } from "@/server/trpc";
 import { Key } from "@prisma/client";
 
+type KeyType = Key & { registrant: { slug: string } };
+
 export const settingsRouter = router({
   getStallOperationTime: protectedProcedure
     .input(getStallClosedSchema)
@@ -67,7 +69,14 @@ export const settingsRouter = router({
         where: {
           registrantId: input.registrantId,
         },
-      })) as unknown as Key[];
+        include: {
+          registrant: {
+            select: {
+              slug: true,
+            },
+          },
+        },
+      })) as unknown as KeyType[];
       return key;
     }),
   getQRCode: procedure
