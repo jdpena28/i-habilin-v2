@@ -95,6 +95,7 @@ export const getAllMenuSchema = yup.object().shape({
   categoryId: yup.string().optional(),
   featured: yup.boolean().optional(),
   slug: yup.string().optional(),
+  stallId: yup.string().optional(),
 });
 
 export const updateMenuSchema = yup

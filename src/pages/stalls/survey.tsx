@@ -13,7 +13,7 @@ import { SubmitButton } from "@/client/components/buttons";
 import { InputForm, SelectForm } from "@/client/components/form";
 
 const Survey = () => {
-  const { push } = useRouter();
+  const { back } = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const { customerReference, updateCustomerReference } =
     useCustomerReferenceStore();
@@ -27,7 +27,7 @@ const Survey = () => {
         name: data.name,
         isSurveyed: true,
       });
-      push("/stalls");
+      back();
     },
     onError: (error) => {
       setIsLoading(false);

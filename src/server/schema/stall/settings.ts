@@ -78,6 +78,7 @@ export const createQrCodeSchema = yup.object().shape({
     .required("Type is required")
     .oneOf(["QR-Code", "Forgot-Password"])
     .default("QR-Code"),
+  slug: yup.string().optional(),
 });
 
 export type CreateQrCodeSchema = yup.InferType<typeof createQrCodeSchema>;

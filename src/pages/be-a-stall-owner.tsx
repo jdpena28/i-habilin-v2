@@ -93,10 +93,13 @@ const BeAStallOwner = () => {
         <h5 className="font-bold">Be a Stall Owner</h5>
         <div />
         <p className="text-md mt-4 mb-12">
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quo nemo
-          autem, beatae in quis sunt fugiat dignissimos consequatur nesciunt,
-          ducimus eaque perspiciatis quam. Explicabo quam nobis deserunt unde
-          eos qui.
+          Revamp your food stall&apos;s order management with our user-friendly
+          online platform. Streamline the ordering process and save time with
+          convenient mobile and web-based ordering. Enjoy features such as
+          efficient order management, secure payment integration, valuable
+          business insights, and increased visibility to reach new customers.
+          Join us today and experience the ease and efficiency of our platform
+          to take your food stall to new heights!
         </p>
       </div>
 
@@ -106,7 +109,7 @@ const BeAStallOwner = () => {
             <h6>Stall Information</h6>
             <div />
             <p className="text-md mt-2">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+              A detailed information of the Information and Location of Stall
             </p>
           </div>
         </div>
@@ -224,7 +227,7 @@ const BeAStallOwner = () => {
             <h6>Stall / Government Files</h6>
             <div />
             <p className="text-md mt-2">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+              Government requirements for your stall&apos;s registration
             </p>
           </div>
         </div>
@@ -284,7 +287,7 @@ const BeAStallOwner = () => {
             <h6>Business Owner Information</h6>
             <div />
             <p className="text-md mt-2">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+              A detailed information about the owner of the business
             </p>
           </div>
         </div>
@@ -405,7 +408,7 @@ const BeAStallOwner = () => {
             <h6>Contact Person Information</h6>
             <div />
             <p className="text-md mt-2">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+              A detailed information about the contact person of the business
             </p>
           </div>
         </div>

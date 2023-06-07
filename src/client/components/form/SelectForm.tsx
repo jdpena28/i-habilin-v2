@@ -20,6 +20,7 @@ const SelectForm: FC<SelectFormProps> = ({
   setValue,
   watch,
   isLoading,
+  parentClassName,
 }) => {
   const defaultData = [
     {
@@ -44,7 +45,7 @@ const SelectForm: FC<SelectFormProps> = ({
   };
 
   return (
-    <div className="">
+    <div className={parentClassName}>
       <p className="label-text mb-1">{aboveLabel}</p>
       <Listbox
         {...register(id)}

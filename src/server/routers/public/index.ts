@@ -429,7 +429,12 @@ export const registerRouter = router({
         if (recommended.data.choices[0]?.message?.content === undefined) {
             return null
         }
-        const parseJSON = JSON.parse(recommended.data.choices[0].message.content)
+        const regex = /(Note|NOTE|notes|NOTES):.*/s;
+        const sanitizePrompt = recommended.data.choices[0]?.message?.content.replace(
+          regex,
+          ""
+        );
+        const parseJSON = JSON.parse(sanitizePrompt);
         return {
             recommended_food: menu.filter((menu) => parseJSON.recommended_food.includes(menu.id)),
             confidence: parseJSON.confidence as number
