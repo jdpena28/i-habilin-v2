@@ -1,3 +1,4 @@
+import Link from "next/link";
 import GirlOrderingFood from "@public/public/girl-ordering-food";
 
 const Jumbotron = () => {
@@ -16,9 +17,18 @@ const Jumbotron = () => {
           to long queues and waiting times. Our online platform, ordering from
           multiple stalls in a food court has never been easier.{" "}
         </p>
-        <button type="button" className="bg-primary text-white">
-          See Features
-        </button>
+        <div className="flex gap-x-5">
+          <Link
+            href="#feature"
+            className="rounded-lg bg-primary p-2 font-poppins font-medium tracking-wider text-white lg:p-4">
+            See Features
+          </Link>
+          <Link
+            href="/stalls"
+            className="rounded-lg bg-secondary p-2 font-poppins font-medium tracking-wider text-black lg:p-4">
+            See Stalls
+          </Link>
+        </div>
       </div>
       <div className="w-full md:w-[37rem]">
         <GirlOrderingFood />
